@@ -1,6 +1,7 @@
 # ビルド関連
 *build*/
 *bin*/
+cmake/CPM.cmake
 
 # clangd関連
 *cache*/
