@@ -41,6 +41,7 @@ DownloadFile(
 
 # CPMを有効にする
 include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/CPM.cmake)
+include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/AddTargetHelper.cmake)
 
 # CPMを用いてネット上のパッケージを取り込む
 CPMAddPackage(
