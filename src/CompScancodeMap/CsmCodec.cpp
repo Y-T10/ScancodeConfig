@@ -29,32 +29,6 @@ namespace {
         }
     }
 
-    template<class output_type, size_t N = sizeof(output_type)>
-    const output_type LittleByte2Int(const uint8_t bin[N]) noexcept {
-        output_type output = 0;
-        mempcpy(&output, bin, sizeof(uint8_t)*N);
-        // little endian から 実行時のエンディアンに変換する
-        if constexpr (std::endian::native == std::endian::little) {
-            return output;
-        } else if constexpr (std::endian::native == std::endian::big) {
-            return Byteswap(output);
-        } else {
-            static_assert(false, "this endian is not supported.");
-        }
-    }
-
-    /// 実行時バイト順の値をリトルエンディアンの値に変換する．
-    template<uintegral integer_type>
-    const auto NativeToLittle(const integer_type value) noexcept {
-        if constexpr (std::endian::native == std::endian::little) {
-            return value;
-        } else if constexpr (std::endian::native == std::endian::big) {
-            return Byteswap(value);
-        } else {
-            static_assert(false, "this endian is not supported.");
-        }
-    }
-
     /**
      * @brief `Scancode Map`のバイナリに値を書き込む
      * @tparam integer_type 書き込む符号なし整数の型
