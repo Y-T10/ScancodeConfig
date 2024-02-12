@@ -43,7 +43,7 @@ namespace {
         }
     }
 
-    /// 値のバイト順序をリトルエンディアンに変更する．
+    /// 実行時バイト順の値をリトルエンディアンの値に変換する．
     template<uintegral integer_type>
     const auto NativeToLittle(const integer_type value) noexcept {
         if constexpr (std::endian::native == std::endian::little) {
@@ -65,6 +65,25 @@ namespace {
     inline void WriteScanMapBin(uint8_t* bin, const integer_type value) noexcept {
         const integer_type little_end_value = NativeToLittle(value);
         mempcpy(bin, &little_end_value, sizeof(integer_type));
+    }
+
+    /**
+     * @brief `Scancode Map`のバイナリに値を書き込む
+     * @tparam integer_type 書き込む符号なし整数の型
+     * @param bin 書き込み先バイナリのポインタ
+     * @param value 書き込む値．実行時のバイト順序で表現されている．
+     */
+    template<uintegral integer_type>
+    inline const integer_type ReadScanMapBin(const uint8_t* bin) noexcept {
+        integer_type little_end_value = 0;
+        mempcpy(&little_end_value, bin, sizeof(integer_type));
+        if constexpr (std::endian::native == std::endian::little) {
+            return little_end_value;
+        } else if constexpr (std::endian::native == std::endian::big) {
+            return Byteswap(little_end_value);
+        } else {
+            static_assert(false, "this endian is not supported.");
+        }
     }
 
     const bool IsVailedScanMapBin(const std::vector<uint8_t>& bin) noexcept {
