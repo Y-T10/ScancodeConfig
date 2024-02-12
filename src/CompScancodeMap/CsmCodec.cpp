@@ -76,19 +76,20 @@ namespace CompScanMap {
 
         // 表内の対応ペアの数
         const uint32_t numOfPair = mapSize - 1;
+        const size_t   headerSize = 12;
 
         // 変換表を読み取る
-        ConvertMap map = {};
-        map.reserve(numOfPair);
-        // 変換表の終端ペア (0x00000000)
-        const uint8_t* end = (bin.data() + numOfPair*sizeof(ConvertMap::value_type));
-        for(const uint8_t* pair = bin.data() + 12; pair != end; pair+=sizeof(ConvertMap::value_type)) {
-            map.emplace_back(ConvertPair{
-                .from = LittleByte2Int<uint16_t>(pair + 2),
-                .to = LittleByte2Int<uint16_t>(pair)
-            });
-        };
+        ConvertMap map = ConvertMap(numOfPair, ConvertPair{.to = 0, .from = 0});
+        mempcpy(map.data(), bin.data() + headerSize, map.size() * sizeof(map[0]));
 
-        return map;
+        // 実行環境のエンディアンがビックなら値のビット列を反転させる．
+        if constexpr (std::endian::native == std::endian::big) {
+            std::transform(map.begin(), map.end(), map.begin(), [](const ConvertPair& origin){
+                return ConvertPair{.to = Byteswap(origin.to), .from = Byteswap(origin.from)};
+            });
+            return map;
+        } else {
+            return map;
+        }
     }
 }
