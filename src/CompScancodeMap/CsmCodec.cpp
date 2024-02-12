@@ -63,8 +63,15 @@ namespace {
      */
     template<uintegral integer_type>
     inline void WriteScanMapBin(uint8_t* bin, const integer_type value) noexcept {
-        const integer_type little_end_value = NativeToLittle(value);
-        mempcpy(bin, &little_end_value, sizeof(integer_type));
+        if constexpr (std::endian::native == std::endian::little) {
+            mempcpy(bin, &value, sizeof(integer_type));
+            return;
+        } else if constexpr (std::endian::native == std::endian::big) {
+            const integer_type little_end_value = Byteswap(value);
+            mempcpy(bin, &little_end_value, sizeof(integer_type));
+        } else {
+            static_assert(false, "this endian is not supported.");
+        }
     }
 
     /**
