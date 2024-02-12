@@ -27,17 +27,16 @@ namespace {
 
     template<class output_type, size_t N = sizeof(output_type)>
     const output_type LittleByte2Int(const uint8_t bin[N]) noexcept {
-        output_type output;
+        output_type output = 0;
+        mempcpy(&output, bin, sizeof(uint8_t)*N);
         // little endian から 実行時のエンディアンに変換する
         if constexpr (std::endian::native == std::endian::little) {
-            mempcpy(&output, bin, sizeof(uint8_t)*N);
+            return output;
         } else if constexpr (std::endian::native == std::endian::big) {
-            const auto reverse = std::array<uint8_t, N>(bin, bin + N);
-            mempcpy(&output, reverse.data(), reverse.size());
+            return Byteswap(output);
         } else {
             static_assert(false, "this endian is not supported.");
         }
-        return output;
     }
 
     const bool IsVailedScanMapBin(const std::vector<uint8_t>& bin) noexcept {
