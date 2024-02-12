@@ -67,3 +67,6 @@ if(NOT (${CMAKE_PROJECT_NAME} STREQUAL ${PROJECT_NAME}))
     ## ここで処理を終わらせる
     retunrn()
 endif()
+
+## テストディレクトリ
+add_subdirectory(test)
