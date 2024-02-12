@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <cstddef>
 #include <cstdint>
+#include <limits>
 #include <optional>
 #include <cstring>
 #include <bit>
@@ -117,6 +118,42 @@ namespace CompScanMap {
             return map;
         } else {
             return map;
+        }
+    }
+
+    const std::optional<std::vector<uint8_t>> EncodeScancodeMap(const ConvertMap& map) noexcept {
+        // 表が空かを調べる
+        if (map.empty()) {
+            /// 表が空の`Scancode Map`バイナリを返す
+            return std::vector<uint8_t> {
+                0x00, 0x00, 0x00, 0x00,
+                0x00, 0x00, 0x00, 0x00,
+                0x01, 0x00, 0x00, 0x00,
+                0x00, 0x00, 0x00, 0x00,
+            };
+        }
+
+        // 表を`Scancode Map`に格納できないかを調べる
+        if (map.size() > (std::numeric_limits<uint32_t>::max() - 1)) {
+            return std::nullopt;
+        }
+
+        // バイナリ列を生成する
+        const size_t BinarySize = 16 + map.size() * sizeof(ConvertMap::value_type);
+        std::vector<uint8_t> scanMapBin = std::vector<uint8_t>(BinarySize, 0);
+        // 表の要素数を書き込む
+        WriteScanMapBin(scanMapBin.data() + 8, map.size() + 1);
+        // 表の中身を書き込む
+        mempcpy(scanMapBin.data() + 12, map.data(), map.size() * sizeof(map[0]));
+        // 実行環境のエンディアンがビックならバイナリ列のスキャンコード値を反転させる．
+        if constexpr (std::endian::native == std::endian::big) {
+            for(auto valHead = (scanMapBin.begin() + 12); valHead != scanMapBin.end(); valHead+=sizeof(Scancode)) {
+                auto valTail = valHead + 1;
+                std::swap(*valHead, *valTail);
+            }
+            return scanMapBin;
+        } else {
+            return scanMapBin;
         }
     }
 }
