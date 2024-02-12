@@ -6,8 +6,25 @@
 #include <optional>
 #include <cstring>
 #include <bit>
+#include <type_traits>
 
 namespace {
+    template <std::integral integer_type>
+    const integer_type Byteswap(const integer_type value) noexcept {
+        static_assert(std::is_unsigned_v<integer_type>);
+        if constexpr (std::is_same_v<integer_type, uint8_t>) { 
+            return value;
+        } else if constexpr (std::is_same_v<integer_type, uint16_t>) {
+            return __builtin_bswap16(value);
+        } else if constexpr (std::is_same_v<integer_type, uint32_t>) {
+            return __builtin_bswap32(value);
+        } else if constexpr (std::is_same_v<integer_type, uint64_t>) {
+            return __builtin_bswap64(value);
+        } else {
+            static_assert(false, "this integer type is not supported.");
+        }
+    }
+
     template<class output_type, size_t N = sizeof(output_type)>
     const output_type LittleByte2Int(const uint8_t bin[N]) noexcept {
         output_type output;
