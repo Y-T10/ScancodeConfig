@@ -61,3 +61,9 @@ find_package(Threads REQUIRED)
 
 # Add sub directories
 add_subdirectory(src)
+
+## 親プロジェクトが存在するかを調べる
+if(NOT (${CMAKE_PROJECT_NAME} STREQUAL ${PROJECT_NAME}))
+    ## ここで処理を終わらせる
+    retunrn()
+endif()
