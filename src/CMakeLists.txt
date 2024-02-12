@@ -1,0 +1,2 @@
+add_subdirectory(CompScancodeMap)
+add_subdirectory(AppScancodeConfig)
