@@ -114,7 +114,7 @@ namespace CompScanMap {
         }
 
         // 変換表のサイズを得る
-        const uint32_t mapSize = LittleByte2Int<uint32_t>(bin.data() + 8);
+        const uint32_t mapSize = ReadScanMapBin<uint32_t>(bin.data() + 8);
 
         // 変換表が空かを調べる
         if (mapSize == 1) {
