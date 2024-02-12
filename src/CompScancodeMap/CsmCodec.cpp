@@ -12,7 +12,7 @@ namespace {
     template <class T>
     concept uintegral = std::integral<T> && std::is_unsigned_v<T>;
 
-    template <std::integral integer_type>
+    template <uintegral integer_type>
     const integer_type Byteswap(const integer_type value) noexcept {
         static_assert(std::is_unsigned_v<integer_type>);
         if constexpr (std::is_same_v<integer_type, uint8_t>) { 
