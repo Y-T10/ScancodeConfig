@@ -65,7 +65,7 @@ const BinMapPair Example2 = {
     .map = {ConvertPair{.to = 0x0000, .from = 0xe01d}, ConvertPair{.to = 0xe020, .from = 0xe038}}
 };
 
-TEST_CASE("Decoding `Scancode Map` binrary") {
+TEST_CASE("Decoding `Scancode Map` binary") {
     CHECK(TestDecode(Empty));
     CHECK(TestDecode(Example1));
     CHECK(TestDecode(Example2));
@@ -76,3 +76,47 @@ TEST_CASE("Encoding ConvertMap to binary") {
     TestEncode(Example1);
     TestEncode(Example2);
 }
+
+#define ScanMapVerBin   0x00, 0x00, 0x00, 0x00
+#define ScanMapFlagsBin 0x00, 0x00, 0x00, 0x00
+#define ScanMapEmptyMap 0x01, 0x00, 0x00, 0x00
+#define ScanMapSentiBin 0x00, 0x00, 0x00, 0x00
+
+TEST_CASE("Decoding broken binary") {
+    const std::vector<uint8_t> BinBrokVersion = {
+        0x01, 0x00, 0x00, 0x00,
+        ScanMapFlagsBin,
+        ScanMapEmptyMap,
+        ScanMapSentiBin
+    };
+    const std::vector<uint8_t> BinBrokFlags = {
+        ScanMapVerBin,
+        0x01, 0x00, 0x00, 0x00,
+        ScanMapEmptyMap,
+        ScanMapSentiBin
+    };
+    const std::vector<uint8_t> BinBrokMap = {
+        ScanMapVerBin,
+        ScanMapFlagsBin,
+        0x02, 0x00, 0x00, 0x00,
+        ScanMapSentiBin
+    };
+
+    const std::vector<uint8_t> BinBrokMapTail = {
+        ScanMapVerBin,
+        ScanMapFlagsBin,
+        ScanMapEmptyMap,
+    };
+
+    const std::vector<uint8_t> BinShifted = {
+        ScanMapVerBin,
+        ScanMapFlagsBin,
+        ScanMapEmptyMap,
+        
+    };
+
+    CHECK_FALSE(DecodeScancodeMap(BinBrokVersion));
+    CHECK_FALSE(DecodeScancodeMap(BinBrokFlags));
+    CHECK_FALSE(DecodeScancodeMap(BinBrokMap));
+    CHECK_FALSE(DecodeScancodeMap(BinBrokMapTail));
+};
