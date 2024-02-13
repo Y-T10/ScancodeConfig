@@ -1,4 +1,6 @@
 #include "CsmCodec.hpp"
+#include "CsmViewer.hpp"
+#include <algorithm>
 #include <cstdint>
 #include <vector>
 
@@ -9,6 +11,16 @@ struct BinMapPair {
     std::vector<uint8_t> bin;
     ConvertMap map;
 };
+
+const bool TestDecode(const BinMapPair& pair) noexcept {
+    const auto result = DecodeScancodeMap(pair.bin);
+    if(result) {
+        return false;
+    }
+    return std::ranges::equal(result.value(), pair.map, [](const ConvertPair& result, const ConvertPair& pairMap)-> bool{
+        return result.to == pairMap.to && result.from == pairMap.from;
+    });
+}
 
 int main() {
     // 以下のURLに掲載されている例についてテストを行う
