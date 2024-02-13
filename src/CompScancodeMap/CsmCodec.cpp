@@ -101,19 +101,19 @@ namespace CompScanMap {
         }
 
         // 変換リストのサイズを得る
-        const uint32_t mapSize = ReadScanMapBin<uint32_t>(bin.data() + 8);
+        const uint32_t listSize = ReadScanMapBin<uint32_t>(bin.data() + 8);
 
         // 変換リストが空かを調べる
-        if (mapSize == 1) {
+        if (listSize == 1) {
             return std::make_optional(MappingList{});
         }
 
         // 表内の対応ペアの数
-        const uint32_t numOfPair = mapSize - 1;
+        const uint32_t numOfMapping = listSize - 1;
         const size_t   headerSize = 12;
 
         // 変換リストを読み取る
-        MappingList map = MappingList(numOfPair, ScanMapping{.to = 0, .from = 0});
+        MappingList map = MappingList(numOfMapping, ScanMapping{.to = 0, .from = 0});
         mempcpy(map.data(), bin.data() + headerSize, map.size() * sizeof(map[0]));
 
         // 実行環境のエンディアンがビックなら値のビット列を反転させる．
