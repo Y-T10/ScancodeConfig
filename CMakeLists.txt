@@ -69,5 +69,7 @@ if(NOT (${CMAKE_PROJECT_NAME} STREQUAL ${PROJECT_NAME}))
     return()
 endif()
 
+## テストを有効にする
+enable_testing()
 ## テストディレクトリ
 add_subdirectory(test)
