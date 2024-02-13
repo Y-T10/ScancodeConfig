@@ -2,6 +2,14 @@
 #include <cstdint>
 #include <vector>
 
+using namespace CompScanMap;
+
+// バイナリと表のペア
+struct BinMapPair {
+    std::vector<uint8_t> bin;
+    ConvertMap map;
+};
+
 int main() {
     // 以下のURLに掲載されている例についてテストを行う
     // https://learn.microsoft.com/en-us/windows-hardware/drivers/hid/keyboard-and-mouse-class-drivers#scan-code-mapper-for-keyboards
