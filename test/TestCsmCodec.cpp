@@ -21,12 +21,7 @@ const bool TestDecode(const BinMapPair& pair) noexcept {
     if (!result.has_value()) {
         return false;
     }
-    const ConvertMap binMap = result.value();
-    if (binMap.empty() && pair.map.empty()) {
-        return true;
-    }
-    CHECK(((!binMap.empty()) && (!pair.map.empty())));
-    return std::ranges::equal(binMap, pair.map, [](const ConvertPair& result, const ConvertPair& pairMap)-> bool{
+    return std::ranges::equal(result.value(), pair.map, [](const ConvertPair& result, const ConvertPair& pairMap)-> bool{
         return result.to == pairMap.to && result.from == pairMap.from;
     });
 }
