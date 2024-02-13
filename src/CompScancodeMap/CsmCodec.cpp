@@ -100,10 +100,10 @@ namespace CompScanMap {
             return std::nullopt;
         }
 
-        // 変換表のサイズを得る
+        // 変換リストのサイズを得る
         const uint32_t mapSize = ReadScanMapBin<uint32_t>(bin.data() + 8);
 
-        // 変換表が空かを調べる
+        // 変換リストが空かを調べる
         if (mapSize == 1) {
             return std::make_optional(MappingList{});
         }
@@ -112,7 +112,7 @@ namespace CompScanMap {
         const uint32_t numOfPair = mapSize - 1;
         const size_t   headerSize = 12;
 
-        // 変換表を読み取る
+        // 変換リストを読み取る
         MappingList map = MappingList(numOfPair, ScanMapping{.to = 0, .from = 0});
         mempcpy(map.data(), bin.data() + headerSize, map.size() * sizeof(map[0]));
 

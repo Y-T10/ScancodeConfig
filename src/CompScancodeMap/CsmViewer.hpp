@@ -16,6 +16,6 @@ namespace CompScanMap {
     };
     static_assert(std::has_unique_object_representations_v<ScanMapping>);
 
-    /// Scancodeの変換表
+    /// Scancodeの変換リスト
     using MappingList = std::vector<ScanMapping>;
 }
