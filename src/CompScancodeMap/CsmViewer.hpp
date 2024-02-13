@@ -10,12 +10,12 @@ namespace CompScanMap {
 
     /// スキャンコードの対応
     /// コーデック処理を容易にするため、メンバの順番は入れ替えないこと．
-    struct ConvertPair {
+    struct ScanMapping {
         Scancode to;
         Scancode from;
     };
-    static_assert(std::has_unique_object_representations_v<ConvertPair>);
+    static_assert(std::has_unique_object_representations_v<ScanMapping>);
 
     /// Scancodeの変換表
-    using ConvertMap = std::vector<ConvertPair>;
+    using MappingList = std::vector<ScanMapping>;
 }

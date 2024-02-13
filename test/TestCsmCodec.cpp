@@ -12,7 +12,7 @@ using namespace CompScanMap;
 // バイナリと表のペア
 struct BinMapPair {
     std::vector<uint8_t> bin;
-    ConvertMap map;
+    MappingList map;
 };
 
 const bool TestDecode(const BinMapPair& pair) noexcept {
@@ -21,7 +21,7 @@ const bool TestDecode(const BinMapPair& pair) noexcept {
     if (!result.has_value()) {
         return false;
     }
-    return std::ranges::equal(result.value(), pair.map, [](const ConvertPair& result, const ConvertPair& pairMap)-> bool{
+    return std::ranges::equal(result.value(), pair.map, [](const ScanMapping& result, const ScanMapping& pairMap)-> bool{
         return result.to == pairMap.to && result.from == pairMap.from;
     });
 }
@@ -52,7 +52,7 @@ const BinMapPair Example1 = {
              0x1d, 0x00, 0x3a, 0x00,
              0x00, 0x00, 0x00, 0x00,
     },
-    .map = {ConvertPair{.to = 0x003a, .from = 0x001d}, ConvertPair{.to = 0x001d, .from = 0x003a}}
+    .map = {ScanMapping{.to = 0x003a, .from = 0x001d}, ScanMapping{.to = 0x001d, .from = 0x003a}}
 };
 const BinMapPair Example2 = {
     .bin = { 0x00, 0x00, 0x00, 0x00,
@@ -62,7 +62,7 @@ const BinMapPair Example2 = {
              0x20, 0xe0, 0x38, 0xe0,
              0x00, 0x00, 0x00, 0x00,
     },
-    .map = {ConvertPair{.to = 0x0000, .from = 0xe01d}, ConvertPair{.to = 0xe020, .from = 0xe038}}
+    .map = {ScanMapping{.to = 0x0000, .from = 0xe01d}, ScanMapping{.to = 0xe020, .from = 0xe038}}
 };
 
 TEST_CASE("Decoding `Scancode Map` binary") {
@@ -71,7 +71,7 @@ TEST_CASE("Decoding `Scancode Map` binary") {
     CHECK(TestDecode(Example2));
 };
 
-TEST_CASE("Encoding ConvertMap to binary") {
+TEST_CASE("Encoding MappingList to binary") {
     TestEncode(Empty);
     TestEncode(Example1);
     TestEncode(Example2);

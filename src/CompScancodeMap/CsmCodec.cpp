@@ -92,7 +92,7 @@ namespace {
 }
 
 namespace CompScanMap {
-    const std::optional<ConvertMap> DecodeScancodeMap(const std::vector<uint8_t>& bin) noexcept {
+    const std::optional<MappingList> DecodeScancodeMap(const std::vector<uint8_t>& bin) noexcept {
         using namespace CompScanMap;
 
         // 無効なバイナリかを調べる
@@ -105,7 +105,7 @@ namespace CompScanMap {
 
         // 変換表が空かを調べる
         if (mapSize == 1) {
-            return std::make_optional(ConvertMap{});
+            return std::make_optional(MappingList{});
         }
 
         // 表内の対応ペアの数
@@ -113,13 +113,13 @@ namespace CompScanMap {
         const size_t   headerSize = 12;
 
         // 変換表を読み取る
-        ConvertMap map = ConvertMap(numOfPair, ConvertPair{.to = 0, .from = 0});
+        MappingList map = MappingList(numOfPair, ScanMapping{.to = 0, .from = 0});
         mempcpy(map.data(), bin.data() + headerSize, map.size() * sizeof(map[0]));
 
         // 実行環境のエンディアンがビックなら値のビット列を反転させる．
         if constexpr (std::endian::native == std::endian::big) {
-            std::transform(map.begin(), map.end(), map.begin(), [](const ConvertPair& origin){
-                return ConvertPair{.to = Byteswap(origin.to), .from = Byteswap(origin.from)};
+            std::transform(map.begin(), map.end(), map.begin(), [](const ScanMapping& origin){
+                return ScanMapping{.to = Byteswap(origin.to), .from = Byteswap(origin.from)};
             });
             return std::make_optional(map);
         } else {
@@ -127,7 +127,7 @@ namespace CompScanMap {
         }
     }
 
-    const std::optional<std::vector<uint8_t>> EncodeScancodeMap(const ConvertMap& map) noexcept {
+    const std::optional<std::vector<uint8_t>> EncodeScancodeMap(const MappingList& map) noexcept {
         // 表が空かを調べる
         if (map.empty()) {
             /// 表が空の`Scancode Map`バイナリを返す
@@ -145,7 +145,7 @@ namespace CompScanMap {
         }
 
         // バイナリ列を生成する
-        const size_t BinarySize = 16 + map.size() * sizeof(ConvertMap::value_type);
+        const size_t BinarySize = 16 + map.size() * sizeof(MappingList::value_type);
         std::vector<uint8_t> scanMapBin = std::vector<uint8_t>(BinarySize, 0);
         // 表の要素数を書き込む
         WriteScanMapBin(scanMapBin.data() + 8, map.size() + 1);
