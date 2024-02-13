@@ -41,6 +41,7 @@ DownloadFile(
 
 # CPMを有効にする
 include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/CPM.cmake)
+include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/AddTargetHelper.cmake)
 
 # CPMを用いてネット上のパッケージを取り込む
 CPMAddPackage(
@@ -61,3 +62,14 @@ find_package(Threads REQUIRED)
 
 # Add sub directories
 add_subdirectory(src)
+
+## 親プロジェクトが存在するかを調べる
+if(NOT (${CMAKE_PROJECT_NAME} STREQUAL ${PROJECT_NAME}))
+    ## ここで処理を終わらせる
+    return()
+endif()
+
+## テストを有効にする
+enable_testing()
+## テストディレクトリ
+add_subdirectory(test)
