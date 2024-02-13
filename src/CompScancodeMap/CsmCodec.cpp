@@ -73,12 +73,17 @@ namespace {
             return value == 0x00;
         };
 
+        // バイナリサイズに問題があるかを調べる
+        if ((bin.size() < 16) || ((bin.size() % 4) != 0)) {
+            return false;
+        }
         // version, flags の領域が0で埋まっているかを調べる
         if(!std::all_of(bin.begin(), bin.begin() + 8, isZero)) {
             return false;
         }
-        // 変換表サイズの領域が0で埋まっているかを調べる
-        if(std::all_of(bin.begin() + 8, bin.begin() + 12, isZero)){
+        // ヘッダのマッピング数が実際マッピング数と一致しているかを調べる
+        const uint32_t NumOfMapping = ReadScanMapBin<uint32_t>(bin.data() + 8);
+        if (NumOfMapping != ((bin.size() - 12) / 4)) {
             return false;
         }
         // 表の末端が0かを調べる
