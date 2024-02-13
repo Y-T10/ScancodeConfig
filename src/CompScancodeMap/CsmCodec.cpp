@@ -1,4 +1,5 @@
 #include "CsmCodec.hpp"
+#include "CsmViewer.hpp"
 
 #include <algorithm>
 #include <cstddef>
@@ -77,11 +78,11 @@ namespace {
             return false;
         }
         // 変換表サイズの領域が0で埋まっているかを調べる
-        if(std::any_of(bin.begin() + 8, bin.begin() + 12, isZero)){
+        if(std::all_of(bin.begin() + 8, bin.begin() + 12, isZero)){
             return false;
         }
         // 表の末端が0かを調べる
-        return std::any_of(bin.end() - 4, bin.end(), isZero);
+        return std::all_of(bin.end() - 4, bin.end(), isZero);
     }
 }
 
@@ -99,7 +100,7 @@ namespace CompScanMap {
 
         // 変換表が空かを調べる
         if (mapSize == 1) {
-            return {};
+            return std::make_optional(ConvertMap{});
         }
 
         // 表内の対応ペアの数
@@ -115,9 +116,9 @@ namespace CompScanMap {
             std::transform(map.begin(), map.end(), map.begin(), [](const ConvertPair& origin){
                 return ConvertPair{.to = Byteswap(origin.to), .from = Byteswap(origin.from)};
             });
-            return map;
+            return std::make_optional(map);
         } else {
-            return map;
+            return std::make_optional(map);
         }
     }
 
