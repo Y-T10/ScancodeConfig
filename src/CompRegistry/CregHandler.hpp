@@ -28,7 +28,7 @@ namespace CompReg {
      * @param access キーを扱う際の権限
      * @return 成功すればキーのハンドラを指すポインタ、失敗すればnullptrを返す．
      */
-    const RegKey OpenHKLMKey(const HKEY rootKey, const win32str& keyPath, const REGSAM access) noexcept;
+    const RegKey OpenRegKey(const HKEY rootKey, const win32str& keyPath, const REGSAM access) noexcept;
 
     /**
      * @brief キーが持つバイナリ値を読み込む

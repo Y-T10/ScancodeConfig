@@ -19,7 +19,7 @@ namespace {
 }
 
 namespace CompReg {
-    const RegKey OpenHKLMKey(const HKEY rootKey, const win32str& keyPath, const REGSAM access) noexcept {
+    const RegKey OpenRegKey(const HKEY rootKey, const win32str& keyPath, const REGSAM access) noexcept {
         HKEY hkey = nullptr;
         // 読み取り専用のレジストリハンドラを得る
         const LSTATUS result = RegOpenKeyEx(
