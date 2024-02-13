@@ -1,3 +1,6 @@
+#define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
+#include "doctest/doctest.h"
+
 #include "CsmCodec.hpp"
 #include "CsmViewer.hpp"
 #include <algorithm>
@@ -14,44 +17,52 @@ struct BinMapPair {
 
 const bool TestDecode(const BinMapPair& pair) noexcept {
     const auto result = DecodeScancodeMap(pair.bin);
-    if(result) {
+    CHECK(result.has_value());
+    if (!result.has_value()) {
         return false;
     }
-    return std::ranges::equal(result.value(), pair.map, [](const ConvertPair& result, const ConvertPair& pairMap)-> bool{
+    const ConvertMap binMap = result.value();
+    if (binMap.empty() && pair.map.empty()) {
+        return true;
+    }
+    CHECK(((!binMap.empty()) && (!pair.map.empty())));
+    return std::ranges::equal(binMap, pair.map, [](const ConvertPair& result, const ConvertPair& pairMap)-> bool{
         return result.to == pairMap.to && result.from == pairMap.from;
     });
 }
 
-int main() {
-    // 以下のURLに掲載されている例についてテストを行う
-    // https://learn.microsoft.com/en-us/windows-hardware/drivers/hid/keyboard-and-mouse-class-drivers#scan-code-mapper-for-keyboards
+// 以下のURLに掲載されている例についてテストを行う
+// https://learn.microsoft.com/en-us/windows-hardware/drivers/hid/keyboard-and-mouse-class-drivers#scan-code-mapper-for-keyboards
+const BinMapPair Empty = {
+    .bin = { 0x00, 0x00, 0x00, 0x00,
+             0x00, 0x00, 0x00, 0x00,
+             0x01, 0x00, 0x00, 0x00,
+            0x00, 0x00, 0x00, 0x00 },
+    .map = {}
+};
+const BinMapPair Example1 = {
+    .bin = { 0x00, 0x00, 0x00, 0x00,
+             0x00, 0x00, 0x00, 0x00,
+             0x03, 0x00, 0x00, 0x00,
+             0x3a, 0x00, 0x1d, 0x00,
+             0x1d, 0x00, 0x3a, 0x00,
+             0x00, 0x00, 0x00, 0x00,
+    },
+    .map = {ConvertPair{.to = 0x003a, .from = 0x001d}, ConvertPair{.to = 0x001d, .from = 0x003a}}
+};
+const BinMapPair Example2 = {
+    .bin = { 0x00, 0x00, 0x00, 0x00,
+             0x00, 0x00, 0x00, 0x00,
+             0x03, 0x00, 0x00, 0x00,
+             0x00, 0x00, 0x1d, 0xe0,
+             0x20, 0xe0, 0x38, 0xe0,
+             0x00, 0x00, 0x00, 0x00,
+    },
+    .map = {ConvertPair{.to = 0x0000, .from = 0xe01d}, ConvertPair{.to = 0xe020, .from = 0xe038}}
+};
 
-    const BinMapPair Empty = {
-        .bin = { 0x00, 0x00, 0x00, 0x00,
-                 0x00, 0x00, 0x00, 0x00,
-                 0x01, 0x00, 0x00, 0x00,
-                0x00, 0x00, 0x00, 0x00 },
-        .map = {}
-    };
-    const BinMapPair Example1 = {
-        .bin = { 0x00, 0x00, 0x00, 0x00,
-                 0x00, 0x00, 0x00, 0x00,
-                 0x03, 0x00, 0x00, 0x00,
-                 0x3a, 0x00, 0x1d, 0x00,
-                 0x1d, 0x00, 0x3a, 0x00,
-                 0x00, 0x00, 0x00, 0x00,
-        },
-        .map = {ConvertPair{.to = 0x003a, .from = 0x001d}, ConvertPair{.to = 0x001d, .from = 0x003a}}
-    };
-    const BinMapPair Example2 = {
-        .bin = { 0x00, 0x00, 0x00, 0x00,
-                 0x00, 0x00, 0x00, 0x00,
-                 0x03, 0x00, 0x00, 0x00,
-                 0x00, 0x00, 0x1d, 0xe0,
-                 0x20, 0xe0, 0x38, 0xe0,
-                 0x00, 0x00, 0x00, 0x00,
-        },
-        .map = {ConvertPair{.to = 0x0000, .from = 0x001d}, ConvertPair{.to = 0xe020, .from = 0xe038}}
-    };
-    return 0;
-}
+TEST_CASE("Decoding `Scancode Map` binrary") {
+    CHECK(TestDecode(Empty));
+    CHECK(TestDecode(Example1));
+    CHECK(TestDecode(Example2));
+};
