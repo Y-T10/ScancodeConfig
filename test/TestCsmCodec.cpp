@@ -26,6 +26,15 @@ const bool TestDecode(const BinMapPair& pair) noexcept {
     });
 }
 
+void TestEncode(const BinMapPair& pair) noexcept {
+    const auto result = EncodeScancodeMap(pair.map);
+    CHECK(result.has_value());
+    if (!result.has_value()) {
+        return;
+    }
+    CHECK(std::ranges::equal(result.value(), pair.bin));
+}
+
 // 以下のURLに掲載されている例についてテストを行う
 // https://learn.microsoft.com/en-us/windows-hardware/drivers/hid/keyboard-and-mouse-class-drivers#scan-code-mapper-for-keyboards
 const BinMapPair Empty = {
@@ -61,3 +70,9 @@ TEST_CASE("Decoding `Scancode Map` binrary") {
     CHECK(TestDecode(Example1));
     CHECK(TestDecode(Example2));
 };
+
+TEST_CASE("Encoding ConvertMap to binary") {
+    TestEncode(Empty);
+    TestEncode(Example1);
+    TestEncode(Example2);
+}
