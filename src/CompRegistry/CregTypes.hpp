@@ -2,6 +2,12 @@
 
 #include <string>
 
+#ifndef STRICT
+#define STRICT
+#endif
+#ifndef NOMIMAX
+#define NOMIMAX
+#endif
 #include <windows.h>
 
 namespace CompReg {
