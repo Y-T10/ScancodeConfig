@@ -7,6 +7,7 @@
 #define NOMIMAX
 #endif
 #include "windows.h"
+#include <optional>
 
 namespace CompReg {
     /**
@@ -14,5 +15,5 @@ namespace CompReg {
      * @return true 利用可能
      * @return false 利用不可能
      */
-    const bool IsElevated() noexcept;
+    const std::optional<bool> IsElevated() noexcept;
 }
