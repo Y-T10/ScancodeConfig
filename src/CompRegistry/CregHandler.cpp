@@ -39,9 +39,10 @@ namespace CompReg {
         }
         // バイナリデータを得る
         std::vector<BYTE> buff = std::vector<uint8_t>(*binary_size);
+        DWORD readSize = buff.size();
         const LSTATUS result = RegQueryValueEx(
             key.get(), valueName.c_str(),
-            NULL, NULL, buff.data(), NULL);
+            NULL, NULL, buff.data(), &readSize);
         return result == ERROR_SUCCESS?
             std::make_optional(buff):
             std::nullopt;
