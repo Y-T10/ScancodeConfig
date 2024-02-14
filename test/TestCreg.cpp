@@ -2,6 +2,7 @@
 #include "doctest/doctest.h"
 
 #include "CregHandler.hpp"
+#include "CregAdmin.hpp"
 
 using namespace CompReg;
 
@@ -13,10 +14,14 @@ TEST_CASE("Open registry key") {
     );
     CHECK(readKey != nullptr);
 
+    const auto result = IsElevated();
+    CHECK(result.has_value());
+
     const auto writeKey = OpenRegKey(
         HKEY_LOCAL_MACHINE,
         TEXT("SYSTEM\\CurrentControlSet\\Control\\Keyboard Layout"), 
         KEY_WRITE
     );
-    CHECK(writeKey == nullptr);
+    CHECK(*result);
+    CHECK((writeKey != nullptr) == *result);
 };
