@@ -3,6 +3,7 @@
 #include <minwindef.h>
 #include <optional>
 #include <processthreadsapi.h>
+#include <securitybaseapi.h>
 #include <type_traits>
 
 #ifndef STRICT
@@ -27,6 +28,32 @@ namespace {
         }
         return HToken(h);
     }
+
+    template<bool isEnable>
+    const bool SetTokenPriv(const HToken& token, const TCHAR* privName){
+        LUID privLUID = {};
+
+        if (!LookupPrivilegeValue(NULL, privName, &privLUID)) {
+            return false;
+        }
+
+        const TOKEN_PRIVILEGES TokePriv = {
+            .PrivilegeCount = 1,
+            .Privileges = {
+                LUID_AND_ATTRIBUTES{
+                    .Luid = privLUID,
+                    .Attributes = isEnable? SE_PRIVILEGE_ENABLED: 0
+                }
+            }
+        };
+
+        // トークンの特権を設定し、その結果を返す
+        return AdjustTokenPrivileges(
+            token.get(), FALSE, 
+            (TOKEN_PRIVILEGES*)&TokePriv, sizeof(TOKEN_PRIVILEGES),
+            NULL, NULL
+        );
+    };
 }
 
 namespace CompReg {
