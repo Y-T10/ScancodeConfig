@@ -1,7 +1,7 @@
 #include "CregAdmin.hpp"
+
 #include <memory>
 #include <minwindef.h>
-#include <optional>
 #include <processthreadsapi.h>
 #include <securitybaseapi.h>
 #include <type_traits>
