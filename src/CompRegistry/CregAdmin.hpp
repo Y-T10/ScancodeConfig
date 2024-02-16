@@ -16,4 +16,9 @@ namespace CompReg {
      * @return false 権限を無効にした
      */
     const bool EnableWritingRegPriv() noexcept;
+
+    /**
+     * @brief レジストリ書き込みに必要な権限を無効にする
+     */
+    void DisableWritingRegPriv() noexcept;
 }
