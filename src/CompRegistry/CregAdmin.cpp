@@ -15,23 +15,23 @@
 #include <winnt.h>
 
 namespace {
-    using Handle = std::unique_ptr<
+    using HToken = std::unique_ptr<
         std::remove_pointer_t<HANDLE>,
         decltype([](HANDLE ptr){ CloseHandle(ptr); })
     >;
 
-    const Handle OpenCurrenProcToken(const DWORD access) noexcept {
+    const HToken OpenCurrenProcToken(const DWORD access) noexcept {
         HANDLE h = nullptr;
         if (!!OpenProcessToken(GetCurrentProcess(), access, &h)) {
             return nullptr;
         }
-        return Handle(h);
+        return HToken(h);
     }
 }
 
 namespace CompReg {
     const std::optional<bool> IsElevated() noexcept {
-        const Handle token = OpenCurrenProcToken(TOKEN_READ);
+        const HToken token = OpenCurrenProcToken(TOKEN_READ);
         if(!token) {
             return std::nullopt;
         }
