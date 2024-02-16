@@ -40,3 +40,22 @@ TEST_CASE("Read Registry Value") {
     const auto value = ReadKeyValueBin(readKey, TEXT("Scancode Map"));
     CHECK(value.has_value());
 };
+
+TEST_CASE("Check Privilege") {
+    const auto writeKeyFail = OpenRegKey(
+        HKEY_LOCAL_MACHINE,
+        TEXT("SYSTEM\\CurrentControlSet\\Control\\Keyboard Layout"), 
+        KEY_WRITE
+    );
+    
+    CHECK(!writeKeyFail);
+
+    CHECK(EnableWritingRegPriv());
+    const auto writeKeySuccess = OpenRegKey(
+        HKEY_LOCAL_MACHINE,
+        TEXT("SYSTEM\\CurrentControlSet\\Control\\Keyboard Layout"), 
+        KEY_SET_VALUE
+    );
+    CHECK(writeKeySuccess);
+    DisableWritingRegPriv();
+};
