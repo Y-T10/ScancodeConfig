@@ -23,7 +23,7 @@ namespace {
 
     const HToken OpenCurrenProcToken(const DWORD access) noexcept {
         HANDLE h = nullptr;
-        if (!!OpenProcessToken(GetCurrentProcess(), access, &h)) {
+        if (!OpenProcessToken(GetCurrentProcess(), access, &h)) {
             return nullptr;
         }
         return HToken(h);
@@ -48,11 +48,13 @@ namespace {
         };
 
         // トークンの特権を設定し、その結果を返す
-        return AdjustTokenPrivileges(
-            token.get(), FALSE, 
-            (TOKEN_PRIVILEGES*)&TokePriv, sizeof(TOKEN_PRIVILEGES),
-            NULL, NULL
-        );
+        if (!AdjustTokenPrivileges(
+                token.get(), FALSE, 
+                (TOKEN_PRIVILEGES*)&TokePriv, sizeof(TOKEN_PRIVILEGES),
+                NULL, NULL)) {
+                return false;
+            }
+        return GetLastError() == ERROR_SUCCESS;
     };
 }
 
@@ -73,7 +75,7 @@ namespace CompReg {
 
     const bool EnableWritingRegPriv() noexcept {
         const HToken token = OpenCurrenProcToken(TOKEN_ADJUST_PRIVILEGES);
-        if(token) {
+        if(!token) {
             return false;
         }
         return SetTokenPriv<true>(token, SE_RESTORE_NAME);
@@ -81,6 +83,7 @@ namespace CompReg {
 
     void DisableWritingRegPriv() noexcept {
         const HToken token = OpenCurrenProcToken(TOKEN_ADJUST_PRIVILEGES);
+        if(!token) { return; }
         SetTokenPriv<false>(token, SE_RESTORE_NAME);
     }
 }
