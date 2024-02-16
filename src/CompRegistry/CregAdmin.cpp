@@ -14,18 +14,26 @@
 #include <windows.h>
 #include <winnt.h>
 
+namespace {
+    using Handle = std::unique_ptr<
+        std::remove_pointer_t<HANDLE>,
+        decltype([](HANDLE ptr){ CloseHandle(ptr); })
+    >;
+
+    const Handle OpenCurrenProcToken(const DWORD access) noexcept {
+        HANDLE h = nullptr;
+        if (!!OpenProcessToken(GetCurrentProcess(), access, &h)) {
+            return nullptr;
+        }
+        return Handle(h);
+    }
+}
+
 namespace CompReg {
     const std::optional<bool> IsElevated() noexcept {
-        using Handle = std::unique_ptr<
-            std::remove_pointer_t<HANDLE>,
-            decltype([](HANDLE ptr){ CloseHandle(ptr); })
-            >;
-
-        Handle token = nullptr;
-        if (HANDLE h = nullptr; OpenProcessToken(GetCurrentProcess(), TOKEN_READ, &h) == 0) {
+        const Handle token = OpenCurrenProcToken(TOKEN_READ);
+        if(!token) {
             return std::nullopt;
-        } else {
-            token = Handle(h);
         }
 
         TOKEN_ELEVATION evelationInfo = {};
