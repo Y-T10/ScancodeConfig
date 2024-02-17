@@ -72,18 +72,4 @@ namespace CompReg {
         } 
         return std::make_optional(!!evelationInfo.TokenIsElevated);
     }
-
-    const bool EnableWritingRegPriv() noexcept {
-        const HToken token = OpenCurrenProcToken(TOKEN_ADJUST_PRIVILEGES);
-        if(!token) {
-            return false;
-        }
-        return SetTokenPriv<true>(token, SE_RESTORE_NAME);
-    }
-
-    void DisableWritingRegPriv() noexcept {
-        const HToken token = OpenCurrenProcToken(TOKEN_ADJUST_PRIVILEGES);
-        if(!token) { return; }
-        SetTokenPriv<false>(token, SE_RESTORE_NAME);
-    }
 }

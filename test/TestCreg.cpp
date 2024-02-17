@@ -77,14 +77,12 @@ TEST_CASE("Check Privilege") {
         return;
     }
 
-    CHECK(EnableWritingRegPriv());
     const auto writeKeySuccess = OpenRegKey(
         HKEY_LOCAL_MACHINE,
         TEXT("SYSTEM\\CurrentControlSet\\Control\\Keyboard Layout"), 
         KEY_SET_VALUE
     );
     CHECK(writeKeySuccess);
-    DisableWritingRegPriv();
 };
 
 #include "TestBinData.hpp"
