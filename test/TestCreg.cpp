@@ -44,22 +44,22 @@ void TestRegWriteInternal(const std::vector<uint8_t>& value) noexcept {
 
 TEST_CASE("Open registry key") {
     const auto readKey = OpenRegKbLayout(KEY_READ);
-    CHECK(readKey.get() != nullptr);
+    CHECK(readKey);
 
     const auto result = IsElevated();
-    CHECK(result.has_value());
+    CHECK(result);
 
     const auto writeKey = OpenRegKbLayout(KEY_WRITE);
-    CHECK((writeKey != nullptr) == *result);
+    CHECK((!!writeKey) == *result);
 };
 
 TEST_CASE("Read Registry Value") {
     const auto readKey = OpenRegKbLayout(KEY_READ);
-    CHECK(readKey != nullptr);
+    CHECK(readKey);
 
     // 値の読み込み
     const auto value = ReadKeyValueBin(readKey, TEXT("Scancode Map"));
-    CHECK(value.has_value());
+    CHECK(value);
 };
 
 #include "TestBinData.hpp"
