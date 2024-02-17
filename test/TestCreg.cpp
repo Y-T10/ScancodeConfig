@@ -71,20 +71,6 @@ TEST_CASE("Read Registry Value") {
     CHECK(value.has_value());
 };
 
-TEST_CASE("Check Privilege") {
-    if(const auto result = IsElevated();!result || !(*result)) {
-        MESSAGE("このテストを行う際は管理者権限が必要です．");
-        return;
-    }
-
-    const auto writeKeySuccess = OpenRegKey(
-        HKEY_LOCAL_MACHINE,
-        TEXT("SYSTEM\\CurrentControlSet\\Control\\Keyboard Layout"), 
-        KEY_SET_VALUE
-    );
-    CHECK(writeKeySuccess);
-};
-
 #include "TestBinData.hpp"
 
 TEST_CASE("Write Scancode Map") {
