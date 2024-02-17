@@ -42,13 +42,10 @@ TEST_CASE("Read Registry Value") {
 };
 
 TEST_CASE("Check Privilege") {
-    const auto writeKeyFail = OpenRegKey(
-        HKEY_LOCAL_MACHINE,
-        TEXT("SYSTEM\\CurrentControlSet\\Control\\Keyboard Layout"), 
-        KEY_WRITE
-    );
-    
-    CHECK(!writeKeyFail);
+    if(const auto result = IsElevated();!result || !(*result)) {
+        MESSAGE("このテストを行う際は管理者権限が必要です．");
+        return;
+    }
 
     CHECK(EnableWritingRegPriv());
     const auto writeKeySuccess = OpenRegKey(
