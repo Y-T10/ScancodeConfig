@@ -37,4 +37,13 @@ namespace CompReg {
      * @return 読み取りに成功すればバイナリ値を、失敗すればnulloptを返す．
      */
     const std::optional<std::vector<uint8_t>> ReadKeyValueBin(const RegKey& key, const win32str& valueName) noexcept;
+
+    /**
+     * @brief キーが持つバイナリ値を読み込む
+     * @param key キー
+     * @param valueName 値の名前 
+     * @param value 書き込む値
+     * @return 読み取りに成功すればバイナリ値を、失敗すればnulloptを返す．
+     */
+    const bool WriteKeyValueBin(const RegKey& key, const win32str& valueName, const std::vector<uint8_t>& value) noexcept;
 };

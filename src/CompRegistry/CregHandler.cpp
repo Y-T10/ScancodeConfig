@@ -47,4 +47,14 @@ namespace CompReg {
             std::make_optional(buff):
             std::nullopt;
     }
+
+    const bool WriteKeyValueBin(const RegKey& key, const win32str& valueName, const std::vector<uint8_t>& value) noexcept {
+        // バイナリデータを得る
+        const LSTATUS result = RegSetValueEx(
+            key.get(), valueName.c_str(),
+            0, REG_BINARY,
+            value.data(), value.size()
+        );
+        return result == ERROR_SUCCESS;
+    }
 }
