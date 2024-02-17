@@ -9,17 +9,20 @@
 
 using namespace CompReg;
 
+const auto OpenRegKbLayout(const REGSAM access) noexcept {
+    return OpenRegKey(
+        HKEY_LOCAL_MACHINE,
+        TEXT("SYSTEM\\CurrentControlSet\\Control\\Keyboard Layout"),
+        access
+    );
+}
+
 void TestRegWriteInternal(const std::vector<uint8_t>& value) noexcept {
-    constexpr auto Subkey = TEXT("SYSTEM\\CurrentControlSet\\Control\\Keyboard Layout");
     constexpr auto ValueName = TEXT("Scancode Map");
 
     // キーを生成する．パスのキーが存在しない場合にも対応する．
-    const auto ReadKey = OpenRegKey(
-        HKEY_LOCAL_MACHINE, Subkey, KEY_READ
-    );
-    const auto WriteKey = OpenRegKey(
-        HKEY_LOCAL_MACHINE, Subkey, KEY_SET_VALUE
-    );
+    const auto ReadKey = OpenRegKbLayout(KEY_READ);
+    const auto WriteKey = OpenRegKbLayout(KEY_SET_VALUE);
     CHECK(ReadKey);
     CHECK(WriteKey);
 
@@ -40,30 +43,18 @@ void TestRegWriteInternal(const std::vector<uint8_t>& value) noexcept {
 }
 
 TEST_CASE("Open registry key") {
-    const auto readKey = OpenRegKey(
-        HKEY_LOCAL_MACHINE,
-        TEXT("SYSTEM\\CurrentControlSet\\Control\\Keyboard Layout"), 
-        KEY_READ
-    );
+    const auto readKey = OpenRegKbLayout(KEY_READ);
     CHECK(readKey.get() != nullptr);
 
     const auto result = IsElevated();
     CHECK(result.has_value());
 
-    const auto writeKey = OpenRegKey(
-        HKEY_LOCAL_MACHINE,
-        TEXT("SYSTEM\\CurrentControlSet\\Control\\Keyboard Layout"), 
-        KEY_WRITE
-    );
+    const auto writeKey = OpenRegKbLayout(KEY_WRITE);
     CHECK((writeKey != nullptr) == *result);
 };
 
 TEST_CASE("Read Registry Value") {
-    const auto readKey = OpenRegKey(
-        HKEY_LOCAL_MACHINE,
-        TEXT("SYSTEM\\CurrentControlSet\\Control\\Keyboard Layout"), 
-        KEY_READ
-    );
+    const auto readKey = OpenRegKbLayout(KEY_READ);
     CHECK(readKey != nullptr);
 
     // 値の読み込み
