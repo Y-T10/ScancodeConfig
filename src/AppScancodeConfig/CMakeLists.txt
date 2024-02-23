@@ -3,4 +3,5 @@ add_exe_directory(
     ${CMAKE_CURRENT_SOURCE_DIR}
     SOURCE ${CMAKE_CURRENT_SOURCE_DIR}/main.cpp
     LIBPRIV fmt::fmt Threads::Threads challenger::challenger
+    PkgConfig::GTK4
 )
