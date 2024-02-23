@@ -1,3 +1,4 @@
+block(SCOPE_FOR POLICIES)
 # テスト登録関数
 function(register_test Name)
 	cmake_parse_arguments(
@@ -12,3 +13,4 @@ function(register_test Name)
 
     add_test(Name ${Name} COMMAND ${Name})
 endfunction(register_test)
+endblock()

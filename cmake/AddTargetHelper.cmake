@@ -1,3 +1,4 @@
+block(SCOPE_FOR POLICIES)
 function(set_target_build_internal TargetName)
     # 引数をパースする
 	cmake_parse_arguments(
@@ -48,3 +49,4 @@ function(add_exe_directory Directory)
         LIB_PRI ${Param_LIB_PRI}
     )
 endfunction(add_exe_directory)
+endblock()
