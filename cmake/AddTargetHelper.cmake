@@ -51,4 +51,20 @@ endfunction(add_lib_directory)
 function(add_exe_directory Directory)
     __add_obj_internal(Directory ${Directory} EXE ${ARGN})
 endfunction(add_exe_directory)
+
+## インターフェイスターゲットを追加する
+function(add_interface_directory Directory)
+    set(_inter_opt Debug)
+    set(_inter_varg LIBPRIV LIBPUB)
+    cmake_parse_arguments(arg "${_inter_opt}" "${_inter_varg}" ${ARGN})
+
+    ## 新しいターゲットを追加する
+    get_filename_component(Name ${arg_Directory} NAME_WE)
+    add_library(${Name} INTERFACE)
+    ## ターゲットのビルド引数を設定する
+    target_include_directories(${Name} INTERFACE ${Directory})
+    target_link_libraries(${Name} INTERFACE ${arg_LIBPUB})
+    target_link_libraries(${Name} INTERFACE ${arg_LIBPRIV})
+    target_compile_options(${Name} INTERFACE $<$<BOOL:${arg_Debug}>:-g3>)
+endfunction(add_exe_directory)
 endblock()
