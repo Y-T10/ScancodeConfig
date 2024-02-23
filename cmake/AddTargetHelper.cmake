@@ -42,10 +42,12 @@ function(__add_obj_internal)
     )
 endfunction()
 
+## ライブラリターゲットを追加する
 function(add_lib_directory Directory)
     __add_obj_internal(Directory ${Directory} ${ARGN})
 endfunction(add_lib_directory)
 
+## バイナリターゲットを追加する
 function(add_exe_directory Directory)
     __add_obj_internal(Directory ${Directory} EXE ${ARGN})
 endfunction(add_exe_directory)
