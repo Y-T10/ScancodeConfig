@@ -21,6 +21,27 @@ function(set_target_build_internal TargetName)
     target_compile_options(${TargetName} PRIVATE $<$<BOOL:${Param_Debug}>:-g3>)
 endfunction()
 
+function(__add_obj_internal)
+    set(_obj_opt Debug EXE)
+    set(_obj_arg Directory)
+    set(_obj_varg ${_common_varg})
+    cmake_parse_arguments(arg "${_obj_opt}" "${_obj_arg}" "${_obj_varg}" ${ARGN})
+
+    get_filename_component(Name ${arg_Directory} NAME_WE)
+    if(${arg_EXE})
+        add_executable(${Name})
+    else()
+        add_library(${Name})
+    endif()
+    set_target_build_internal(
+        ${Name}
+        Debug ${arg_Debug}
+        SOURCE ${arg_SOURCE}
+        LIBPUB ${arg_LIBPUB}
+        LIBPRIV ${arg_LIBPRIV}
+    )
+endfunction()
+
 function(add_lib_directory Directory)
     cmake_parse_arguments(
         Param "Debug" "" "SOURCE;LIB_PUB;LIB_PRI" ${ARGN}
