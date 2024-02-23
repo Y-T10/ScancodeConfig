@@ -24,6 +24,10 @@ function(__add_obj_internal Directory EXE)
     get_filename_component(Name ${Directory} NAME_WE)
     if(${EXE})
         add_executable(${Name})
+        set_target_properties(${Name}
+            PROPERTIES RUNTIME_OUTPUT_DIRECTORY
+            ${CMAKE_SOURCE_DIR}/bin
+        )
     else()
         add_library(${Name})
     endif()
