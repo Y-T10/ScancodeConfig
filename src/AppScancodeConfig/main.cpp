@@ -1,13 +1,16 @@
-#include "fmt/core.h"
-#include "fmt/printf.h"
-#include "SDL3/SDL.h"
-#include "SDL3/SDL_init.h"
+#include <gtkmm.h>
+
+struct MainWindow : public Gtk::Window {
+    MainWindow();
+};
+
+MainWindow::MainWindow() {
+    set_title("Scancode Mapping");
+    set_default_size(800, 600);
+};
 
 int main(int argc, char* argv[]) {
-    if(SDL_Init(SDL_INIT_VIDEO)){
-        return 1;
-    }
-    fmt::println("sample program with fmt!");
-    SDL_Quit();
-    return 0;
+    Glib::set_init_to_users_preferred_locale(false);
+    const auto app = Gtk::Application::create("gtkmm.win.scanmap");
+    return app->make_window_and_run<MainWindow>(argc, argv);
 }
