@@ -43,32 +43,10 @@ function(__add_obj_internal)
 endfunction()
 
 function(add_lib_directory Directory)
-    cmake_parse_arguments(
-        Param "Debug" "" "SOURCE;LIB_PUB;LIB_PRI" ${ARGN}
-    )
-    get_filename_component(Name ${Directory} NAME_WE)
-    add_library(${Name})
-    set_target_build_internal(
-        ${Name}
-        Debug ${Param_Debug}
-        SOURCE ${Param_SOURCE}
-        LIB_PUB ${Param_LIB_PUB}
-        LIB_PRI ${Param_LIB_PRI}
-    )
+    __add_obj_internal(Directory ${Directory} ${ARGN})
 endfunction(add_lib_directory)
 
 function(add_exe_directory Directory)
-    cmake_parse_arguments(
-        Param "Debug" "" "SOURCE;LIB_PUB;LIB_PRI" ${ARGN}
-    )
-    get_filename_component(Name ${Directory} NAME_WE)
-    add_executable(${Name})
-    set_target_build_internal(
-        ${Name} 
-        Debug ${Param_Debug}
-        SOURCE ${Param_SOURCE}
-        LIB_PUB ${Param_LIB_PUB}
-        LIB_PRI ${Param_LIB_PRI}
-    )
+    __add_obj_internal(Directory ${Directory} EXE ${ARGN})
 endfunction(add_exe_directory)
 endblock()
