@@ -1,9 +1,8 @@
 block(SCOPE_FOR POLICIES)
-set(_common_varg SOURCE LIBPRIV LIBPUB)
 function(set_target_build_internal TargetName)
     # 引数をパースする
     set(_arg Debug)
-    set(_varg ${_common_varg})
+    set(_varg SOURCE LIBPRIV LIBPUB)
 	cmake_parse_arguments(Param "" "${_arg}" "${_varg}" ${ARGN})
     
     if(NOT (DEFINED Param_SOURCE))
