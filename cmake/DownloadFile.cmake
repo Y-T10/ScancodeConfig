@@ -1,4 +1,7 @@
 function(DownloadFile URL OutputFile HASH)
+  if(EXISTS ${OutputFile})
+    return()
+  endif()
   message(STATUS "Download \"${URL}\" to \"${OutputFile}\"")
   # ファイルをダウンロードする．
   # ダウンロードの結果はResultに格納される．
