@@ -11,11 +11,11 @@ function(set_target_build_internal TargetName)
         return()
     endif()
 
-    ## ターゲットの定義ディレクトリを取得
+    # リンクディレクトリに追加
     get_target_property(target_dir ${TargetName} SOURCE_DIR)
-
-    target_sources(${TargetName} PRIVATE ${Param_SOURCE})
     target_include_directories(${TargetName} PUBLIC ${target_dir})
+    # ターゲットのビルド情報を設定する
+    target_sources(${TargetName} PRIVATE ${Param_SOURCE})
     target_link_libraries(${TargetName} PUBLIC ${Param_LIBPUB})
     target_link_libraries(${TargetName} PRIVATE ${Param_LIBPRIV})
     target_compile_options(${TargetName} PRIVATE $<$<BOOL:${Param_Debug}>:-g3>)
