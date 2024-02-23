@@ -1,9 +1,10 @@
 block(SCOPE_FOR POLICIES)
+set(_common_varg SOURCE LIBPRIV LIBPUB)
 function(set_target_build_internal TargetName)
     # 引数をパースする
-	cmake_parse_arguments(
-        Param "" "Debug" "SOURCE;LIB_PUB;LIB_PRI" ${ARGN}
-    )
+    set(_arg Debug)
+    set(_varg ${_common_varg})
+	cmake_parse_arguments(Param "" "${_arg}" "${_varg}" ${ARGN})
     
     if(NOT (DEFINED Param_SOURCE))
         message(FATAL_ERROR "ソースファイルが指定されていません．")
@@ -15,8 +16,8 @@ function(set_target_build_internal TargetName)
 
     target_sources(${TargetName} PRIVATE ${Param_SOURCE})
     target_include_directories(${TargetName} PUBLIC ${target_dir})
-    target_link_libraries(${TargetName} PUBLIC ${Param_LIB_PUB})
-    target_link_libraries(${TargetName} PRIVATE ${Param_LIB_PRI})
+    target_link_libraries(${TargetName} PUBLIC ${Param_LIBPUB})
+    target_link_libraries(${TargetName} PRIVATE ${Param_LIBPRIV})
     target_compile_options(${TargetName} PRIVATE $<$<BOOL:${Param_Debug}>:-g3>)
 endfunction()
 
