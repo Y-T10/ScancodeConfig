@@ -1,24 +1,10 @@
-#include <cassert>
 #include <cstdint>
 #include <gtkmm.h>
 #include <memory>
 
-struct ScanMapping : public Glib::Object {
-    using value_type = uint16_t;
-    value_type keySrc;
-    value_type keyDst;
+#include "AscScanMap.hpp"
 
-    static Glib::RefPtr<ScanMapping> create(const value_type& src, const value_type& dst) noexcept {
-        return Glib::make_refptr_for_instance(new ScanMapping(src, dst));
-    };
-
-    protected:
-    ScanMapping(const value_type& src = 0x00, const value_type& dst = 0x00) noexcept:
-    Glib::ObjectBase(),
-    keySrc(src),
-    keyDst(dst){
-    };
-};
+using namespace AppScanConf;
 
 struct MainWindow : public Gtk::Window {
     MainWindow();
