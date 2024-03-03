@@ -6,13 +6,14 @@
 #include <gtkmm/label.h>
 
 #include "AscScanMap.hpp"
+#include "AscUtility.hpp"
 
 namespace {
     using namespace AppScanConf;
     const Glib::RefPtr<Gio::ListModel> CreateSampleList() {
         auto newList = Gio::ListStore<ScanMapping>::create();
         for(uint16_t i = 0; i < 5; i++) {
-            newList->append(ScanMapping::create(i, 0x00));
+            newList->append(make_refptr<ScanMapping>(i, 0x00));
         }
         return newList;
     }
