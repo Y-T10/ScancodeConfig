@@ -1,14 +1,17 @@
 #include "CregAdmin.hpp"
 
+#include <type_traits>
 #include <memory>
+#include "CregWinCommonHeader.hpp"
+
+#ifdef _WIN32
 #include <minwindef.h>
 #include <processthreadsapi.h>
 #include <securitybaseapi.h>
-#include <type_traits>
-
-#include "CregWinCommonHeader.hpp"
+#endif
 
 namespace {
+#ifdef _WIN32
     using HToken = std::unique_ptr<
         std::remove_pointer_t<HANDLE>,
         decltype([](HANDLE ptr){ CloseHandle(ptr); })
@@ -49,9 +52,11 @@ namespace {
             }
         return GetLastError() == ERROR_SUCCESS;
     };
+#endif
 }
 
 namespace CompReg {
+    #ifdef _WIN32
     const std::optional<bool> IsElevated() noexcept {
         const HToken token = OpenCurrenProcToken(TOKEN_READ);
         if(!token) {
@@ -65,4 +70,5 @@ namespace CompReg {
         } 
         return std::make_optional(!!evelationInfo.TokenIsElevated);
     }
+    #endif
 }

@@ -6,6 +6,7 @@
 using namespace CompReg;
 
 namespace {
+#ifdef _WIN32
     const std::optional<size_t> GetRegValueSize(const RegKey& hanlder, const win32str& name) noexcept {
         DWORD binary_size = 0;
         const auto result = RegQueryValueEx(
@@ -16,9 +17,11 @@ namespace {
             std::make_optional(binary_size):
             std::nullopt;
     };
+#endif
 }
 
 namespace CompReg {
+#ifdef _WIN32
     const RegKey OpenRegKey(const HKEY rootKey, const win32str& keyPath, const REGSAM access) noexcept {
         HKEY hkey = nullptr;
         // 読み取り専用のレジストリハンドラを得る
@@ -57,4 +60,5 @@ namespace CompReg {
         );
         return result == ERROR_SUCCESS;
     }
+#endif
 }

@@ -7,9 +7,12 @@
 #include <memory>
 #include <vector>
 
+#ifdef _WIN32
 #include <winreg.h>
+#endif
 
 namespace CompReg {
+#ifdef _WIN32
     /// HKEYはポインタ型
     static_assert(std::is_pointer_v<HKEY>);
     /// HKEYのデリータ
@@ -46,4 +49,5 @@ namespace CompReg {
      * @return 読み取りに成功すればバイナリ値を、失敗すればnulloptを返す．
      */
     const bool WriteKeyValueBin(const RegKey& key, const win32str& valueName, const std::vector<uint8_t>& value) noexcept;
+#endif
 };
