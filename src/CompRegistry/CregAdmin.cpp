@@ -6,14 +6,7 @@
 #include <securitybaseapi.h>
 #include <type_traits>
 
-#ifndef STRICT
-#define STRICT
-#endif
-#ifndef NOMIMAX
-#define NOMIMAX
-#endif
-#include <windows.h>
-#include <winnt.h>
+#include "CregWinCommonHeader.hpp"
 
 namespace {
     using HToken = std::unique_ptr<

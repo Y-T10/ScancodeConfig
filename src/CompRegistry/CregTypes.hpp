@@ -2,13 +2,7 @@
 
 #include <string>
 
-#ifndef STRICT
-#define STRICT
-#endif
-#ifndef NOMIMAX
-#define NOMIMAX
-#endif
-#include <windows.h>
+#include "CregWinCommonHeader.hpp"
 
 namespace CompReg {
     /// Win32APIの文字型を扱う文字列型．
