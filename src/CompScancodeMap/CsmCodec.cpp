@@ -26,7 +26,7 @@ namespace {
         } else if constexpr (std::is_same_v<integer_type, uint64_t>) {
             return __builtin_bswap64(value);
         } else {
-            static_assert(false, "this integer type is not supported.");
+            static_assert([](){return false;}, "this integer type is not supported.");
         }
     }
 
@@ -45,7 +45,7 @@ namespace {
             const integer_type little_end_value = Byteswap(value);
             mempcpy(bin, &little_end_value, sizeof(integer_type));
         } else {
-            static_assert(false, "this endian is not supported.");
+            static_assert([](){return false;}, "this endian is not supported.");
         }
     }
 
@@ -64,7 +64,7 @@ namespace {
         } else if constexpr (std::endian::native == std::endian::big) {
             return Byteswap(little_end_value);
         } else {
-            static_assert(false, "this endian is not supported.");
+            static_assert([](){return false;}, "this endian is not supported.");
         }
     }
 
