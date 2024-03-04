@@ -2,15 +2,11 @@
 
 #include <string>
 
-#ifndef STRICT
-#define STRICT
-#endif
-#ifndef NOMIMAX
-#define NOMIMAX
-#endif
-#include <windows.h>
+#include "CregWinCommonHeader.hpp"
 
 namespace CompReg {
+#ifdef _WIN32
     /// Win32APIの文字型を扱う文字列型．
     using win32str = std::basic_string<TCHAR>;
+#endif
 };
