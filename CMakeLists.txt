@@ -55,6 +55,7 @@ find_package(Threads REQUIRED)
 find_package(PkgConfig REQUIRED)
 # pkgconfig
 pkg_check_modules(GTK4 REQUIRED IMPORTED_TARGET "gtkmm-4.0")
+find_package(Qt6 COMPONENTS Widgets DBus REQUIRED)
 #find_package(Boost REQUIRED)
 
 # Add sub directories
