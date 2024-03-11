@@ -29,7 +29,7 @@ namespace AppSacnConf {
             using container_type = QList<CompScanMap::ScanMapping>;
 
             explicit MappingModel(QObject *parent = nullptr) noexcept;
-            MappingModel(const container_type, QObject *parent = nullptr) noexcept;
+            MappingModel(const container_type& mappings, QObject *parent = nullptr) noexcept;
 
             int rowCount(const QModelIndex &parent) const override;
             int columnCount(const QModelIndex &parent) const override;
