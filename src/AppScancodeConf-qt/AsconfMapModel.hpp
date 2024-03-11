@@ -26,8 +26,7 @@ namespace AppSacnConf {
         Q_OBJECT
 
         public:
-            using element_type = CompScanMap::ScanMapping;
-            using container_type = QList<element_type>;
+            using container_type = QList<CompScanMap::ScanMapping>;
 
             explicit MappingModel(QObject *parent = nullptr) noexcept;
             MappingModel(const container_type, QObject *parent = nullptr) noexcept;
