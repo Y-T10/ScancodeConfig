@@ -13,8 +13,8 @@ namespace AppSacnConf {
     }
 
     inline QDataStream &operator<<(QDataStream& stream, const CompScanMap::ScanMapping& map) noexcept {
-        const QString fromName = CompScanMap::ScancodeName(map.from).c_str();
-        const QString toName = CompScanMap::ScancodeName(map.from).c_str();
+        const QString fromName = CompScanMap::ScancodeName(map.from).value_or("name_not_found").c_str();
+        const QString toName = CompScanMap::ScancodeName(map.from).value_or("name_not_found").c_str();
         return stream << fromName << toName;
     };
 
