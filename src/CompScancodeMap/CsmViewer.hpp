@@ -1,7 +1,9 @@
 #pragma  once
 
-#include <cstdint>
 #include <type_traits>
+#include <optional>
+#include <cstdint>
+#include <string>
 #include <vector>
 
 namespace CompScanMap {
@@ -18,4 +20,11 @@ namespace CompScanMap {
 
     /// Scancodeの変換リスト
     using MappingList = std::vector<ScanMapping>;
+
+    /**
+     * @brief スキャンコードに対応するキーの名前を返す
+     * @param code スキャンコード
+     * @return キー名．空の場合は失敗．
+     */
+    const std::optional<std::string> ScancodeName(const Scancode code) noexcept;
 }
