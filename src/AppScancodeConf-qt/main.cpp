@@ -1,43 +1,67 @@
+#include <QItemSelection>
 #include <QProgressBar>
 #include <QApplication>
 #include <QPushButton>
+#include <QMainWindow>
+#include <QMenuBar>
 #include <QPointer>
 #include <QWidget>
 #include <QSlider>
 
-class Window : public QWidget {
+class MainWindow : public QMainWindow {
     public:
-        explicit Window(QWidget* parent = nullptr) noexcept
-        :QWidget(parent),
-        m_button(new QPushButton("Hello World", this)),
-        m_progress(new QProgressBar(this)),
-        m_slider(new QSlider(this)){
-            setFixedSize(800, 600);
-            m_button->setGeometry(10, 10, 80, 30);
+        explicit MainWindow() noexcept;
 
-            connect(m_button, SIGNAL(clicked()), QApplication::instance(), SLOT(quit()));
-
-            m_progress->setRange(0, 100);
-            m_progress->setValue(0);
-            m_progress->setGeometry(10, 60, 200, 20);
-
-            m_slider->setOrientation(Qt::Horizontal);
-            m_slider->setRange(0, 100);
-            m_slider->setValue(0);
-            m_slider->setGeometry(10, 100, 180, 30);
-
-            QObject::connect(m_slider, SIGNAL (valueChanged(int)), m_progress, SLOT (setValue(int)));
-        }
+    private slots:
+        void updateActions(const QItemSelection &selection) noexcept;
+        void applyMapping() noexcept;
+        void importMapping() noexcept;
+        void exportMapping() noexcept;
     
     private:
-        QPointer<QPushButton> m_button;
-        QPointer<QProgressBar> m_progress;
-        QPointer<QSlider> m_slider;
+        void createMenu() noexcept;
 };
 
 int main(int argc, char* argv[]) {
     QPointer<QApplication> app (new QApplication(argc, argv));
-    Window window;
+    MainWindow window;
     window.show();
     return app->exec();
 }
+
+MainWindow::MainWindow() noexcept:
+QMainWindow(){
+    createMenu();
+    setWindowTitle(tr("Scancode Map Viewer"));
+}
+
+void MainWindow::createMenu() noexcept {
+    auto fileMenu = menuBar()->addMenu(tr("&File"));
+
+    QAction* importAct = new QAction(tr("&Import Mapping"));
+    fileMenu->addAction(importAct);
+    connect(importAct, &QAction::triggered, this, &MainWindow::importMapping);
+
+    QAction* exportAct = new QAction(tr("&Export Mapping"));
+    fileMenu->addAction(exportAct);
+    connect(exportAct, &QAction::triggered, this, &MainWindow::exportMapping);
+
+    auto applyMenu = menuBar()->addMenu(tr("&Apply"));
+    QAction* applyAct = new QAction(tr("&Apply mapping"));
+    applyMenu->addAction(applyAct);
+    connect(applyAct, &QAction::triggered, this, &MainWindow::applyMapping);
+}
+
+void updateActions(const QItemSelection &selection) noexcept {
+
+}
+
+void MainWindow::applyMapping() noexcept {
+
+};
+void MainWindow::importMapping() noexcept {
+
+};
+void MainWindow::exportMapping() noexcept {
+
+};
