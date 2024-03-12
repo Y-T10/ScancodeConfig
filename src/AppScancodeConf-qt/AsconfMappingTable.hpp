@@ -5,13 +5,18 @@
 #include <QPointer>
 #include <QWidget>
 
+#include "AsconfMapModel.hpp"
+
 #include "CsmViewer.hpp"
 
 namespace AppSacnConf {
     class MappingTableWidget : public QWidget {
         Q_OBJECT
         public:
-            explicit MappingTableWidget(QWidget* parent = nullptr) noexcept;
+            explicit MappingTableWidget(
+                const MappingModel::container_type& mappings = MappingModel::container_type{},
+                QWidget* parent = nullptr
+            ) noexcept;
             void importMapping() noexcept;
             void exportMapping() noexcept;
 

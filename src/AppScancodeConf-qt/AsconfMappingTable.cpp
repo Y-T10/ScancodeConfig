@@ -9,7 +9,6 @@
 #include <cassert>
 
 #include "AsconfAddDialog.hpp"
-#include "AsconfMapModel.hpp"
 
 namespace {
     const bool FindWithFrom(const AppSacnConf::MappingModel& model, const CompScanMap::Scancode from) noexcept {
@@ -45,11 +44,13 @@ namespace {
 }
 
 namespace AppSacnConf {
-    MappingTableWidget::MappingTableWidget(QWidget* parent) noexcept:
+    MappingTableWidget::MappingTableWidget(
+        const MappingModel::container_type& mappings,
+        QWidget* parent) noexcept:
     QWidget(parent),
     m_view(new QTableView(this)){
         // ビューを設定する
-        m_view->setModel(new MappingModel(this));
+        m_view->setModel(new MappingModel(mappings, this));
         m_view->setSelectionBehavior(QAbstractItemView::SelectRows);
         m_view->horizontalHeader()->setStretchLastSection(true);
         m_view->verticalHeader()->hide();
