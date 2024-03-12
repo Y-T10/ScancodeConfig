@@ -1,8 +1,8 @@
 #pragma once
 
 #include <QAbstractTableModel>
-#include <qlist.h>
-#include <qobject.h>
+#include <QObject>
+#include <QList>
 
 #include "CsmViewer.hpp"
 
