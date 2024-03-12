@@ -5,7 +5,9 @@
 
 namespace AppSacnConf {
     MainWindow::MainWindow() noexcept:
-    QMainWindow(){
+    QMainWindow(),
+    m_mappingWidget(new MappingTableWidget){
+        setCentralWidget(m_mappingWidget);
         createMenu();
         setWindowTitle(tr("Scancode Map Viewer"));
     }
@@ -28,7 +30,7 @@ namespace AppSacnConf {
     }
 
     void updateActions(const QItemSelection &selection) noexcept {
-
+        QModelIndexList indexes = selection.indexes();
     }
 
     void MainWindow::applyMapping() noexcept {

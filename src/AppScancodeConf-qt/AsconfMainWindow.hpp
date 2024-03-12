@@ -2,6 +2,9 @@
 
 #include <QItemSelection>
 #include <QMainWindow>
+#include <qpointer.h>
+
+#include "AsconfMappingTable.hpp"
 
 namespace AppSacnConf {
     class MainWindow : public QMainWindow {
@@ -16,5 +19,7 @@ namespace AppSacnConf {
     
         private:
             void createMenu() noexcept;
+
+            QPointer<MappingTableWidget> m_mappingWidget;
     };
 }
