@@ -15,6 +15,10 @@ namespace CompScanMap {
     struct ScanMapping {
         Scancode to;
         Scancode from;
+
+        inline bool operator==(const CompScanMap::ScanMapping& value) const noexcept {
+            return from == value.from && to == value.to;
+        }
     };
     static_assert(std::has_unique_object_representations_v<ScanMapping>);
 
