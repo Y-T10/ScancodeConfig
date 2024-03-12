@@ -2,7 +2,6 @@
 
 #include <QItemSelection>
 #include <QMainWindow>
-#include <qpointer.h>
 
 #include "AsconfMappingTable.hpp"
 
