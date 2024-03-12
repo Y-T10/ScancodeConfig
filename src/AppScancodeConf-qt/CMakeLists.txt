@@ -1,7 +1,9 @@
 # このライブラリディレクトリを追加する
 add_exe_directory(
     ${CMAKE_CURRENT_SOURCE_DIR}
-    SOURCE 
+    SOURCE
+        ${CMAKE_CURRENT_SOURCE_DIR}/AsconfMapModel.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/AsconfMainWindow.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/main.cpp
     LIBPRIV
         Qt6::Widgets
