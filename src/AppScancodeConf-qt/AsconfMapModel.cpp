@@ -37,6 +37,10 @@ namespace AppSacnConf {
             return getData(index.row(), index.column());
         }
 
+        if (role == Qt::TextAlignmentRole) {
+            return Qt::AlignRight;
+        }
+
         return QVariant();
     }
 
