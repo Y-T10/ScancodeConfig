@@ -3,6 +3,7 @@
 #include <QAbstractTableModel>
 #include <QObject>
 #include <QList>
+#include <qnamespace.h>
 
 #include "CsmViewer.hpp"
 
@@ -42,6 +43,8 @@ namespace AppSacnConf {
             const container_type &getMappings() const;
         
         private:
+            const QVariant getData(const int row, const int col) const noexcept;
+
             container_type m_mappings;
     };
 };

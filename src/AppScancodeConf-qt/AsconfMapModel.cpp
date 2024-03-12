@@ -33,20 +33,23 @@ namespace AppSacnConf {
             return QVariant();
         }
 
-        if (role != Qt::DisplayRole) {
-            return QVariant();
+        if (role == Qt::DisplayRole) {
+            return getData(index.row(), index.column());
         }
 
-        const auto GetData = [](const int colIndex, const CompScanMap::ScanMapping& map)->QVariant {
-            if (colIndex == ColIndexFrom) {
-                return map.from;
-            }
-            if (colIndex == ColIndexTo) {
-                return map.to;
-            }
-            return QVariant();
-        };
-        return GetData(index.column(), m_mappings.at(index.row()));
+        return QVariant();
+    }
+
+    const QVariant MappingModel::getData(const int row, const int col) const noexcept {
+        const auto map = m_mappings.at(row);
+
+        if (col == ColIndexFrom) {
+            return map.from;
+        }
+        if (col == ColIndexTo) {
+            return map.to;
+        }
+        return QVariant();
     }
 
     QVariant MappingModel::headerData(int section, Qt::Orientation orientation, int role) const {
