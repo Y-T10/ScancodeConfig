@@ -8,6 +8,10 @@ add_exe_directory(
         ${CMAKE_CURRENT_SOURCE_DIR}/AsconfMappingTable.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/main.cpp
     LIBPRIV
-        Qt6::Widgets
+        CompRegistry
         CompScancodeMap
+        Qt6::Widgets
 )
+
+get_filename_component(TargetName ${CMAKE_CURRENT_SOURCE_DIR} NAME_WE)
+qt_disable_unicode_defines(${TargetName})
