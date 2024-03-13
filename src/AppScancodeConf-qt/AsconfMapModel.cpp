@@ -1,10 +1,8 @@
 #include "AsconfMapModel.hpp"
 #include "CsmViewer.hpp"
-#include <qabstractitemmodel.h>
-#include <qnamespace.h>
-#include <qtpreprocessorsupport.h>
-#include <qvariant.h>
 
+#include <QAbstractItemModel>
+#include <QVariant>
 #include <QApplication>
 #include <QFont>
 

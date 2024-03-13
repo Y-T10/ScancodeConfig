@@ -3,7 +3,6 @@
 #include <QAbstractTableModel>
 #include <QObject>
 #include <QList>
-#include <qnamespace.h>
 
 #include "CsmViewer.hpp"
 
