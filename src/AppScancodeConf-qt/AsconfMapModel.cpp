@@ -57,24 +57,25 @@ namespace AppSacnConf {
     }
 
     QVariant MappingModel::headerData(int section, Qt::Orientation orientation, int role) const {
-        if (role != Qt::DisplayRole) {
-            return QVariant();
-        }
-
         if (orientation != Qt::Horizontal) {
             return QVariant();
         }
 
         const auto GetHeaderName = [](const int colIndex)->QVariant {
             if (colIndex == ColIndexFrom) {
-                return tr("割当元のキー");
+                return tr("Mapping From");
             }
             if (colIndex == ColIndexTo) {
-                return tr("割当先のキー");
+                return tr("Mapping To");
             }
             return QVariant();
         };
-        return GetHeaderName(section);
+
+        if (role == Qt::DisplayRole) {
+            return GetHeaderName(section);
+        }
+        
+        return QVariant();
     }
 
     Qt::ItemFlags MappingModel::flags(const QModelIndex &index) const {
