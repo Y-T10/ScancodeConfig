@@ -5,6 +5,9 @@
 #include <qtpreprocessorsupport.h>
 #include <qvariant.h>
 
+#include <QApplication>
+#include <QFont>
+
 namespace AppSacnConf {
     MappingModel::MappingModel(QObject *parent) noexcept:
     QAbstractTableModel(parent),
@@ -39,6 +42,11 @@ namespace AppSacnConf {
 
         if (role == Qt::TextAlignmentRole) {
             return Qt::AlignRight;
+        }
+
+        if (role == Qt::FontRole) {
+            const auto AppFont = QApplication::font();
+            return QFont(AppFont.family(), 12, AppFont.weight(), AppFont.italic());
         }
 
         return QVariant();
