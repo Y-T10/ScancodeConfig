@@ -2,6 +2,7 @@
 
 #include "CsmViewer.hpp"
 
+#include <QResizeEvent>
 #include <QHeaderView>
 #include <QMessageBox>
 #include <QTableView>
@@ -128,5 +129,9 @@ namespace AppSacnConf {
         }
 
         return;
+    }
+
+    void MappingTableWidget::resizeEvent(QResizeEvent *event) {
+        m_view->resize(event->size());
     }
 }

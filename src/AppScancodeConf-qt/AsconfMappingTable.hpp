@@ -31,5 +31,8 @@ namespace AppSacnConf {
         
         private:
             QPointer<QTableView> m_view;
+        
+        protected:
+            void resizeEvent(QResizeEvent *event) override;
     };
 }
