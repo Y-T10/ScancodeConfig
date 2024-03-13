@@ -74,7 +74,11 @@ namespace AppSacnConf {
         if (role == Qt::DisplayRole) {
             return GetHeaderName(section);
         }
-        
+
+        if (role == Qt::TextAlignmentRole) {
+            return Qt::AlignCenter;
+        }
+
         return QVariant();
     }
 
