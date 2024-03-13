@@ -48,10 +48,10 @@ namespace AppSacnConf {
         const auto map = m_mappings.at(row);
 
         if (col == ColIndexFrom) {
-            return map.from;
+            return CompScanMap::ScancodeName(map.from).value_or("name_not_found").c_str();
         }
         if (col == ColIndexTo) {
-            return map.to;
+            return CompScanMap::ScancodeName(map.to).value_or("name_not_found").c_str();
         }
         return QVariant();
     }
