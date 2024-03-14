@@ -90,10 +90,17 @@ namespace CompScanMap {
             MakeLParam(code), keyName, keyNameLength
         );
 
-        if (NameSize==0){
-            return std::nullopt;
+        // キー名がある
+        if (NameSize>0){
+            return ToUTF8(keyName);
         }
 
-        return ToUTF8(keyName);
+        // キー名がない
+        if (GetLastError() == ERROR_SUCCESS) {
+            return std::string("");
+        }
+
+        // それ以外
+        return std::nullopt;
     }
 }
