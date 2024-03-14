@@ -50,14 +50,10 @@ CPMAddPackage(
     GIT_TAG 10.2.1
 )
 
-CPMAddPackage(
-    NAME challenger 
-    GITHUB_REPOSITORY Y-T10/challenger
-    GIT_TAG main
-)
-
 # システム内のパッケージを読み込む
 find_package(Threads REQUIRED)
+find_package(Qt6 COMPONENTS Widgets DBus REQUIRED)
+qt_standard_project_setup()
 #find_package(Boost REQUIRED)
 
 # Add sub directories

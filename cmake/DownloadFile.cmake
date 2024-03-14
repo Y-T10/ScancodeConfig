@@ -1,4 +1,8 @@
+block(SCOPE_FOR POLICIES)
 function(DownloadFile URL OutputFile HASH)
+  if(EXISTS ${OutputFile})
+    return()
+  endif()
   message(STATUS "Download \"${URL}\" to \"${OutputFile}\"")
   # ファイルをダウンロードする．
   # ダウンロードの結果はResultに格納される．
@@ -15,3 +19,4 @@ function(DownloadFile URL OutputFile HASH)
   endif()
   message(FATAL_ERROR "Download failed: ${ErrorDesc}")
 endfunction(DownloadFile)
+endblock()

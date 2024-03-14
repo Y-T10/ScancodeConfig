@@ -1,3 +1,3 @@
 add_subdirectory(CompRegistry)
 add_subdirectory(CompScancodeMap)
-add_subdirectory(AppScancodeConfig)
+add_subdirectory(AppScancodeConf-qt)
