@@ -39,7 +39,7 @@ namespace AppSacnConf {
         }
 
         if (role == Qt::TextAlignmentRole) {
-            return Qt::AlignRight;
+            return (int)(Qt::AlignLeft | Qt::AlignVCenter);
         }
 
         if (role == Qt::FontRole) {
