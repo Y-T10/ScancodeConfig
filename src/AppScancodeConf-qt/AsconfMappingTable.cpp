@@ -133,5 +133,10 @@ namespace AppSacnConf {
 
     void MappingTableWidget::resizeEvent(QResizeEvent *event) {
         m_view->resize(event->size());
+
+        // 行と列の長さを変更
+        m_view->setColumnWidth(MappingModel::ColIndexFrom, event->size().width() / 2);
+        m_view->setColumnWidth(MappingModel::ColIndexTo, event->size().width() / 2 - (event->size().width() / 2));
+        m_view->resizeRowsToContents();
     }
 }
