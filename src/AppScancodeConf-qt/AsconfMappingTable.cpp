@@ -54,6 +54,8 @@ namespace AppSacnConf {
         m_view->setModel(new MappingModel(mappings, this));
         m_view->setSelectionBehavior(QAbstractItemView::SelectRows);
         m_view->horizontalHeader()->setStretchLastSection(true);
+        m_view->horizontalHeader()->setSectionResizeMode(AppSacnConf::MappingModel::ColIndexFrom, QHeaderView::Fixed);
+        m_view->horizontalHeader()->setSectionResizeMode(AppSacnConf::MappingModel::ColIndexTo, QHeaderView::Fixed);
         m_view->verticalHeader()->hide();
         m_view->setEditTriggers(QAbstractItemView::NoEditTriggers);
         m_view->setSelectionMode(QAbstractItemView::SingleSelection);
