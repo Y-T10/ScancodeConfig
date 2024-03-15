@@ -80,7 +80,7 @@ namespace {
 }
 
 namespace CompScanMap {
-    const std::optional<std::string> ScancodeName(const Scancode code) noexcept {
+    const std::optional<std::string> WindowsScancodeName(const Scancode code) noexcept {
         for(const auto& pair: WinScancodeNames) {
             if(pair.first == code) {
                 return pair.second;
