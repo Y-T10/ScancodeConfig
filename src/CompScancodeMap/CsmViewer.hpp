@@ -31,4 +31,12 @@ namespace CompScanMap {
      * @return キー名．nulloptの場合は失敗．
      */
     const std::optional<std::string> ScancodeName(const Scancode code) noexcept;
+
+    /**
+     * @brief 現在のキーボードレイアウト上のキー名を返す
+     * 
+     * @param code Windows スキャンコード
+     * @return code に対応するキーの名前．nulloptの場合は失敗．
+     */
+    const std::optional<std::string> KeyboardKeyName(const Scancode code) noexcept;
 }

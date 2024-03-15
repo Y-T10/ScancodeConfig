@@ -103,4 +103,30 @@ namespace CompScanMap {
         // それ以外
         return std::nullopt;
     }
+
+    const std::optional<std::string> KeyboardKeyName(const Scancode code) noexcept {
+        constexpr size_t keyNameLength = 128;
+        TCHAR keyName[keyNameLength]="";
+
+        if (code == 0x0000) {
+            return "Null";
+        }
+        
+        const int NameSize = GetKeyNameText(
+            MakeLParam(code), keyName, keyNameLength
+        );
+
+        // キー名がある
+        if (NameSize>0){
+            return ToUTF8(keyName);
+        }
+
+        // キー名がない
+        if (GetLastError() == ERROR_SUCCESS) {
+            return std::string("");
+        }
+
+        // それ以外
+        return std::nullopt;
+    }
 }
