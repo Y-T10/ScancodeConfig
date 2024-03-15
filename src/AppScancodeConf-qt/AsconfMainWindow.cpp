@@ -49,18 +49,11 @@ namespace AppSacnConf {
     void MainWindow::createMenu() noexcept {
         auto fileMenu = menuBar()->addMenu(tr("&File"));
     
-        QAction* importAct = new QAction(tr("&Import Mapping"));
-        fileMenu->addAction(importAct);
-        connect(importAct, &QAction::triggered, this, &MainWindow::importMapping);
-    
-        QAction* exportAct = new QAction(tr("&Export Mapping"));
-        fileMenu->addAction(exportAct);
-        connect(exportAct, &QAction::triggered, this, &MainWindow::exportMapping);
+        addMenuItem(fileMenu, tr("&Import Mapping"), &MainWindow::importMapping);
+        addMenuItem(fileMenu, tr("&Export Mapping"), &MainWindow::exportMapping);
     
         auto applyMenu = menuBar()->addMenu(tr("&Apply"));
-        QAction* applyAct = new QAction(tr("&Apply mapping"));
-        applyMenu->addAction(applyAct);
-        connect(applyAct, &QAction::triggered, this, &MainWindow::applyMapping);
+        addMenuItem(applyMenu, tr("&Apply mapping"), &MainWindow::applyMapping);
     }
 
     void updateActions(const QItemSelection &selection) noexcept {
