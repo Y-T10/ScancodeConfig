@@ -6,18 +6,6 @@
 
 #include "CsmViewer.hpp"
 
-namespace {
-    inline QDataStream &operator<<(QDataStream& stream, const CompScanMap::ScanMapping& map) noexcept {
-        const QString fromName = CompScanMap::ScancodeName(map.from).value_or("name_not_found").c_str();
-        const QString toName = CompScanMap::ScancodeName(map.from).value_or("name_not_found").c_str();
-        return stream << fromName << toName;
-    };
-
-    inline QDataStream &operator>>(QDataStream& stream, CompScanMap::ScanMapping& map) noexcept {
-        return stream >> map.from >> map.to;
-    };
-}
-
 namespace AppSacnConf {
     class MappingModel : public QAbstractTableModel {
         Q_OBJECT
