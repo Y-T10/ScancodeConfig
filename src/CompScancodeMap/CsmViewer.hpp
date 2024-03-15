@@ -28,7 +28,7 @@ namespace CompScanMap {
     /**
      * @brief スキャンコードに対応するキーの名前を返す
      * @param code スキャンコード
-     * @return キー名．空の場合は失敗．
+     * @return キー名．nulloptの場合は失敗．
      */
     const std::optional<std::string> ScancodeName(const Scancode code) noexcept;
 }
