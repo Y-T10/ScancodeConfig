@@ -1,12 +1,10 @@
-#include <limits>
-
 #include "CsmViewer.hpp"
 #include "fmt/core.h"
 
 using namespace CompScanMap;
 
 void PrintKeyName(const Scancode code) noexcept {
-    const auto Name = ScancodeName(code);
+    const auto Name = CompScanMap::KeyboardKeyName(code);
     fmt::println("{:#06x} {:s}", code, Name.value_or("name_not_found"));
 }
 

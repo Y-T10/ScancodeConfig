@@ -6,6 +6,8 @@
 #include <vector>
 #include <winnls.h>
 
+#include "WindowsScancodes.hpp"
+
 #ifdef _WIN32
     #ifndef STRICT
     #define STRICT
@@ -78,7 +80,17 @@ namespace {
 }
 
 namespace CompScanMap {
-    const std::optional<std::string> ScancodeName(const Scancode code) noexcept {
+    const std::optional<std::string> WindowsScancodeName(const Scancode code) noexcept {
+        for(const auto& pair: WinScancodeNames) {
+            if(pair.first == code) {
+                return pair.second;
+            }
+        }
+
+        return std::nullopt;
+    }
+
+    const std::optional<std::string> KeyboardKeyName(const Scancode code) noexcept {
         constexpr size_t keyNameLength = 128;
         TCHAR keyName[keyNameLength]="";
 
@@ -90,10 +102,17 @@ namespace CompScanMap {
             MakeLParam(code), keyName, keyNameLength
         );
 
-        if (NameSize==0){
-            return std::nullopt;
+        // キー名がある
+        if (NameSize>0){
+            return ToUTF8(keyName);
         }
 
-        return ToUTF8(keyName);
+        // キー名がない
+        if (GetLastError() == ERROR_SUCCESS) {
+            return std::string("");
+        }
+
+        // それ以外
+        return std::nullopt;
     }
 }
