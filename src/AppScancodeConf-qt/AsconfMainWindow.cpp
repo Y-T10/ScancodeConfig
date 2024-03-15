@@ -2,6 +2,7 @@
 
 #include <QMenuBar>
 #include <QWidget>
+#include <QMenu>
 
 #include "CregHandler.hpp"
 #include "CsmCodec.hpp"
@@ -77,4 +78,10 @@ namespace AppSacnConf {
     void MainWindow::exportMapping() noexcept {
 
     };
+
+    void MainWindow::addMenuItem(QMenu* menu, const QString& text, void (MainWindow::*func)()) noexcept {
+        QAction* act = new QAction(text);
+        menu->addAction(act);
+        connect(act, &QAction::triggered, this, func);
+    }
 }

@@ -18,6 +18,7 @@ namespace AppSacnConf {
     
         private:
             void createMenu() noexcept;
+            void addMenuItem(QMenu* menu, const QString& text, void (MainWindow::*func)()) noexcept;
 
             QPointer<MappingTableWidget> m_mappingWidget;
     };
