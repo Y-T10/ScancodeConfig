@@ -53,17 +53,17 @@ namespace AppSacnConf {
     const QVariant MappingModel::getData(const int row, const int col) const noexcept {
         const auto map = m_mappings.at(row);
 
-        const auto GenerateText = [](const CompScanMap::Scancode code) {
+        const auto GenerateText = []<class Func>(const CompScanMap::Scancode code, const Func& func) {
             return QString("%1 (%2)")
-                .arg(CompScanMap::ScancodeName(code).value_or("no_name").c_str())
+                .arg(func(code).value_or("no_name").c_str())
                 .arg(code, 0, 16); 
         };
 
         if (col == ColIndexFrom) {
-            return GenerateText(map.from);
+            return GenerateText(map.from, CompScanMap::ScancodeName);
         }
         if (col == ColIndexTo) {
-            return GenerateText(map.to);
+            return GenerateText(map.to, CompScanMap::KeyboardKeyName);
         }
         return QVariant();
     }
