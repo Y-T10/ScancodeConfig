@@ -60,7 +60,7 @@ namespace AppSacnConf {
         };
 
         if (col == ColIndexFrom) {
-            return GenerateText(map.from, CompScanMap::ScancodeName);
+            return GenerateText(map.from, CompScanMap::WindowsScancodeName);
         }
         if (col == ColIndexTo) {
             return GenerateText(map.to, CompScanMap::KeyboardKeyName);

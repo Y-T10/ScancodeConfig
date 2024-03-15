@@ -26,11 +26,11 @@ namespace CompScanMap {
     using MappingList = std::vector<ScanMapping>;
 
     /**
-     * @brief スキャンコードに対応するキーの名前を返す
+     * @brief Windows スキャンコードに対応するキーの名前を返す
      * @param code スキャンコード
      * @return キー名．nulloptの場合は失敗．
      */
-    const std::optional<std::string> ScancodeName(const Scancode code) noexcept;
+    const std::optional<std::string> WindowsScancodeName(const Scancode code) noexcept;
 
     /**
      * @brief 現在のキーボードレイアウト上のキー名を返す
