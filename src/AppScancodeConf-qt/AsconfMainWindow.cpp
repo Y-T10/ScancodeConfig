@@ -49,14 +49,17 @@ namespace AppSacnConf {
     void MainWindow::createMenu() noexcept {
         auto fileMenu = menuBar()->addMenu(tr("&File"));
     
-        addMenuItem(fileMenu, tr("&Import Mapping"), &MainWindow::importMapping);
-        addMenuItem(fileMenu, tr("&Export Mapping"), &MainWindow::exportMapping);
+        addMenuItem(fileMenu, tr("&Import Mapping"), this, &MainWindow::importMapping);
+        addMenuItem(fileMenu, tr("&Export Mapping"), this, &MainWindow::exportMapping);
     
         auto applyMenu = menuBar()->addMenu(tr("&Apply"));
-        addMenuItem(applyMenu, tr("&Apply mapping"), &MainWindow::applyMapping);
+        addMenuItem(applyMenu, tr("&Apply mapping"), this, &MainWindow::applyMapping);
+
+        auto MappingMenu = menuBar()->addMenu(tr("&Mapping"));
+        addMenuItem(MappingMenu, tr("&Add mapping"), m_mappingWidget.data(), &MappingTableWidget::showAddMappingDialog);
     }
 
-    void updateActions(const QItemSelection &selection) noexcept {
+    void MainWindow::updateActions(const QItemSelection &selection) noexcept {
         QModelIndexList indexes = selection.indexes();
     }
 
@@ -71,10 +74,4 @@ namespace AppSacnConf {
     void MainWindow::exportMapping() noexcept {
 
     };
-
-    void MainWindow::addMenuItem(QMenu* menu, const QString& text, void (MainWindow::*func)()) noexcept {
-        QAction* act = new QAction(text);
-        menu->addAction(act);
-        connect(act, &QAction::triggered, this, func);
-    }
 }

@@ -2,6 +2,9 @@
 
 #include <QItemSelection>
 #include <QMainWindow>
+#include <QMenu>
+
+#include <type_traits>
 
 #include "AsconfMappingTable.hpp"
 
@@ -18,7 +21,16 @@ namespace AppSacnConf {
     
         private:
             void createMenu() noexcept;
-            void addMenuItem(QMenu* menu, const QString& text, void (MainWindow::*func)()) noexcept;
+
+            template <class class_type>
+            void addMenuItem(QMenu* menu, const QString& text, class_type* obj, void (class_type::*func)()) noexcept {
+                static_assert(std::is_base_of_v<QObject, class_type>);
+
+                QAction* act = new QAction(text);
+                menu->addAction(act);
+                connect(act, &QAction::triggered, obj, func);
+            }
+
 
             QPointer<MappingTableWidget> m_mappingWidget;
     };
