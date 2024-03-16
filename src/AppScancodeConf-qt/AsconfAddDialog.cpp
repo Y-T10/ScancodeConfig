@@ -79,8 +79,8 @@ namespace AppSacnConf {
     }
 
     void AddDialog::editMapping(const CompScanMap::ScanMapping& mapping) noexcept {
-        m_formTo->setText(QString("0x%1").arg(mapping.to, 4, u'0'));
-        m_formFrom->setText(QString("0x%1").arg(mapping.from, 4, u'0'));
+        m_formTo->setText(QString("%1").arg(mapping.to, 4, 16));
+        m_formFrom->setText(QString("%1").arg(mapping.from, 4, 16));
     }
 
     void AddDialog::placeButton(QGridLayout* parent) noexcept {
