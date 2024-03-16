@@ -2,10 +2,12 @@
 #include "CsmViewer.hpp"
 
 #include <QAbstractItemModel>
-#include <QVariant>
+#include <QErrorMessage>
 #include <QApplication>
+#include <QVariant>
 #include <QFont>
 
+#include <qerrormessage.h>
 #include <string>
 #include <type_traits>
 
@@ -13,10 +15,12 @@ namespace {
     static constexpr auto TextNotApplicable = "N/A";
 
     const std::string GetNameFrom (const CompScanMap::Scancode code) {
+        // TODO: エラーコードとキーの番号を標準エラーに書き込む
         return CompScanMap::KeyboardKeyName(code).value_or(TextNotApplicable);
     };
 
     const std::string GetNameTo(const CompScanMap::Scancode code) {
+        // TODO: エラーコードとキーの番号を標準エラーに書き込む
         const std::string KeyName = CompScanMap::KeyboardKeyName(code).value_or(TextNotApplicable);
         if (!KeyName.empty()) {
             return KeyName;
