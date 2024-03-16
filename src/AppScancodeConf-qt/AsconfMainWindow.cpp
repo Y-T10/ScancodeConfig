@@ -59,6 +59,8 @@ namespace AppSacnConf {
         addMenuItem(MappingMenu, tr("&Add mapping"), m_mappingWidget.data(), &MappingTableWidget::showAddMappingDialog);
         addMenuItem(MappingMenu, tr("&Edit mapping"), m_mappingWidget.data(), &MappingTableWidget::editMapping);
         addMenuItem(MappingMenu, tr("&Remove mapping"), m_mappingWidget.data(), &MappingTableWidget::removeMapping);
+
+        connect(m_mappingWidget, &MappingTableWidget::selectionChanged, this, &MainWindow::updateActions);
     }
 
     void MainWindow::updateActions(const QItemSelection &selection) noexcept {
