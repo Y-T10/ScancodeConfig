@@ -110,15 +110,18 @@ namespace AppSacnConf {
         dialog.setWindowTitle(tr("Edit Scancode Mapping"));
 
         for(const auto& idx: IndexSelected) {
-            const int row = idx.row();
-            dialog.editMapping(GetMapping(*model, row));
+            const auto map = model->rawData(idx);
+            if(!map.has_value()) {
+                continue;
+            }
+            dialog.editMapping(*map);
 
             // Dialog
             if(!dialog.exec()) {
                 return;
             }
 
-            SetMapping(*model, row, dialog.mapping());
+            SetMapping(*model, idx.row(), dialog.mapping());
         }
     }
 
