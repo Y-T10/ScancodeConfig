@@ -7,6 +7,7 @@
 #include <QVariant>
 #include <QFont>
 
+#include <optional>
 #include <qerrormessage.h>
 #include <string>
 #include <type_traits>
@@ -175,5 +176,17 @@ namespace AppSacnConf {
 
     const MappingModel::container_type &MappingModel::getMappings() const {
         return m_mappings;
+    }
+
+    const std::optional<CompScanMap::ScanMapping> MappingModel::rawData(const QModelIndex &index) const {    
+        if (!index.isValid()) {
+            return std::nullopt;
+        }
+
+        if (index.row() < 0 && m_mappings.size() <= index.row()) {
+            return std::nullopt;
+        }
+
+        return m_mappings.at(index.row());;
     }
 };
