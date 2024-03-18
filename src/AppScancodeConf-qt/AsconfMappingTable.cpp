@@ -149,15 +149,15 @@ namespace AppSacnConf {
     }
 
     const QList<QAction*> MappingTableWidget::contextMenuActions() noexcept {
-        QAction* actAdd = new QAction(tr("add a mapping"));
-        connect(actAdd, &QAction::triggered, this, &MappingTableWidget::showAddMappingDialog);
+        m_actAdd = new QAction(tr("add a mapping"));
+        connect(m_actAdd, &QAction::triggered, this, &MappingTableWidget::showAddMappingDialog);
 
-        QAction* actEdit = new QAction(tr("Edit"));
-        connect(actEdit, &QAction::triggered, this, &MappingTableWidget::editMapping);
+        m_actEdit = new QAction(tr("Edit"));
+        connect(m_actEdit, &QAction::triggered, this, &MappingTableWidget::editMapping);
 
-        QAction* actRemove = new QAction(tr("Remove"));
-        connect(actRemove, &QAction::triggered, this, &MappingTableWidget::removeMapping);
+        m_actRemove = new QAction(tr("Remove"));
+        connect(m_actRemove, &QAction::triggered, this, &MappingTableWidget::removeMapping);
 
-        return {actAdd, actEdit, actRemove};
+        return {m_actAdd, m_actEdit, m_actRemove};
     }
 }

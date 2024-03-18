@@ -32,6 +32,9 @@ namespace AppSacnConf {
         
         private:
             QPointer<QTableView> m_view;
+            QAction* m_actAdd;
+            QAction* m_actEdit;
+            QAction* m_actRemove;
 
             const QList<QAction* > contextMenuActions() noexcept;
         
