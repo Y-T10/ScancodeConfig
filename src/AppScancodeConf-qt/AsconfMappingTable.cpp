@@ -65,6 +65,14 @@ namespace AppSacnConf {
         m_view->insertActions(nullptr, contextMenuActions());
 
         connect(m_view->selectionModel(), &QItemSelectionModel::selectionChanged, this, &MappingTableWidget::selectionChanged);
+        connect(
+            m_view->selectionModel(), &QItemSelectionModel::selectionChanged,
+            this, [this](const QItemSelection &selection)->void{
+                const bool IsSelected = !(selection.indexes().empty());
+                m_actEdit->setEnabled(IsSelected);
+                m_actRemove->setEnabled(IsSelected);
+            }
+        );
     }
 
     void MappingTableWidget::showAddMappingDialog() noexcept {
