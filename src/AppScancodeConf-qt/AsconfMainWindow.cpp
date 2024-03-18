@@ -55,11 +55,6 @@ namespace AppSacnConf {
         auto applyMenu = menuBar()->addMenu(tr("&Apply"));
         addMenuItem(applyMenu, tr("&Apply mapping"), this, &MainWindow::applyMapping);
 
-        auto MappingMenu = menuBar()->addMenu(tr("&Mapping"));
-        addMenuItem(MappingMenu, tr("&Add mapping"), m_mappingWidget.data(), &MappingTableWidget::showAddMappingDialog);
-        addMenuItem(MappingMenu, tr("&Edit mapping"), m_mappingWidget.data(), &MappingTableWidget::editMapping);
-        addMenuItem(MappingMenu, tr("&Remove mapping"), m_mappingWidget.data(), &MappingTableWidget::removeMapping);
-
         connect(m_mappingWidget, &MappingTableWidget::selectionChanged, this, &MainWindow::updateActions);
     }
 
