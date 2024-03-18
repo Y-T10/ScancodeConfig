@@ -61,6 +61,9 @@ namespace AppSacnConf {
         m_view->setSelectionMode(QAbstractItemView::SingleSelection);
         m_view->setSortingEnabled(false);
 
+        m_view->setContextMenuPolicy(Qt::ActionsContextMenu);
+        m_view->insertActions(nullptr, contextMenuActions());
+
         connect(m_view->selectionModel(), &QItemSelectionModel::selectionChanged, this, &MappingTableWidget::selectionChanged);
     }
 
