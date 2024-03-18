@@ -144,4 +144,17 @@ namespace AppSacnConf {
         m_view->setColumnWidth(MappingModel::ColIndexTo, event->size().width() / 2 - (event->size().width() / 2));
         m_view->resizeRowsToContents();
     }
+
+    const QList<QAction*> MappingTableWidget::contextMenuActions() noexcept {
+        QAction* actAdd = new QAction(tr("add a mapping"));
+        connect(actAdd, &QAction::triggered, this, &MappingTableWidget::showAddMappingDialog);
+
+        QAction* actEdit = new QAction(tr("Edit"));
+        connect(actEdit, &QAction::triggered, this, &MappingTableWidget::editMapping);
+
+        QAction* actRemove = new QAction(tr("Remove"));
+        connect(actRemove, &QAction::triggered, this, &MappingTableWidget::removeMapping);
+
+        return {actAdd, actEdit, actRemove};
+    }
 }

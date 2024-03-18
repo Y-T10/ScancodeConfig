@@ -4,6 +4,7 @@
 #include <QTableView>
 #include <QPointer>
 #include <QWidget>
+#include <QAction>
 
 #include "AsconfMapModel.hpp"
 
@@ -31,6 +32,8 @@ namespace AppSacnConf {
         
         private:
             QPointer<QTableView> m_view;
+
+            const QList<QAction* > contextMenuActions() noexcept;
         
         protected:
             void resizeEvent(QResizeEvent *event) override;
