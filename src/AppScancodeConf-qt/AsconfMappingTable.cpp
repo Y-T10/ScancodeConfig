@@ -161,9 +161,11 @@ namespace AppSacnConf {
         connect(m_actAdd, &QAction::triggered, this, &MappingTableWidget::showAddMappingDialog);
 
         m_actEdit = new QAction(tr("Edit"));
+        m_actEdit->setEnabled(false);
         connect(m_actEdit, &QAction::triggered, this, &MappingTableWidget::editMapping);
 
         m_actRemove = new QAction(tr("Remove"));
+        m_actRemove->setEnabled(false);
         connect(m_actRemove, &QAction::triggered, this, &MappingTableWidget::removeMapping);
 
         return {m_actAdd, m_actEdit, m_actRemove};
