@@ -12,7 +12,6 @@ namespace AppSacnConf {
             explicit MainWindow() noexcept;
 
         private slots:
-            void updateActions(const QItemSelection &selection) noexcept;
             void applyMapping() noexcept;
             void importMapping() noexcept;
             void exportMapping() noexcept;

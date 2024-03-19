@@ -67,10 +67,6 @@ namespace AppSacnConf {
         connect(m_mappingWidget, &MappingTableWidget::selectionChanged, this, &MainWindow::updateActions);
     }
 
-    void MainWindow::updateActions(const QItemSelection &selection) noexcept {
-        QModelIndexList indexes = selection.indexes();
-    }
-
     void MainWindow::applyMapping() noexcept {
 
     };
