@@ -63,8 +63,6 @@ namespace AppSacnConf {
     
         auto applyMenu = menuBar()->addMenu(tr("&Apply"));
         addMenuItem(applyMenu, tr("&Apply mapping"), this, &MainWindow::applyMapping);
-
-        connect(m_mappingWidget, &MappingTableWidget::selectionChanged, this, &MainWindow::updateActions);
     }
 
     void MainWindow::applyMapping() noexcept {
