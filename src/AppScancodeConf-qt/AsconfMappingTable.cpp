@@ -61,7 +61,18 @@ namespace AppSacnConf {
         m_view->setSelectionMode(QAbstractItemView::SingleSelection);
         m_view->setSortingEnabled(false);
 
+        m_view->setContextMenuPolicy(Qt::ActionsContextMenu);
+        m_view->insertActions(nullptr, contextMenuActions());
+
         connect(m_view->selectionModel(), &QItemSelectionModel::selectionChanged, this, &MappingTableWidget::selectionChanged);
+        connect(
+            m_view->selectionModel(), &QItemSelectionModel::selectionChanged,
+            this, [this](const QItemSelection &selection)->void{
+                const bool IsSelected = !(selection.indexes().empty());
+                m_actEdit->setEnabled(IsSelected);
+                m_actRemove->setEnabled(IsSelected);
+            }
+        );
     }
 
     void MappingTableWidget::showAddMappingDialog() noexcept {
@@ -110,15 +121,18 @@ namespace AppSacnConf {
         dialog.setWindowTitle(tr("Edit Scancode Mapping"));
 
         for(const auto& idx: IndexSelected) {
-            const int row = idx.row();
-            dialog.editMapping(GetMapping(*model, row));
+            const auto map = model->rawData(idx);
+            if(!map.has_value()) {
+                continue;
+            }
+            dialog.editMapping(*map);
 
             // Dialog
             if(!dialog.exec()) {
                 return;
             }
 
-            SetMapping(*model, row, dialog.mapping());
+            SetMapping(*model, idx.row(), dialog.mapping());
         }
     }
 
@@ -140,5 +154,20 @@ namespace AppSacnConf {
         m_view->setColumnWidth(MappingModel::ColIndexFrom, event->size().width() / 2);
         m_view->setColumnWidth(MappingModel::ColIndexTo, event->size().width() / 2 - (event->size().width() / 2));
         m_view->resizeRowsToContents();
+    }
+
+    const QList<QAction*> MappingTableWidget::contextMenuActions() noexcept {
+        m_actAdd = new QAction(tr("add a mapping"));
+        connect(m_actAdd, &QAction::triggered, this, &MappingTableWidget::showAddMappingDialog);
+
+        m_actEdit = new QAction(tr("Edit"));
+        m_actEdit->setEnabled(false);
+        connect(m_actEdit, &QAction::triggered, this, &MappingTableWidget::editMapping);
+
+        m_actRemove = new QAction(tr("Remove"));
+        m_actRemove->setEnabled(false);
+        connect(m_actRemove, &QAction::triggered, this, &MappingTableWidget::removeMapping);
+
+        return {m_actAdd, m_actEdit, m_actRemove};
     }
 }

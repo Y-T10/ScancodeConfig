@@ -3,6 +3,7 @@
 #include <cstddef>
 #include <optional>
 #include <string>
+#include <type_traits>
 #include <vector>
 #include <winnls.h>
 
@@ -27,54 +28,45 @@ namespace {
         return 0x1000000 | LpScancode;
     }
 
-    const std::optional<std::wstring> ACPToUTF16(const std::string& str) noexcept {
+    const std::expected<std::wstring, int> ACPToUTF16(const std::string& str) noexcept {
         if(str.empty()) {
             return L"";
         }
         const int size = MultiByteToWideChar(CP_ACP, MB_PRECOMPOSED, str.c_str(), -1, nullptr, 0);
         if(!size) {
-            return std::nullopt;
+            return std::unexpected<int>(GetLastError());
         }
         std::vector<wchar_t> output(size, '\0');
         if(!MultiByteToWideChar(CP_ACP, MB_PRECOMPOSED, str.c_str(), -1, output.data(), output.size())) {
-            return std::nullopt;
+            return std::unexpected<int>(GetLastError());
         }
         return std::wstring(output.begin(), output.end()-1);
     };
 
-    template <class wide_char_type = wchar_t>
-    const std::optional<std::string> UTF16To8(const std::basic_string<wide_char_type>& str) noexcept {
+    const std::expected<std::string, int> UTF16To8(const std::wstring& str) noexcept {
         if(str.empty()) {
             return "";
         }
         const int size = WideCharToMultiByte(CP_UTF8, 0, str.c_str(), -1, nullptr, 0, nullptr, nullptr);
         if(!size) {
-            return std::nullopt;
+            return std::unexpected<int>(GetLastError());
         }
         std::vector<char> output(size, '\0');
         if(!WideCharToMultiByte(CP_UTF8, 0, str.c_str(), -1, output.data(), output.size(), nullptr, nullptr)) {
-            return std::nullopt;
+            return std::unexpected<int>(GetLastError());
         }
         return std::string(output.begin(), output.end()-1);
     };
 
-    const std::optional<std::string> ToUTF8(const std::basic_string<TCHAR>& str) noexcept {
-        constexpr auto UNICODEDefined = [](){
-            #ifdef UNICODE
-            return true;
-            #else
-            return false;
-            #endif
-        };
+    template <class char_type>
+    const std::expected<std::string, int> ToUTF8(const std::basic_string<char_type>& str) noexcept {
+        static_assert(std::is_same_v<char_type, char> || std::is_same_v<char_type, wchar_t>);
 
-        if constexpr (UNICODEDefined()) {
+        if constexpr (std::is_same_v<char_type, wchar_t>) {
             return UTF16To8(str);
         } else {
-            const auto wstr = ACPToUTF16(str);
-            if (!wstr.has_value()) {
-                return std::nullopt;
-            }
-            return UTF16To8(wstr.value());
+            return ACPToUTF16(str)
+                    .and_then(&UTF16To8);
         }
     }
 }
@@ -90,7 +82,7 @@ namespace CompScanMap {
         return std::nullopt;
     }
 
-    const std::optional<std::string> KeyboardKeyName(const Scancode code) noexcept {
+    const std::expected<std::string, int> KeyboardKeyName(const Scancode code) noexcept {
         constexpr size_t keyNameLength = 128;
         TCHAR keyName[keyNameLength]="";
 
@@ -103,8 +95,8 @@ namespace CompScanMap {
         );
 
         // キー名がある
-        if (NameSize>0){
-            return ToUTF8(keyName);
+        if (NameSize > 0){
+            return ToUTF8<TCHAR>(keyName);
         }
 
         // キー名がない
@@ -113,6 +105,6 @@ namespace CompScanMap {
         }
 
         // それ以外
-        return std::nullopt;
+        return std::unexpected<int>(GetLastError());
     }
 }

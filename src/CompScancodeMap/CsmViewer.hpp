@@ -1,6 +1,7 @@
 #pragma  once
 
 #include <type_traits>
+#include <expected>
 #include <optional>
 #include <cstdint>
 #include <string>
@@ -36,7 +37,7 @@ namespace CompScanMap {
      * @brief 現在のキーボードレイアウト上のキー名を返す
      * 
      * @param code Windows スキャンコード
-     * @return code に対応するキーの名前．nulloptの場合は失敗．
+     * @return code に対応するキーの名前．取得に失敗した場合はWindowsのエラーコードを返す．
      */
-    const std::optional<std::string> KeyboardKeyName(const Scancode code) noexcept;
+    const std::expected<std::string, int> KeyboardKeyName(const Scancode code) noexcept;
 }

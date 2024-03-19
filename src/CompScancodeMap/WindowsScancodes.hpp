@@ -99,7 +99,7 @@ namespace CompScanMap {
         KEYNAME(0x0079, "変換 (JPN)")
         KEYNAME(0x007b, "無変換 (JPN)")
         KEYNAME(0x007d, "￥ (JPN)")
-        KEYNAME(0x007e, ", (BRA)")
+        KEYNAME(0x007e, "Num , (BRA)")
         KEYNAME(0xe01c, "Num Enter")
         KEYNAME(0xe01d, "Right Control")
         KEYNAME(0xe035, "Num /")

@@ -2,9 +2,39 @@
 #include "CsmViewer.hpp"
 
 #include <QAbstractItemModel>
-#include <QVariant>
+#include <QErrorMessage>
 #include <QApplication>
+#include <QVariant>
 #include <QFont>
+
+#include <optional>
+#include <qerrormessage.h>
+#include <string>
+#include <type_traits>
+
+namespace {
+    static constexpr auto TextNotApplicable = "N/A";
+
+    const std::string GetNameFrom (const CompScanMap::Scancode code) {
+        // TODO: エラーコードとキーの番号を標準エラーに書き込む
+        return CompScanMap::WindowsScancodeName(code).value_or(TextNotApplicable);
+    };
+
+    const std::string GetNameTo(const CompScanMap::Scancode code) {
+        // TODO: エラーコードとキーの番号を標準エラーに書き込む
+        const std::string KeyName = CompScanMap::KeyboardKeyName(code).value_or(TextNotApplicable);
+        if (!KeyName.empty()) {
+            return KeyName;
+        }
+        return CompScanMap::WindowsScancodeName(code).value_or(TextNotApplicable);
+    };
+
+    template <class F>
+    const QString GenerateText(const CompScanMap::Scancode code, const F &func) {
+        static_assert(std::is_invocable_r_v<const std::string, F, CompScanMap::Scancode>);
+        return QString("%1 (%2)").arg(func(code).c_str()).arg(code, 0, 16); 
+    };
+}
 
 namespace AppSacnConf {
     MappingModel::MappingModel(QObject *parent) noexcept:
@@ -53,17 +83,11 @@ namespace AppSacnConf {
     const QVariant MappingModel::getData(const int row, const int col) const noexcept {
         const auto map = m_mappings.at(row);
 
-        const auto GenerateText = []<class Func>(const CompScanMap::Scancode code, const Func& func) {
-            return QString("%1 (%2)")
-                .arg(func(code).value_or("no_name").c_str())
-                .arg(code, 0, 16); 
-        };
-
         if (col == ColIndexFrom) {
-            return GenerateText(map.from, CompScanMap::WindowsScancodeName);
+            return GenerateText(map.from, GetNameFrom);
         }
         if (col == ColIndexTo) {
-            return GenerateText(map.to, CompScanMap::KeyboardKeyName);
+            return GenerateText(map.to, GetNameTo);
         }
         return QVariant();
     }
@@ -152,5 +176,17 @@ namespace AppSacnConf {
 
     const MappingModel::container_type &MappingModel::getMappings() const {
         return m_mappings;
+    }
+
+    const std::optional<CompScanMap::ScanMapping> MappingModel::rawData(const QModelIndex &index) const {    
+        if (!index.isValid()) {
+            return std::nullopt;
+        }
+
+        if (index.row() < 0 && m_mappings.size() <= index.row()) {
+            return std::nullopt;
+        }
+
+        return m_mappings.at(index.row());;
     }
 };

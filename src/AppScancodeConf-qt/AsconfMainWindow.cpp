@@ -4,6 +4,8 @@
 #include <QWidget>
 #include <QMenu>
 
+#include <type_traits>
+
 #include "CregHandler.hpp"
 #include "CsmCodec.hpp"
 
@@ -48,16 +50,19 @@ namespace AppSacnConf {
 
     void MainWindow::createMenu() noexcept {
         auto fileMenu = menuBar()->addMenu(tr("&File"));
+
+        const auto addMenuItem = []<class class_type>(QMenu* menu, const QString& text, class_type* obj, void (class_type::*func)()){
+            static_assert(std::is_base_of_v<QObject, class_type>);
+            QAction* act = new QAction(text);
+            menu->addAction(act);
+            connect(act, &QAction::triggered, obj, func);
+        };
     
-        addMenuItem(fileMenu, tr("&Import Mapping"), &MainWindow::importMapping);
-        addMenuItem(fileMenu, tr("&Export Mapping"), &MainWindow::exportMapping);
+        addMenuItem(fileMenu, tr("&Import Mapping"), this, &MainWindow::importMapping);
+        addMenuItem(fileMenu, tr("&Export Mapping"), this, &MainWindow::exportMapping);
     
         auto applyMenu = menuBar()->addMenu(tr("&Apply"));
-        addMenuItem(applyMenu, tr("&Apply mapping"), &MainWindow::applyMapping);
-    }
-
-    void updateActions(const QItemSelection &selection) noexcept {
-        QModelIndexList indexes = selection.indexes();
+        addMenuItem(applyMenu, tr("&Apply mapping"), this, &MainWindow::applyMapping);
     }
 
     void MainWindow::applyMapping() noexcept {
@@ -71,10 +76,4 @@ namespace AppSacnConf {
     void MainWindow::exportMapping() noexcept {
 
     };
-
-    void MainWindow::addMenuItem(QMenu* menu, const QString& text, void (MainWindow::*func)()) noexcept {
-        QAction* act = new QAction(text);
-        menu->addAction(act);
-        connect(act, &QAction::triggered, this, func);
-    }
 }

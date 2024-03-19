@@ -3,6 +3,7 @@
 #include <QAbstractTableModel>
 #include <QObject>
 #include <QList>
+#include <optional>
 
 #include "CsmViewer.hpp"
 
@@ -28,7 +29,9 @@ namespace AppSacnConf {
             bool insertRows(int position, int rows, const QModelIndex &index = QModelIndex()) override;
             bool removeRows(int position, int rows, const QModelIndex &index = QModelIndex()) override;
             const container_type &getMappings() const;
-        
+
+            const std::optional<CompScanMap::ScanMapping> rawData(const QModelIndex &index) const;
+
         private:
             const QVariant getData(const int row, const int col) const noexcept;
 
