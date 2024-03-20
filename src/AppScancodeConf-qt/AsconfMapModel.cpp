@@ -17,6 +17,10 @@ namespace {
 
     const std::string GetNameFrom (const CompScanMap::Scancode code) {
         // TODO: エラーコードとキーの番号を標準エラーに書き込む
+        const std::string KeyName = CompScanMap::KeyboardKeyName(code).value_or(TextNotApplicable);
+        if (!KeyName.empty()) {
+            return KeyName;
+        }
         return CompScanMap::WindowsScancodeName(code).value_or(TextNotApplicable);
     };
 
