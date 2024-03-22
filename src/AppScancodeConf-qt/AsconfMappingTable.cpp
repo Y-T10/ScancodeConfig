@@ -75,6 +75,15 @@ namespace AppSacnConf {
         );
     }
 
+    const MappingModel::container_type& MappingTableWidget::mappings() const noexcept {
+        MappingModel* const model = static_cast<MappingModel*>(m_view->model());
+        return model->getMappings();
+    }
+
+    void MappingTableWidget::setMappings(const MappingModel::container_type& mappings) noexcept {
+        m_view->setModel(new MappingModel(mappings, this));
+    }
+
     void MappingTableWidget::showAddMappingDialog() noexcept {
         AddDialog dialog;
         dialog.setWindowTitle(tr("Add a Scancode Mapping"));
