@@ -1,10 +1,13 @@
 #include "AsconfMainWindow.hpp"
 
+#include <QFileDialog>
+#include <QPointer>
 #include <QMenuBar>
 #include <QWidget>
 #include <QMenu>
 
 #include <type_traits>
+#include <string>
 
 #include "CregHandler.hpp"
 #include "CsmCodec.hpp"
@@ -31,6 +34,17 @@ namespace {
 
     const AppSacnConf::MappingModel::container_type CurrentScancodeMap() noexcept {
         return ReadScancodeMap();
+    }
+
+    const QPointer<QFileDialog> MappingFileDialog(QWidget* parent, const std::u8string& caption, const QFileDialog::FileMode& fileMode) noexcept {
+        QPointer<QFileDialog> dialog(new QFileDialog(
+            parent, QString(caption.data()),
+            QString(), QString(u8"TOML Files (*.toml)")
+        ));
+
+        dialog->setFileMode(fileMode);
+
+        return dialog;
     }
 }
 
