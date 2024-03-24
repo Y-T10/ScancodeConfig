@@ -7,6 +7,9 @@
 #include <QMenu>
 
 #include <type_traits>
+#include <cassert>
+#include <ostream>
+#include <fstream>
 #include <string>
 
 #include "CregHandler.hpp"
@@ -87,6 +90,22 @@ namespace AppSacnConf {
     };
     
     void MainWindow::exportMapping() noexcept {
+        const auto fileDialog = MappingFileDialog(this, u8"Export mappings", QFileDialog::AnyFile);
 
+        if (!fileDialog->exec()) {
+            return;
+        }
+
+        const auto SelectedFiles = fileDialog->selectedFiles();
+
+        if (SelectedFiles.empty()) {
+            return;
+        }
+
+        assert(SelectedFiles.size() == 1);
+        const auto FilePath = SelectedFiles.front();
+
+        std::ofstream(std::filesystem::path(FilePath.toStdString())) << "" << std::endl;
+        return;
     };
 }
