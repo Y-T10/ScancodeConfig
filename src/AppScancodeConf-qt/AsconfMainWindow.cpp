@@ -7,9 +7,15 @@
 #include <QMenu>
 
 #include <type_traits>
+#include <filesystem>
+#include <algorithm>
+#include <optional>
+#include <iterator>
 #include <cassert>
 #include <fstream>
 #include <string>
+#include <vector>
+#include <ios>
 
 #include "msgpack.hpp"
 
@@ -39,11 +45,60 @@ namespace {
     const AppSacnConf::MappingModel::container_type CurrentScancodeMap() noexcept {
         return ReadScancodeMap();
     }
+
+    template <class byte_type>
+    const std::optional<std::vector<byte_type>> ReadBinary(const std::filesystem::path& path) noexcept {
+        std::ifstream stream(path, std::ios_base::binary | std::ios_base::in);
+        if (!stream) {
+            return std::nullopt;
+        }
+        std::vector<byte_type> output;
+        using stream_iter = std::istreambuf_iterator<byte_type>;
+        std::copy(
+            stream_iter(stream), stream_iter(),
+            std::back_insert_iterator(output)
+        );
+        return output;
+    };
+
+    const std::expected<CompScanMap::MappingList, std::string>  GetMappings(const std::vector<char>& bin) noexcept {
+        msgpack::object_handle result;
+        msgpack::unpack(result, bin.data(), bin.size());
+
+        if (result->is_nil()) {
+            return std::unexpected("Unpacking Failed");
+        }
+
+        try {
+            return result.get().as<CompScanMap::MappingList>();
+        }
+        catch(const msgpack::parse_error& e){
+            // TODO: エラーメッセージを出す
+            return std::unexpected(e.what());
+        }
+    }
 }
 
 namespace msgpack {
 MSGPACK_API_VERSION_NAMESPACE(MSGPACK_DEFAULT_API_NS) {
 namespace adaptor {
+    template <>
+    struct convert<CompScanMap::ScanMapping> {
+        msgpack::object const& operator()(msgpack::object const& obj, CompScanMap::ScanMapping& value) const {
+            if (obj.type != type::ARRAY) {
+                throw type_error();
+            }
+            if (obj.via.array.size != 2) throw type_error();
+
+            value = {
+                .to = obj.via.array.ptr[0].as<CompScanMap::Scancode>(),
+                .from = obj.via.array.ptr[1].as<CompScanMap::Scancode>()
+            };
+
+            return obj;
+        }
+    };
+
     template<>
     struct pack<CompScanMap::ScanMapping> {
         template<class stream_type>
@@ -52,6 +107,19 @@ namespace adaptor {
             out.pack_uint16(value.to);
             out.pack_uint16(value.from);
             return out;
+        }
+    };
+
+    template <>
+    struct object_with_zone<CompScanMap::ScanMapping> {
+        void operator()(msgpack::object::with_zone& obj, const CompScanMap::ScanMapping& value) const {
+            obj.type = type::ARRAY;
+            obj.via.array.size = 2;
+            obj.via.array.ptr = static_cast<msgpack::object*>(
+                obj.zone.allocate_align(sizeof(msgpack::object) * obj.via.array.size)
+            );
+            obj.via.array.ptr[0] = msgpack::object(value.to, obj.zone);
+            obj.via.array.ptr[1] = msgpack::object(value.from, obj.zone);
         }
     };
 }
@@ -93,12 +161,31 @@ namespace AppSacnConf {
     };
     
     void MainWindow::importMapping() noexcept {
+        const auto ImportedFilePath = QFileDialog::getOpenFileName(
+            this, QString(u8"Import mapping"), QString(),
+            QString(u8"Mapping files (*.map);; All files(*.*)"), nullptr
+        );
+        if (ImportedFilePath.isEmpty()) {
+            return;
+        }
 
+        const auto ImportedMapping = ReadBinary<char>(ImportedFilePath.toStdString());
+        if (!ImportedMapping.has_value()) {
+            // TODO: エラーメッセージを出す
+            return;
+        }
+
+        const auto result = GetMappings(ImportedMapping.value());
+        if (!result.has_value()) {
+            // TODO: エラーメッセージを出す
+            return;
+        }
+        m_mappingWidget->setMappings(result.value());
     };
     
     void MainWindow::exportMapping() noexcept {
         const auto ExportedFilePath = QFileDialog::getSaveFileName(
-            this, QString(u8"Export mappings"), QString(),
+            this, QString(u8"Export mapping"), QString(),
             QString(u8"Mapping files (*.map);; All files(*.*)"), nullptr
         );
 
