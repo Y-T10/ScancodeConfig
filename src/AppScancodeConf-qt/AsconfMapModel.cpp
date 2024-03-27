@@ -135,16 +135,17 @@ namespace AppSacnConf {
             return false;
         }
 
-        auto mapping = m_mappings.value(index.row());
-        if(index.column() == ColIndexFrom) {
-            mapping.from = value.value<CompScanMap::Scancode>();
-        } else if (index.column() == ColIndexTo) {
-            mapping.to = value.value<CompScanMap::Scancode>();
-        } else {
+        // TODO: 実際の列数に応じて反応できるようにする
+        if (index.column() < 0 || 2 < index.column()) {
             return false;
         }
 
-        m_mappings.replace(index.row(), mapping);
+        if(index.column() == ColIndexFrom) {
+            m_mappings[index.row()].from = value.value<CompScanMap::Scancode>();
+        } else if (index.column() == ColIndexTo) {
+            m_mappings[index.row()].to = value.value<CompScanMap::Scancode>();
+        }
+
         emit dataChanged(index, index, {Qt::DisplayRole, Qt::EditRole});
 
         return true;
