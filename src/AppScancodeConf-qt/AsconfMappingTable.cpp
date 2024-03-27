@@ -89,7 +89,7 @@ namespace AppSacnConf {
     void MappingTableWidget::addMapping(const CompScanMap::ScanMapping& mapping) noexcept {
         MappingModel* const model = static_cast<MappingModel*>(m_view->model());
 
-        if (model->getMappings().contains(mapping)) {
+        if (std::ranges::find(model->getMappings(), mapping) != model->getMappings().end()) {
             QMessageBox::information(this,
                 tr("Duplicate Mapping"),
                 tr("Mapping {%1, %2} already exists.")
