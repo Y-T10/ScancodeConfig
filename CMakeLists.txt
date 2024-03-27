@@ -50,6 +50,13 @@ CPMAddPackage(
     GIT_TAG 10.2.1
 )
 
+set(MSGPACK_CXX20 ON)
+CPMAddPackage(
+    NAME msgpack-cxx
+    GITHUB_REPOSITORY msgpack/msgpack-c 
+    GIT_TAG cpp-6.1.0
+)
+
 # システム内のパッケージを読み込む
 find_package(Threads REQUIRED)
 find_package(Qt6 COMPONENTS Widgets DBus REQUIRED)
