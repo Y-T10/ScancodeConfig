@@ -168,9 +168,8 @@ namespace AppSacnConf {
 
         beginRemoveRows(QModelIndex(), position, position + rows - 1);
 
-        for(int row = 0; row < rows; ++row){
-            m_mappings.removeAt(position);
-        }
+        const auto eraseBegin = m_mappings.begin() + position;
+        m_mappings.erase(eraseBegin, eraseBegin + rows);
         endRemoveRows();
         return true;
     }
