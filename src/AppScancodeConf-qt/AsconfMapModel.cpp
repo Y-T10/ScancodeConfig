@@ -155,10 +155,8 @@ namespace AppSacnConf {
         Q_UNUSED(index);
 
         beginInsertRows(QModelIndex(), position, position + rows - 1);
-
-        for(int row = 0; row < rows; ++row){
-            m_mappings.insert(position, container_type::value_type{});
-        }
+        constexpr container_type::value_type EmptyMapping = {.to = 0, .from = 0};
+        m_mappings.insert(m_mappings.begin() + position, rows, EmptyMapping);
         endInsertRows();
         return true;
     }
