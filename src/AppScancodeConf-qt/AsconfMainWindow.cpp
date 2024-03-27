@@ -8,9 +8,10 @@
 
 #include <type_traits>
 #include <cassert>
-#include <ostream>
 #include <fstream>
 #include <string>
+
+#include "msgpack.hpp"
 
 #include "CregHandler.hpp"
 #include "CsmCodec.hpp"
@@ -49,6 +50,23 @@ namespace {
 
         return dialog;
     }
+}
+
+namespace msgpack {
+MSGPACK_API_VERSION_NAMESPACE(MSGPACK_DEFAULT_API_NS) {
+namespace adaptor {
+    template<>
+    struct pack<CompScanMap::ScanMapping> {
+        template<class stream_type>
+        packer<stream_type>& operator()(msgpack::packer<stream_type>& out, const CompScanMap::ScanMapping& value) const {
+            out.pack_array(2);
+            out.pack_uint16(value.to);
+            out.pack_uint16(value.from);
+            return out;
+        }
+    };
+}
+}
 }
 
 namespace AppSacnConf {
@@ -105,7 +123,8 @@ namespace AppSacnConf {
         assert(SelectedFiles.size() == 1);
         const auto FilePath = SelectedFiles.front();
 
-        std::ofstream(std::filesystem::path(FilePath.toStdString())) << "" << std::endl;
+        std::ofstream exportFile(std::filesystem::path(FilePath.toStdString()));
+        msgpack::pack(&exportFile, m_mappingWidget->mappings());
         return;
     };
 }
