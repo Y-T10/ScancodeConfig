@@ -39,17 +39,6 @@ namespace {
     const AppSacnConf::MappingModel::container_type CurrentScancodeMap() noexcept {
         return ReadScancodeMap();
     }
-
-    const QPointer<QFileDialog> MappingFileDialog(QWidget* parent, const std::u8string& caption, const QFileDialog::FileMode& fileMode) noexcept {
-        QPointer<QFileDialog> dialog(new QFileDialog(
-            parent, QString(caption.data()),
-            QString(), QString(u8"Mapping files (*.map);; All files(*.*)")
-        ));
-
-        dialog->setFileMode(fileMode);
-
-        return dialog;
-    }
 }
 
 namespace msgpack {
