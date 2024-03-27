@@ -60,7 +60,7 @@ namespace AppSacnConf {
             return QVariant();
         }
 
-        if (index.row() < 0 && m_mappings.size() <= index.row()) {
+        if (index.row() < 0 || m_mappings.size() <= (size_t)(index.row())) {
             return QVariant();
         }
 
@@ -135,16 +135,17 @@ namespace AppSacnConf {
             return false;
         }
 
-        auto mapping = m_mappings.value(index.row());
-        if(index.column() == ColIndexFrom) {
-            mapping.from = value.value<CompScanMap::Scancode>();
-        } else if (index.column() == ColIndexTo) {
-            mapping.to = value.value<CompScanMap::Scancode>();
-        } else {
+        // TODO: 実際の列数に応じて反応できるようにする
+        if (index.column() < 0 || 2 < index.column()) {
             return false;
         }
 
-        m_mappings.replace(index.row(), mapping);
+        if(index.column() == ColIndexFrom) {
+            m_mappings[index.row()].from = value.value<CompScanMap::Scancode>();
+        } else if (index.column() == ColIndexTo) {
+            m_mappings[index.row()].to = value.value<CompScanMap::Scancode>();
+        }
+
         emit dataChanged(index, index, {Qt::DisplayRole, Qt::EditRole});
 
         return true;
@@ -154,10 +155,8 @@ namespace AppSacnConf {
         Q_UNUSED(index);
 
         beginInsertRows(QModelIndex(), position, position + rows - 1);
-
-        for(int row = 0; row < rows; ++row){
-            m_mappings.insert(position, container_type::value_type{});
-        }
+        constexpr container_type::value_type EmptyMapping = {.to = 0, .from = 0};
+        m_mappings.insert(m_mappings.begin() + position, rows, EmptyMapping);
         endInsertRows();
         return true;
     }
@@ -167,9 +166,8 @@ namespace AppSacnConf {
 
         beginRemoveRows(QModelIndex(), position, position + rows - 1);
 
-        for(int row = 0; row < rows; ++row){
-            m_mappings.removeAt(position);
-        }
+        const auto eraseBegin = m_mappings.begin() + position;
+        m_mappings.erase(eraseBegin, eraseBegin + rows);
         endRemoveRows();
         return true;
     }
@@ -183,7 +181,7 @@ namespace AppSacnConf {
             return std::nullopt;
         }
 
-        if (index.row() < 0 && m_mappings.size() <= index.row()) {
+        if (index.row() < 0 || m_mappings.size() <= (size_t)(index.row())) {
             return std::nullopt;
         }
 

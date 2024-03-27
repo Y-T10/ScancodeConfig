@@ -12,7 +12,7 @@ namespace AppSacnConf {
         Q_OBJECT
 
         public:
-            using container_type = QList<CompScanMap::ScanMapping>;
+            using container_type = CompScanMap::MappingList;
 
             static constexpr int ColIndexFrom = 0;
             static constexpr int ColIndexTo = 1;

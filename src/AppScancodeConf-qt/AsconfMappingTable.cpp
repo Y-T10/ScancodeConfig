@@ -89,7 +89,7 @@ namespace AppSacnConf {
     void MappingTableWidget::addMapping(const CompScanMap::ScanMapping& mapping) noexcept {
         MappingModel* const model = static_cast<MappingModel*>(m_view->model());
 
-        if (model->getMappings().contains(mapping)) {
+        if (std::ranges::find(model->getMappings(), mapping) != model->getMappings().end()) {
             QMessageBox::information(this,
                 tr("Duplicate Mapping"),
                 tr("Mapping {%1, %2} already exists.")
@@ -108,7 +108,9 @@ namespace AppSacnConf {
             return;
         }
 
-        constexpr int insertPosition = 0;
+        const auto IndexSelected = m_view->selectionModel()->selectedRows();
+        const int insertPosition = IndexSelected.empty()? 0: IndexSelected.begin()->row();
+
         model->insertRows(insertPosition, 1);
         model->setData(model->index(insertPosition, MappingModel::ColIndexFrom), mapping.from);
         model->setData(model->index(insertPosition, MappingModel::ColIndexTo), mapping.to);

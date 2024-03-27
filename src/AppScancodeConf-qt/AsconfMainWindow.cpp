@@ -29,9 +29,8 @@ namespace {
         return MappingList.has_value() ? *MappingList : CompScanMap::MappingList{};
     }
 
-    const QList<CompScanMap::ScanMapping> CurrentScancodeMap() noexcept {
-        const auto CurrentMap = ReadScancodeMap();
-        return QList<CompScanMap::ScanMapping>(CurrentMap.begin(), CurrentMap.end());
+    const AppSacnConf::MappingModel::container_type CurrentScancodeMap() noexcept {
+        return ReadScancodeMap();
     }
 }
 
