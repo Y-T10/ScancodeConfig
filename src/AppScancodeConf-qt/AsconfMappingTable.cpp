@@ -108,7 +108,9 @@ namespace AppSacnConf {
             return;
         }
 
-        constexpr int insertPosition = 0;
+        const auto IndexSelected = m_view->selectionModel()->selectedRows();
+        const int insertPosition = IndexSelected.empty()? 0: IndexSelected.begin()->row();
+
         model->insertRows(insertPosition, 1);
         model->setData(model->index(insertPosition, MappingModel::ColIndexFrom), mapping.from);
         model->setData(model->index(insertPosition, MappingModel::ColIndexTo), mapping.to);
