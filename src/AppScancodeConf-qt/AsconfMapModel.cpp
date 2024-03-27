@@ -60,7 +60,7 @@ namespace AppSacnConf {
             return QVariant();
         }
 
-        if (index.row() < 0 && m_mappings.size() <= index.row()) {
+        if (index.row() < 0 || m_mappings.size() <= (size_t)(index.row())) {
             return QVariant();
         }
 
@@ -183,7 +183,7 @@ namespace AppSacnConf {
             return std::nullopt;
         }
 
-        if (index.row() < 0 && m_mappings.size() <= index.row()) {
+        if (index.row() < 0 || m_mappings.size() <= (size_t)(index.row())) {
             return std::nullopt;
         }
 
