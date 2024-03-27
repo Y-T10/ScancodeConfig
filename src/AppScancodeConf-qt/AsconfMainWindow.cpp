@@ -30,8 +30,7 @@ namespace {
     }
 
     const AppSacnConf::MappingModel::container_type CurrentScancodeMap() noexcept {
-        const auto CurrentMap = ReadScancodeMap();
-        return QList<CompScanMap::ScanMapping>(CurrentMap.begin(), CurrentMap.end());
+        return ReadScancodeMap();
     }
 }
 
