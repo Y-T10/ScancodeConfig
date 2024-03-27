@@ -108,22 +108,16 @@ namespace AppSacnConf {
     };
     
     void MainWindow::exportMapping() noexcept {
-        const auto fileDialog = MappingFileDialog(this, u8"Export mappings", QFileDialog::AnyFile);
+        const auto ExportedFilePath = QFileDialog::getSaveFileName(
+            this, QString(u8"Export mappings"), QString(),
+            QString(u8"Mapping files (*.map);; All files(*.*)"), nullptr
+        );
 
-        if (!fileDialog->exec()) {
+        if (ExportedFilePath.isEmpty()) {
             return;
         }
 
-        const auto SelectedFiles = fileDialog->selectedFiles();
-
-        if (SelectedFiles.empty()) {
-            return;
-        }
-
-        assert(SelectedFiles.size() == 1);
-        const auto FilePath = SelectedFiles.front();
-
-        std::ofstream exportFile(std::filesystem::path(FilePath.toStdString()));
+        std::ofstream exportFile(std::filesystem::path(ExportedFilePath.toStdString()));
         msgpack::pack(&exportFile, m_mappingWidget->mappings());
         return;
     };
