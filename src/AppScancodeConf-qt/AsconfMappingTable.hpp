@@ -21,6 +21,9 @@ namespace AppSacnConf {
             void importMapping() noexcept;
             void exportMapping() noexcept;
 
+            const MappingModel::container_type& mappings() const noexcept;
+            void setMappings(const MappingModel::container_type& mappings) noexcept;
+
         public slots:
             void showAddMappingDialog() noexcept;
             void addMapping(const CompScanMap::ScanMapping& mapping) noexcept;
