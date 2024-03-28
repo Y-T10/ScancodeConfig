@@ -1,5 +1,6 @@
 #include "AsconfMainWindow.hpp"
 
+#include <QMessageBox>
 #include <QFileDialog>
 #include <QPointer>
 #include <QMenuBar>
@@ -171,13 +172,17 @@ namespace AppSacnConf {
 
         const auto ImportedMapping = ReadBinary<char>(ImportedFilePath.toStdString());
         if (!ImportedMapping.has_value()) {
-            // TODO: エラーメッセージを出す
+            QMessageBox::critical(
+                this, QString(u8"Import error"),
+                QString(u8"Can`t open \"%1\".").arg(ImportedFilePath));
             return;
         }
 
         const auto result = GetMappings(ImportedMapping.value());
         if (!result.has_value()) {
-            // TODO: エラーメッセージを出す
+            QMessageBox::critical(
+                this, QString(u8"Import error"),
+                QString(u8"Parse failed: \"%1\".").arg(result.error().c_str()));
             return;
         }
         m_mappingWidget->setMappings(result.value());
