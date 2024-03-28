@@ -7,6 +7,7 @@
 #include <QWidget>
 #include <QMenu>
 
+#include <exception>
 #include <type_traits>
 #include <filesystem>
 #include <algorithm>
@@ -64,18 +65,29 @@ namespace {
 
     const std::expected<CompScanMap::MappingList, std::string>  GetMappings(const std::vector<char>& bin) noexcept {
         msgpack::object_handle result;
-        msgpack::unpack(result, bin.data(), bin.size());
 
-        if (result->is_nil()) {
-            return std::unexpected("Unpacking Failed");
+        try {
+            msgpack::unpack(result, bin.data(), bin.size());
+        } catch(const msgpack::parse_error& e){
+            return std::unexpected(e.what());
         }
 
         try {
-            return result.get().as<CompScanMap::MappingList>();
+            const auto obj = result.get();
+            return obj.as<CompScanMap::MappingList>();
         }
-        catch(const msgpack::parse_error& e){
-            // TODO: エラーメッセージを出す
-            return std::unexpected(e.what());
+        catch(const msgpack::type_error& e){
+            return std::unexpected("the data format is invalid");
+        }
+
+        catch(const std::exception& e) {
+            return std::unexpected(
+                QString("unsupported error \"%1\" occurred").arg(e.what()).toStdString()
+            );
+        }
+
+        catch(...) {
+            return std::unexpected("unknown error occurred");
         }
     }
 }
