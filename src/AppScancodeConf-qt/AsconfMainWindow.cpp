@@ -23,6 +23,7 @@
 
 #include "CregHandler.hpp"
 #include "CprocExec.hpp"
+#include "CprocPipe.hpp"
 #include "CsmCodec.hpp"
 
 namespace {
@@ -171,7 +172,19 @@ namespace AppSacnConf {
     }
 
     void MainWindow::applyMapping() noexcept {
+        // バイナリ書き込みプログラムに渡すパイプを作る
+        const auto PipeName = CmpProc::CreateRandomPipeName();
+        const auto Pipe = CmpProc::CreatePipe(PipeName, 1000);
+        if (!Pipe) {
+            QMessageBox::critical(
+                this, QString(u8"Apply Error"),
+                QString(u8"ライターの起動に失敗しました．\nエラーコード: %1").arg(Pipe.error())
+            );
+            return;
+        }
 
+        // パイプを閉じる
+        DisconnectNamedPipe(Pipe.value().get());
     };
     
     void MainWindow::importMapping() noexcept {
