@@ -19,6 +19,7 @@
 #include <vector>
 #include <ios>
 
+#include "CregTypes.hpp"
 #include "msgpack.hpp"
 
 #include "CregHandler.hpp"
@@ -233,7 +234,19 @@ namespace AppSacnConf {
     };
 
     void MainWindow::writeMapping(const CmpProc::object_handle& pipe, const CompReg::win32str& pipeName) noexcept {
-        const auto Process = CmpProc::ExecElevated(false, "");
+        const auto GetParentDirectory = [](const CompReg::win32str& path){
+            return path.substr(0, path.find_last_of('\\')) + TEXT('\\');
+        };
+        const auto GetProgramPath = []() {
+            const CompReg::win32str Param = GetCommandLine();
+            if (Param.contains(TEXT(' '))) {
+                return Param.substr(0, Param.find(TEXT(' ')));
+            }
+            return Param;
+        };
+        const CompReg::win32str BinaryDir = GetParentDirectory(GetProgramPath());
+        const CompReg::win32str WriterName = TEXT("AppScanMapWriter.exe");
+        const auto Process = CmpProc::ExecElevated(false, BinaryDir + WriterName, pipeName);
         if (!Process) {
             if (Process.error() == ERROR_CANCELLED) {
                 return;
