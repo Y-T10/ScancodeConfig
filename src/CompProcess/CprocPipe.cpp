@@ -1,6 +1,8 @@
 #include "CprocPipe.hpp"
 
 #include <array>
+#include <cstdint>
+#include <iterator>
 #include <random>
 #include <algorithm>
 
@@ -78,5 +80,24 @@ namespace CmpProc {
             return std::expected<void, DWORD>();
         }
         return std::unexpected(GetLastError());
+    }
+
+    const std::expected<std::vector<uint8_t>, DWORD> ReadPipe(const object_handle& handle) noexcept {
+        std::vector<uint8_t> data = {};
+
+        for(DWORD readSize = 0; true; readSize = 0) {
+            auto buff = std::array<uint8_t, 256>{};       
+            if (!ReadFile(handle.get(), buff.data(), buff.size(), &readSize, nullptr)) {
+                return std::unexpected{GetLastError()};
+            }
+            if (readSize == 0) {
+                break;
+            }
+            std::copy(buff.begin(), buff.begin() + readSize, std::back_inserter(data));
+            // TODO: 何度も読めるようにしたい
+            break;
+        }
+
+        return data;
     }
 }

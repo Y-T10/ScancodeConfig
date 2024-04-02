@@ -5,6 +5,7 @@
 
 #include <cstdint>
 #include <expected>
+#include <vector>
 
 namespace CmpProc {
     /**
@@ -29,4 +30,11 @@ namespace CmpProc {
      * @return 失敗した時のみエラーコードを返す
      */
     const std::expected<void, DWORD> WritePipe(const object_handle& handle, const std::vector<uint8_t>& byte) noexcept;
+
+    /**
+     * @brief パイプからデータを読み込む
+     * @param handle パイプのハンドル
+     * @return 失敗したらエラーコードを、成功したらバイナリを返す．
+     */
+    const std::expected<std::vector<uint8_t>, DWORD> ReadPipe(const object_handle& handle) noexcept;
 }
