@@ -53,7 +53,7 @@ namespace CmpProc {
         return Prefix + Name.substr(0, Name.size() - Prefix.size() - 1);
     }
 
-    const std::expected<PipeHandle, DWORD> CreatePipe(const CompReg::win32str& name, const size_t bufferSize) noexcept {
+    const std::expected<object_handle, DWORD> CreatePipe(const CompReg::win32str& name, const size_t bufferSize) noexcept {
         const DWORD PipeMode = PIPE_TYPE_BYTE | PIPE_READMODE_BYTE |  PIPE_WAIT | PIPE_REJECT_REMOTE_CLIENTS;
         const auto Handle = CreateNamedPipe(
             name.c_str(),
@@ -69,6 +69,6 @@ namespace CmpProc {
         if(Handle == INVALID_HANDLE_VALUE) {
             return std::unexpected(GetLastError());
         }
-        return PipeHandle(const_cast<HANDLE>(Handle));
+        return object_handle(const_cast<HANDLE>(Handle));
     }
 }

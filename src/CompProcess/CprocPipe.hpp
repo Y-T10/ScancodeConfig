@@ -1,23 +1,11 @@
 #pragma once
 
 #include "CregTypes.hpp"
-#include <memory>
-#include <type_traits>
+#include "CproHandle.hpp"
+
 #include <expected>
 
 namespace CmpProc {
-    struct pipe_deleter {
-        void operator()(HANDLE h) noexcept {
-            CloseHandle(h);
-        }
-    };
-
-    /// パイプのハンドラをラップした型
-    using PipeHandle = std::unique_ptr<
-        std::remove_pointer_t<HANDLE>,
-        pipe_deleter
-    >;
-
     /**
      * @brief パイプの名前を生成する
      * @return パイプ名を持つ文字列
@@ -30,5 +18,5 @@ namespace CmpProc {
      * @param bufferSize パイプのバッファサイズ
      * @return 成功したらパイプのハンドルを、失敗したらエラーコードを返す．
      */
-    const std::expected<PipeHandle, DWORD> CreatePipe(const CompReg::win32str& name, const size_t bufferSize) noexcept;
+    const std::expected<object_handle, DWORD> CreatePipe(const CompReg::win32str& name, const size_t bufferSize) noexcept;
 }
