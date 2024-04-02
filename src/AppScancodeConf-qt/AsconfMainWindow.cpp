@@ -174,8 +174,9 @@ namespace AppSacnConf {
 
     void MainWindow::applyMapping() noexcept {
         // バイナリ書き込みプログラムに渡すパイプを作る
-        const auto PipeName = CmpProc::CreateRandomPipeName();
-        const auto Pipe = CmpProc::CreatePipe(PipeName, 1000);
+        // TODO: パイプ名をランダムにする
+        const auto PipeName = TEXT("\\\\.\\pipe\\ScancodeWritePipe");
+        const auto Pipe = CmpProc::CreatePipe(PipeName, 0);
         if (!Pipe) {
             QMessageBox::critical(
                 this, QString(u8"Apply Error"),
