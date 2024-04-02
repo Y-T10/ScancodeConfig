@@ -3,6 +3,7 @@
 #include "CregTypes.hpp"
 #include "CproHandle.hpp"
 
+#include <cstdint>
 #include <expected>
 
 namespace CmpProc {
@@ -19,4 +20,13 @@ namespace CmpProc {
      * @return 成功したらパイプのハンドルを、失敗したらエラーコードを返す．
      */
     const std::expected<object_handle, DWORD> CreatePipe(const CompReg::win32str& name, const size_t bufferSize) noexcept;
+
+    /**
+     * @brief パイプにデータを書き込む
+     * 
+     * @param handle パイプのハンドル
+     * @param byte 書き込むデータ
+     * @return 失敗した時のみエラーコードを返す
+     */
+    const std::expected<void, DWORD> WritePipe(const object_handle& handle, const std::vector<uint8_t>& byte) noexcept;
 }

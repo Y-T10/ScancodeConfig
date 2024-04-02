@@ -71,4 +71,12 @@ namespace CmpProc {
         }
         return object_handle(const_cast<HANDLE>(Handle));
     }
+
+    const std::expected<void, DWORD> WritePipe(const object_handle& handle, const std::vector<uint8_t>& byte) noexcept {
+        DWORD writtenSize = 0;
+        if (WriteFile(handle.get(), byte.data(), byte.size(), &writtenSize, nullptr)) {
+            return std::expected<void, DWORD>();
+        }
+        return std::unexpected(GetLastError());
+    }
 }
