@@ -3,6 +3,7 @@ add_lib_directory(
     ${CMAKE_CURRENT_SOURCE_DIR}
     SOURCE
         ${CMAKE_CURRENT_SOURCE_DIR}/CprocPipe.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/CprocExec.cpp
     LIBPUB
         CompRegistry
 )
