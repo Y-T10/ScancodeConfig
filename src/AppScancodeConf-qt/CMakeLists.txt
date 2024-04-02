@@ -12,6 +12,7 @@ add_exe_directory(
         CompScancodeMap
         Qt6::Widgets
         msgpack-cxx
+        CompProcess
 )
 
 get_filename_component(TargetName ${CMAKE_CURRENT_SOURCE_DIR} NAME_WE)
