@@ -24,4 +24,15 @@ namespace CmpProc {
         }
         return std::unexpected(GetLastError());
     }
+
+    const std::expected<DWORD, DWORD> WaitUntilExit(const object_handle& handle) noexcept {
+        // プログラムの終了を待つ
+        WaitForSingleObject(handle.get(), INFINITE);
+
+        // プログラムの終了コードを取得する．
+        if (DWORD code = 0; GetExitCodeProcess(handle.get(), &code) != 0) {
+            return std::expected<DWORD, DWORD>(code);
+        }
+        return std::unexpected(GetLastError());
+    }
 }
