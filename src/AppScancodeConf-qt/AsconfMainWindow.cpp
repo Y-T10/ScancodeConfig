@@ -22,6 +22,7 @@
 #include "msgpack.hpp"
 
 #include "CregHandler.hpp"
+#include "CprocExec.hpp"
 #include "CsmCodec.hpp"
 
 namespace {
@@ -214,4 +215,41 @@ namespace AppSacnConf {
         msgpack::pack(&exportFile, m_mappingWidget->mappings());
         return;
     };
+
+    void MainWindow::writeMapping(const CmpProc::object_handle& pipe, const CompReg::win32str& pipeName) noexcept {
+        const auto Process = CmpProc::ExecElevated(false, "");
+        if (!Process) {
+            if (Process.error() == ERROR_CANCELLED) {
+                return;
+            }
+            QMessageBox::critical(
+                this, QString(u8"Apply Error"),
+                QString(u8"ライターの起動に失敗しました．\nエラーコード: %1").arg(Process.error())
+            );
+            return;
+        }
+
+        // プログラムの終了を待つ
+        const auto ExitCode = CmpProc::WaitUntilExit(*Process);
+        if (!ExitCode) {
+            QMessageBox::critical(
+                this,QString(u8"Apply Error"),
+                QString(u8"ライターの返値の取得に失敗しました\nエラーコード: %1.").arg(ExitCode.error())
+            );
+            return;
+        }
+
+        // プログラムの成否を伝える
+        if (*ExitCode == 0) {
+            QMessageBox::information(
+                this,QString(u8"Apply Error"),
+                QString(u8"レジストリへの書き込みが完了しました．")
+            );
+            return;
+        }
+        QMessageBox::critical(
+            this,QString(u8"Apply Mapping"),
+            QString(u8"レジストリへの書き込みに失敗しました．\nエラーコード: %1").arg(*ExitCode)
+        );
+    }
 }
