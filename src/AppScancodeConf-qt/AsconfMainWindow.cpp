@@ -245,6 +245,31 @@ namespace AppSacnConf {
             return;
         }
 
+        // ライターがパイプに接続するのを待つ
+        if(ConnectNamedPipe(pipe.get(), nullptr) == 0) {
+            QMessageBox::critical(
+                this, QString(u8"Apply Error"),
+                QString(u8"ライターとの接続に失敗しました．\nエラーコード: %1").arg(GetLastError())
+            );
+            return;
+        }
+
+        // マッピングデータをバイナリに変換する
+        const auto ToByte = [](const CompScanMap::MappingList& map){
+            const size_t BinSize = map.size() * sizeof(CompScanMap::MappingList::value_type);
+            auto bin = std::vector<uint8_t>(BinSize, 0);
+            memcpy(bin.data(), map.data(), BinSize);
+            return bin;
+        };
+        // パイプにデータを書き込む
+        if (const auto result = CmpProc::WritePipe(pipe, ToByte(m_mappingWidget->mappings())); !result.has_value()) {
+            QMessageBox::critical(
+                this,QString(u8"Apply Error"),
+                QString(u8"ライターへのデータ渡しに失敗しました: %1.").arg(result.error())
+            );
+        }
+        FlushFileBuffers(pipe.get());
+
         // プログラムの終了を待つ
         const auto ExitCode = CmpProc::WaitUntilExit(*Process);
         if (!ExitCode) {
