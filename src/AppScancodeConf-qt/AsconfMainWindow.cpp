@@ -19,9 +19,12 @@
 #include <vector>
 #include <ios>
 
+#include "CregTypes.hpp"
 #include "msgpack.hpp"
 
 #include "CregHandler.hpp"
+#include "CprocExec.hpp"
+#include "CprocPipe.hpp"
 #include "CsmCodec.hpp"
 
 namespace {
@@ -170,7 +173,23 @@ namespace AppSacnConf {
     }
 
     void MainWindow::applyMapping() noexcept {
+        // バイナリ書き込みプログラムに渡すパイプを作る
+        // TODO: パイプ名をランダムにする
+        const auto PipeName = TEXT("\\\\.\\pipe\\ScancodeWritePipe");
+        const auto Pipe = CmpProc::CreatePipe(PipeName, 0);
+        if (!Pipe) {
+            QMessageBox::critical(
+                this, QString(u8"Apply Error"),
+                QString(u8"ライターの起動に失敗しました．\nエラーコード: %1").arg(Pipe.error())
+            );
+            return;
+        }
 
+        // パイプを用いてレジストリに値を書き込む
+        writeMapping(*Pipe, PipeName);
+
+        // パイプを閉じる
+        DisconnectNamedPipe(Pipe.value().get());
     };
     
     void MainWindow::importMapping() noexcept {
@@ -214,4 +233,78 @@ namespace AppSacnConf {
         msgpack::pack(&exportFile, m_mappingWidget->mappings());
         return;
     };
+
+    void MainWindow::writeMapping(const CmpProc::object_handle& pipe, const CompReg::win32str& pipeName) noexcept {
+        const auto GetParentDirectory = [](const CompReg::win32str& path){
+            return path.substr(0, path.find_last_of('\\')) + TEXT('\\');
+        };
+        const auto GetProgramPath = []() {
+            const CompReg::win32str Param = GetCommandLine();
+            if (Param.contains(TEXT(' '))) {
+                return Param.substr(0, Param.find(TEXT(' ')));
+            }
+            return Param;
+        };
+        const CompReg::win32str BinaryDir = GetParentDirectory(GetProgramPath());
+        const CompReg::win32str WriterName = TEXT("AppScanMapWriter.exe");
+        const auto Process = CmpProc::ExecElevated(false, BinaryDir + WriterName, pipeName);
+        if (!Process) {
+            if (Process.error() == ERROR_CANCELLED) {
+                return;
+            }
+            QMessageBox::critical(
+                this, QString(u8"Apply Error"),
+                QString(u8"ライターの起動に失敗しました．\nエラーコード: %1").arg(Process.error())
+            );
+            return;
+        }
+
+        // ライターがパイプに接続するのを待つ
+        if(ConnectNamedPipe(pipe.get(), nullptr) == 0) {
+            QMessageBox::critical(
+                this, QString(u8"Apply Error"),
+                QString(u8"ライターとの接続に失敗しました．\nエラーコード: %1").arg(GetLastError())
+            );
+            return;
+        }
+
+        // マッピングデータをバイナリに変換する
+        const auto ToByte = [](const CompScanMap::MappingList& map){
+            const size_t BinSize = map.size() * sizeof(CompScanMap::MappingList::value_type);
+            auto bin = std::vector<uint8_t>(BinSize, 0);
+            memcpy(bin.data(), map.data(), BinSize);
+            return bin;
+        };
+        // パイプにデータを書き込む
+        if (const auto result = CmpProc::WritePipe(pipe, ToByte(m_mappingWidget->mappings())); !result.has_value()) {
+            QMessageBox::critical(
+                this,QString(u8"Apply Error"),
+                QString(u8"ライターへのデータ渡しに失敗しました: %1.").arg(result.error())
+            );
+        }
+        FlushFileBuffers(pipe.get());
+
+        // プログラムの終了を待つ
+        const auto ExitCode = CmpProc::WaitUntilExit(*Process);
+        if (!ExitCode) {
+            QMessageBox::critical(
+                this,QString(u8"Apply Error"),
+                QString(u8"ライターの返値の取得に失敗しました\nエラーコード: %1.").arg(ExitCode.error())
+            );
+            return;
+        }
+
+        // プログラムの成否を伝える
+        if (*ExitCode == 0) {
+            QMessageBox::information(
+                this,QString(u8"Apply Error"),
+                QString(u8"レジストリへの書き込みが完了しました．")
+            );
+            return;
+        }
+        QMessageBox::critical(
+            this,QString(u8"Apply Mapping"),
+            QString(u8"レジストリへの書き込みに失敗しました．\nエラーコード: %1").arg(*ExitCode)
+        );
+    }
 }

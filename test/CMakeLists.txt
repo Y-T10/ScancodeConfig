@@ -15,5 +15,6 @@ include(${CMAKE_SOURCE_DIR}/cmake/CtestHelper.cmake)
 register_test(TestCsmCodec Target CompScancodeMap fmt::fmt doctest::doctest)
 register_test(TestKeyName Target CompScancodeMap fmt::fmt)
 register_test(TestCreg Target CompRegistry doctest::doctest)
+register_test(TestProc Target CompProcess doctest::doctest fmt::fmt)
 # doctestに追加する
 doctest_discover_tests(TestCsmCodec)
