@@ -183,6 +183,9 @@ namespace AppSacnConf {
             return;
         }
 
+        // パイプを用いてレジストリに値を書き込む
+        writeMapping(*Pipe, PipeName);
+
         // パイプを閉じる
         DisconnectNamedPipe(Pipe.value().get());
     };
