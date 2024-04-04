@@ -146,10 +146,10 @@ namespace AppSacnConf {
     MainWindow::MainWindow() noexcept:
     QMainWindow(),
     m_mappingWidget(new MappingTableWidget(CurrentScancodeMap(), this)){
-        setFixedSize(300, 300);
+        resize(300, 300);
 
         setCentralWidget(m_mappingWidget);
-        m_mappingWidget->setFixedWidth(width());
+        m_mappingWidget->resize(width(), m_mappingWidget->height());
 
         createMenu();
         setWindowTitle(tr("Scancode Map Viewer"));
