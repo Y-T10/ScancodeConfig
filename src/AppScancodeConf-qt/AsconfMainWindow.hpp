@@ -16,6 +16,7 @@ namespace AppSacnConf {
 
         private slots:
             void applyMapping() noexcept;
+            void readMapping() noexcept;
             void importMapping() noexcept;
             void exportMapping() noexcept;
     
