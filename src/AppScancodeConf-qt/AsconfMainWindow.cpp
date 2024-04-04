@@ -170,6 +170,7 @@ namespace AppSacnConf {
     
         auto applyMenu = menuBar()->addMenu(tr("&Apply"));
         addMenuItem(applyMenu, tr("&Apply mapping"), this, &MainWindow::applyMapping);
+        addMenuItem(applyMenu, tr("&Load Mapping"), this, &MainWindow::readMapping);
     }
 
     void MainWindow::applyMapping() noexcept {
@@ -191,6 +192,18 @@ namespace AppSacnConf {
         // パイプを閉じる
         DisconnectNamedPipe(Pipe.value().get());
     };
+
+    void MainWindow::readMapping() noexcept {
+        // 既存のマップがあれば上書可能かを尋ねる
+        if (!m_mappingWidget->mappings().empty()) {
+            const auto Answer = QMessageBox::question(this, tr("警告"), tr("表を上書きしてもよろしいですか．"));
+            if (Answer != QMessageBox::StandardButton::Yes) {
+                return;
+            }
+        }
+        // 表を置き換える
+        m_mappingWidget->setMappings(CurrentScancodeMap());
+    }
     
     void MainWindow::importMapping() noexcept {
         const auto ImportedFilePath = QFileDialog::getOpenFileName(
