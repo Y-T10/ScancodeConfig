@@ -1,6 +1,6 @@
 #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
 #include "doctest/doctest.h"
-#include "fmt/core.h"
+#include <format>
 
 #include "CprocExec.hpp"
 
@@ -9,9 +9,9 @@ TEST_CASE("Execute as Admin") {
     const auto handle = CmpProc::ExecElevated(true, "C:/Windows/notepad.exe");
 
     if (!handle) {
-        MESSAGE(fmt::format("error code: {}", handle.error()));
+        MESSAGE(std::format("error code: {}", handle.error()));
         if (handle.error() == ERROR_CANCELLED) {
-            MESSAGE(fmt::format("管理者での実行がキャンセルされました"));
+            MESSAGE("管理者での実行がキャンセルされました");
             return;
         }
         CHECK(false);
