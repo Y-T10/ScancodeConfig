@@ -1,1 +1,2 @@
-# Personal Cpp Template
+# ScanMapConf
+Windows向けのキーマップツール．
