@@ -12,9 +12,9 @@ include(${doctest_SOURCE_DIR}/scripts/cmake/doctest.cmake)
 include(${CMAKE_SOURCE_DIR}/cmake/CtestHelper.cmake)
 
 # テストを追加する
-register_test(TestCsmCodec Target CompScancodeMap fmt::fmt doctest::doctest)
-register_test(TestKeyName Target CompScancodeMap fmt::fmt)
+register_test(TestCsmCodec Target CompScancodeMap doctest::doctest)
+register_test(TestKeyName Target CompScancodeMap)
 register_test(TestCreg Target CompRegistry doctest::doctest)
-register_test(TestProc Target CompProcess doctest::doctest fmt::fmt)
+register_test(TestProc Target CompProcess doctest::doctest)
 # doctestに追加する
 doctest_discover_tests(TestCsmCodec)
