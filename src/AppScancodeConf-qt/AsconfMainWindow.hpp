@@ -19,6 +19,7 @@ namespace AppSacnConf {
             void readMapping() noexcept;
             void importMapping() noexcept;
             void exportMapping() noexcept;
+            void showAboutQt() noexcept;
     
         private:
             void createMenu() noexcept;

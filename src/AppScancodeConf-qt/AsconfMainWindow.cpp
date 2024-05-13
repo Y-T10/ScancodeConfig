@@ -247,6 +247,10 @@ namespace AppSacnConf {
         return;
     };
 
+    void MainWindow::showAboutQt() noexcept {
+        QMessageBox::aboutQt(this, tr("About Qt"));
+    }
+
     void MainWindow::writeMapping(const CmpProc::object_handle& pipe, const CompReg::win32str& pipeName) noexcept {
         const auto GetParentDirectory = [](const CompReg::win32str& path){
             return path.substr(0, path.find_last_of('\\')) + TEXT('\\');
