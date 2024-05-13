@@ -171,6 +171,9 @@ namespace AppSacnConf {
         auto applyMenu = menuBar()->addMenu(tr("&Apply"));
         addMenuItem(applyMenu, tr("&Apply mapping"), this, &MainWindow::applyMapping);
         addMenuItem(applyMenu, tr("&Load Mapping"), this, &MainWindow::readMapping);
+
+        auto helpMenu = menuBar()->addMenu(tr("&Help"));
+        addMenuItem(helpMenu, tr("About Qt"), this, &MainWindow::showAboutQt);
     }
 
     void MainWindow::applyMapping() noexcept {
@@ -246,6 +249,10 @@ namespace AppSacnConf {
         msgpack::pack(&exportFile, m_mappingWidget->mappings());
         return;
     };
+
+    void MainWindow::showAboutQt() noexcept {
+        QMessageBox::aboutQt(this, tr("About Qt"));
+    }
 
     void MainWindow::writeMapping(const CmpProc::object_handle& pipe, const CompReg::win32str& pipeName) noexcept {
         const auto GetParentDirectory = [](const CompReg::win32str& path){
