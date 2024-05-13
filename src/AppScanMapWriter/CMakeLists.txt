@@ -14,6 +14,3 @@ target_link_options(
     PRIVATE
         -static -static-libgcc -static-libstdc++
 )
-
-get_filename_component(TargetName ${CMAKE_CURRENT_SOURCE_DIR} NAME_WE)
-qt_disable_unicode_defines(${TargetName})

@@ -11,6 +11,3 @@ add_exe_directory(
         msgpack-cxx
         CompProcess
 )
-
-get_filename_component(TargetName ${CMAKE_CURRENT_SOURCE_DIR} NAME_WE)
-qt_disable_unicode_defines(${TargetName})
