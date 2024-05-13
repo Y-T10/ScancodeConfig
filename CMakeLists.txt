@@ -65,8 +65,6 @@ CPMAddPackage(
 
 # システム内のパッケージを読み込む
 find_package(Threads REQUIRED)
-find_package(Qt6 COMPONENTS Widgets DBus REQUIRED)
-qt_standard_project_setup()
 #find_package(Boost REQUIRED)
 
 # Add sub directories
