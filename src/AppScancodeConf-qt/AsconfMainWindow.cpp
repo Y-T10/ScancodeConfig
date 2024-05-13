@@ -171,6 +171,9 @@ namespace AppSacnConf {
         auto applyMenu = menuBar()->addMenu(tr("&Apply"));
         addMenuItem(applyMenu, tr("&Apply mapping"), this, &MainWindow::applyMapping);
         addMenuItem(applyMenu, tr("&Load Mapping"), this, &MainWindow::readMapping);
+
+        auto helpMenu = menuBar()->addMenu(tr("&Help"));
+        addMenuItem(helpMenu, tr("About Qt"), this, &MainWindow::showAboutQt);
     }
 
     void MainWindow::applyMapping() noexcept {
