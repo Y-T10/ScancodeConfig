@@ -51,6 +51,18 @@ CPMAddPackage(
     GIT_TAG cpp-6.1.0
 )
 
+CPMAddPackage(
+    NAME challenger
+    GITHUB_REPOSITORY Y-T10/challenger 
+    GIT_TAG v0.0.1
+)
+
+CPMAddPackage(
+    NAME IMGUI
+    GITHUB_REPOSITORY ocornut/imgui
+    GIT_TAG v1.90.6
+)
+
 # システム内のパッケージを読み込む
 find_package(Threads REQUIRED)
 find_package(Qt6 COMPONENTS Widgets DBus REQUIRED)
