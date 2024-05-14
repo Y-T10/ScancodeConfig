@@ -1,3 +1,4 @@
+#include "SDL_events.h"
 #include "SDL_init.h"
 #include "SDL_hints.h"
 #include "SDL_render.h"
@@ -40,6 +41,30 @@ int main(int argc, char* argv[]) {
     // ImGuiSDL3向けの初期化を行う
     ImGui_ImplSDL3_InitForSDLRenderer(MainWindow.get(), WindowRenderer.get());
     ImGui_ImplSDLRenderer3_Init(WindowRenderer.get());
+
+    while (true) {
+        // イベント処理
+        {
+            SDL_Event event;
+            SDL_WaitEvent(&event);
+            ImGui_ImplSDL3_ProcessEvent(&event);
+            if (event.type == SDL_EVENT_QUIT) {
+                break;
+            }
+        }
+
+        // 描画処理
+
+        ImGui_ImplSDLRenderer3_NewFrame();
+        ImGui_ImplSDL3_NewFrame();
+        ImGui::NewFrame();
+
+        ImGui::Render();
+        SDL_SetRenderDrawColor(WindowRenderer.get(), 0, 0, 0, 0);
+        SDL_RenderClear(WindowRenderer.get());
+        ImGui_ImplSDLRenderer3_RenderDrawData(ImGui::GetDrawData());
+        SDL_RenderPresent(WindowRenderer.get());
+    }
 
 
     // ImGuiを閉じる
