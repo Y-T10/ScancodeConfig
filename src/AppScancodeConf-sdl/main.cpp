@@ -81,6 +81,11 @@ int main(int argc, char* argv[]) {
         ImGui_ImplSDL3_NewFrame();
         ImGui::NewFrame();
 
+        {
+            const auto [w, h] = GetRenderAreaSize(WindowRenderer);
+            ShowConfigWindow(SDL_Rect{.x = 0, .y = 0, .w =w, .h = h});
+        }
+
         // 描画処理
         ImGui::Render();
         SDL_SetRenderDrawColor(WindowRenderer.get(), 0, 0, 0, 0);
