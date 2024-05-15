@@ -1,6 +1,7 @@
 #include "SDL_events.h"
 #include "SDL_init.h"
 #include "SDL_hints.h"
+#include "SDL_rect.h"
 #include "SDL_render.h"
 #include "SDL_video.h"
 #include "challenger/challenger_memory.hpp"
@@ -14,6 +15,21 @@
 #include "imgui_impl_sdlrenderer3.h"
 
 using namespace challenger;
+
+void ShowConfigWindow(const SDL_Rect drawArea) noexcept {
+    // ウィンドウの設定
+    const ImGuiWindowFlags WindowFlags = 
+        ImGuiWindowFlags_NoTitleBar |
+        ImGuiWindowFlags_NoMove |
+        ImGuiWindowFlags_NoResize;
+    ImGui::Begin("Hello, world!", NULL, WindowFlags);
+
+    // ウィンドウを描画範囲全体にする
+    ImGui::SetWindowSize(ImVec2(drawArea.w, drawArea.h));
+    ImGui::SetWindowPos(ImVec2(drawArea.x, drawArea.y));
+
+    ImGui::End();
+}
 
 int main(int argc, char* argv[]) {
     // SDLのサブシステムを立ち上げる
