@@ -9,12 +9,19 @@
 #include "challenger/challenger_render.hpp"
 #include <cstddef>
 #include <cstdlib>
+#include <tuple>
 
 #include "imgui.h"
 #include "imgui_impl_sdl3.h"
 #include "imgui_impl_sdlrenderer3.h"
 
 using namespace challenger;
+
+const std::tuple<int, int> GetRenderAreaSize(const Renderer& renderer) noexcept {
+    int w, h;
+    SDL_GetRenderOutputSize(renderer.get(), &w, &h);
+    return {w, h};
+}
 
 void ShowConfigWindow(const SDL_Rect drawArea) noexcept {
     // ウィンドウの設定
