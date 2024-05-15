@@ -53,12 +53,12 @@ int main(int argc, char* argv[]) {
             }
         }
 
-        // 描画処理
-
+        // ImGuiのウィンドウ処理
         ImGui_ImplSDLRenderer3_NewFrame();
         ImGui_ImplSDL3_NewFrame();
         ImGui::NewFrame();
 
+        // 描画処理
         ImGui::Render();
         SDL_SetRenderDrawColor(WindowRenderer.get(), 0, 0, 0, 0);
         SDL_RenderClear(WindowRenderer.get());
