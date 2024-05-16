@@ -24,7 +24,7 @@ const std::tuple<int, int> GetRenderAreaSize(const Renderer& renderer) noexcept 
 }
 
 struct ConfigWindow {
-    void ShowConfigWindow(const SDL_Rect drawArea) noexcept {
+    void show(const SDL_Rect drawArea) noexcept {
         // ウィンドウの設定
         const ImGuiWindowFlags WindowFlags = 
             ImGuiWindowFlags_NoTitleBar |
@@ -119,7 +119,7 @@ int main(int argc, char* argv[]) {
         {
             ConfigWindow configWindow;
             const auto [w, h] = GetRenderAreaSize(WindowRenderer);
-            configWindow.ShowConfigWindow(SDL_Rect{.x = 0, .y = 0, .w =w, .h = h});
+            configWindow.show(SDL_Rect{.x = 0, .y = 0, .w =w, .h = h});
         }
 
         // 描画処理
