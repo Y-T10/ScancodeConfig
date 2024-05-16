@@ -37,24 +37,7 @@ struct ConfigWindow {
         ImGui::SetWindowSize(ImVec2(drawArea.w, drawArea.h));
         ImGui::SetWindowPos(ImVec2(drawArea.x, drawArea.y));
 
-        if (ImGui::BeginMenuBar()) {
-            // メニューを追加する
-            if (ImGui::BeginMenu("File")) {
-                ImGui::MenuItem("Import Mapping", NULL, &importMapping);
-                ImGui::MenuItem("Export Mapping", NULL, &exportMapping);
-
-                ImGui::EndMenu();
-            }
-
-            if (ImGui::BeginMenu("Registry")) {
-                ImGui::MenuItem("Load current mappping", NULL, &loadMapping);
-                ImGui::MenuItem("Apply mappping", NULL, &applyMapping);
-
-                ImGui::EndMenu();
-            }
-
-            ImGui::EndMenuBar();
-        }
+        showMenuBar();
 
         ImGui::End();
     }
@@ -63,6 +46,31 @@ struct ConfigWindow {
     bool exportMapping;
     bool loadMapping;
     bool applyMapping;
+
+    private:
+
+    void showMenuBar() noexcept {
+        if (!ImGui::BeginMenuBar()) {
+            return;
+        }
+
+        // メニューを追加する
+        if (ImGui::BeginMenu("File")) {
+            ImGui::MenuItem("Import Mapping", NULL, &importMapping);
+            ImGui::MenuItem("Export Mapping", NULL, &exportMapping);
+
+            ImGui::EndMenu();
+        }
+
+        if (ImGui::BeginMenu("Registry")) {
+            ImGui::MenuItem("Load current mappping", NULL, &loadMapping);
+            ImGui::MenuItem("Apply mappping", NULL, &applyMapping);
+
+            ImGui::EndMenu();
+        }
+
+        ImGui::EndMenuBar();
+    }
 };
 
 int main(int argc, char* argv[]) {
