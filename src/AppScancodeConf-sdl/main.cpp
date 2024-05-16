@@ -9,11 +9,16 @@
 #include "challenger/challenger_render.hpp"
 #include <cstddef>
 #include <cstdlib>
+#include <format>
 #include <tuple>
 
 #include "imgui.h"
 #include "imgui_impl_sdl3.h"
 #include "imgui_impl_sdlrenderer3.h"
+
+#include "CsmViewer.hpp"
+#include "CregHandler.hpp"
+#include "CsmCodec.hpp"
 
 using namespace challenger;
 
@@ -23,7 +28,48 @@ const std::tuple<int, int> GetRenderAreaSize(const Renderer& renderer) noexcept 
     return {w, h};
 }
 
+const CompScanMap::MappingList ReadScancodeMap() noexcept {
+    const auto RegKey = CompReg::OpenRegKey(
+        HKEY_LOCAL_MACHINE,
+        TEXT("SYSTEM\\CurrentControlSet\\Control\\Keyboard Layout"),
+        KEY_READ
+    );
+    if (!RegKey) {
+        return {};
+    }
+    const auto RegValue = ReadKeyValueBin(RegKey, TEXT("Scancode Map"));
+    if (!RegValue) {
+        return {};
+    }
+    const auto MappingList = CompScanMap::DecodeScancodeMap(*RegValue);
+    return MappingList.has_value() ? *MappingList : CompScanMap::MappingList{};
+}
+
+static constexpr auto TextNotApplicable = "N/A";
+
+const std::string GetNameFrom (const CompScanMap::Scancode code) {
+    // TODO: エラーコードとキーの番号を標準エラーに書き込む
+    return CompScanMap::WindowsScancodeName(code).value_or(TextNotApplicable);
+};
+
+const std::string GetNameTo(const CompScanMap::Scancode code) {
+    // TODO: エラーコードとキーの番号を標準エラーに書き込む
+    const std::string KeyName = CompScanMap::KeyboardKeyName(code).value_or(TextNotApplicable);
+    if (!KeyName.empty()) {
+        return KeyName;
+    }
+    return CompScanMap::WindowsScancodeName(code).value_or(TextNotApplicable);
+};
+
+template <class F>
+const std::string GenerateText(const CompScanMap::Scancode code, const F &func) {
+    static_assert(std::is_invocable_r_v<const std::string, F, CompScanMap::Scancode>);
+    return std::format("{:s} ({:#x})", func(code), code); 
+};
+
 struct ConfigWindow {
+    using container_type = CompScanMap::MappingList;
+
     void show(const SDL_Rect drawArea) noexcept {
         // ウィンドウの設定
         const ImGuiWindowFlags WindowFlags = 
@@ -38,6 +84,7 @@ struct ConfigWindow {
         ImGui::SetWindowPos(ImVec2(drawArea.x, drawArea.y));
 
         showMenuBar();
+        showTable();
 
         ImGui::End();
     }
@@ -46,6 +93,8 @@ struct ConfigWindow {
     bool exportMapping;
     bool loadMapping;
     bool applyMapping;
+
+    container_type mapping;
 
     private:
 
@@ -71,6 +120,32 @@ struct ConfigWindow {
 
         ImGui::EndMenuBar();
     }
+
+    void showTable() noexcept {
+        if(!ImGui::BeginTable("mapping_table", 2)) {
+            return;
+        }
+
+        // ヘッダを設定
+        ImGui::TableSetupScrollFreeze(0, 1);
+        ImGui::TableSetupColumn("Mapping From");
+        ImGui::TableSetupColumn("Mapping To");
+        ImGui::TableHeadersRow();
+
+        // 表を作成する
+        for (const auto& map: mapping) {
+            // 行を追加
+            ImGui::TableNextRow();
+
+            // 行の中身を埋める
+            ImGui::TableSetColumnIndex(0);
+            ImGui::Text("%s", GenerateText(map.from, GetNameFrom).c_str());
+            ImGui::TableSetColumnIndex(1);
+            ImGui::Text("%s", GenerateText(map.from, GetNameTo).c_str());
+        }
+
+        ImGui::EndTable();
+    }
 };
 
 int main(int argc, char* argv[]) {
@@ -88,6 +163,7 @@ int main(int argc, char* argv[]) {
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
     ImGui::GetIO().ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard | ImGuiConfigFlags_NavEnableGamepad;
+    ImGui::GetIO().Fonts->AddFontFromFileTTF("C:/Windows/Fonts/YUGOTHL.TTC", 18.0f, nullptr, ImGui::GetIO().Fonts->GetGlyphRangesJapanese());
 
     // ImGuiのスタイルをシステムのテーマに合わせる
     if (SDL_GetSystemTheme() == SDL_SystemTheme::SDL_SYSTEM_THEME_DARK) {
@@ -99,6 +175,14 @@ int main(int argc, char* argv[]) {
     // ImGuiSDL3向けの初期化を行う
     ImGui_ImplSDL3_InitForSDLRenderer(MainWindow.get(), WindowRenderer.get());
     ImGui_ImplSDLRenderer3_Init(WindowRenderer.get());
+
+    ConfigWindow configWindow = {
+        .importMapping = false,
+        .exportMapping = false,
+        .loadMapping = false,
+        .applyMapping = false,
+        .mapping = ReadScancodeMap()
+    };
 
     while (true) {
         // イベント処理
@@ -117,7 +201,6 @@ int main(int argc, char* argv[]) {
         ImGui::NewFrame();
 
         {
-            ConfigWindow configWindow;
             const auto [w, h] = GetRenderAreaSize(WindowRenderer);
             configWindow.show(SDL_Rect{.x = 0, .y = 0, .w =w, .h = h});
         }
