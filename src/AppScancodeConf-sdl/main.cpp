@@ -23,17 +23,37 @@ const std::tuple<int, int> GetRenderAreaSize(const Renderer& renderer) noexcept 
     return {w, h};
 }
 
-void ShowConfigWindow(const SDL_Rect drawArea) noexcept {
+void ShowConfigWindow(const SDL_Rect drawArea, bool& importMapping, bool& exportMapping, bool& loadMapping, bool& applyMapping) noexcept {
     // ウィンドウの設定
     const ImGuiWindowFlags WindowFlags = 
         ImGuiWindowFlags_NoTitleBar |
         ImGuiWindowFlags_NoMove |
-        ImGuiWindowFlags_NoResize;
+        ImGuiWindowFlags_NoResize |
+        ImGuiWindowFlags_MenuBar;
     ImGui::Begin("Hello, world!", NULL, WindowFlags);
 
     // ウィンドウを描画範囲全体にする
     ImGui::SetWindowSize(ImVec2(drawArea.w, drawArea.h));
     ImGui::SetWindowPos(ImVec2(drawArea.x, drawArea.y));
+
+    if (ImGui::BeginMenuBar()) {
+        // メニューを追加する
+        if (ImGui::BeginMenu("File")) {
+            ImGui::MenuItem("Import Mapping", NULL, &importMapping);
+            ImGui::MenuItem("Export Mapping", NULL, &exportMapping);
+
+            ImGui::EndMenu();
+        }
+
+        if (ImGui::BeginMenu("Registry")) {
+            ImGui::MenuItem("Load current mappping", NULL, &loadMapping);
+            ImGui::MenuItem("Apply mappping", NULL, &applyMapping);
+
+            ImGui::EndMenu();
+        }
+
+        ImGui::EndMenuBar();
+    }
 
     ImGui::End();
 }
