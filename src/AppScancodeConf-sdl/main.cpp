@@ -111,7 +111,7 @@ int main(int argc, char* argv[]) {
         {
             ConfigWindow configWindow;
             const auto [w, h] = GetRenderAreaSize(WindowRenderer);
-            ShowConfigWindow(SDL_Rect{.x = 0, .y = 0, .w =w, .h = h}, configWindow.importMapping, configWindow.exportMapping, configWindow.loadMapping, configWindow.applyMapping);
+            configWindow.ShowConfigWindow(SDL_Rect{.x = 0, .y = 0, .w =w, .h = h});
         }
 
         // 描画処理
