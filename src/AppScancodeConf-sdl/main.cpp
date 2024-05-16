@@ -24,7 +24,7 @@ const std::tuple<int, int> GetRenderAreaSize(const Renderer& renderer) noexcept 
 }
 
 struct ConfigWindow {
-    void ShowConfigWindow(const SDL_Rect drawArea, bool& importMapping, bool& exportMapping, bool& loadMapping, bool& applyMapping) noexcept {
+    void ShowConfigWindow(const SDL_Rect drawArea) noexcept {
         // ウィンドウの設定
         const ImGuiWindowFlags WindowFlags = 
             ImGuiWindowFlags_NoTitleBar |
