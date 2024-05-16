@@ -58,6 +58,13 @@ void ShowConfigWindow(const SDL_Rect drawArea, bool& importMapping, bool& export
     ImGui::End();
 }
 
+struct ConfigWindow {
+    bool importMapping;
+    bool exportMapping;
+    bool loadMapping;
+    bool applyMapping;
+};
+
 int main(int argc, char* argv[]) {
     // SDLのサブシステムを立ち上げる
     if(!!SDL_Init(SDL_INIT_EVENTS | SDL_INIT_VIDEO)) {
@@ -102,8 +109,9 @@ int main(int argc, char* argv[]) {
         ImGui::NewFrame();
 
         {
+            ConfigWindow configWindow;
             const auto [w, h] = GetRenderAreaSize(WindowRenderer);
-            ShowConfigWindow(SDL_Rect{.x = 0, .y = 0, .w =w, .h = h});
+            ShowConfigWindow(SDL_Rect{.x = 0, .y = 0, .w =w, .h = h}, configWindow.importMapping, configWindow.exportMapping, configWindow.loadMapping, configWindow.applyMapping);
         }
 
         // 描画処理
