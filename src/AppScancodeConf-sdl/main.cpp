@@ -87,6 +87,12 @@ int main(int argc, char* argv[]) {
                 configWindow.mapping = AppSacnConf::ReadScancodeMap();
                 configWindow.loadMapping = false;
             }
+
+            // レジストリに値を書き込む．
+            if (configWindow.applyMapping) {
+                AppSacnConf::WriteScancodeMap(configWindow.mapping);
+                configWindow.applyMapping = false;
+            }
         }
 
         // 描画処理
