@@ -9,16 +9,14 @@
 #include "challenger/challenger_render.hpp"
 #include <cstddef>
 #include <cstdlib>
-#include <format>
 #include <tuple>
 
 #include "imgui.h"
 #include "imgui_impl_sdl3.h"
 #include "imgui_impl_sdlrenderer3.h"
 
-#include "CsmViewer.hpp"
-#include "CregHandler.hpp"
-#include "CsmCodec.hpp"
+#include "AsconfMappingWindow.hpp"
+#include "AsconfRegistry.hpp"
 
 using namespace challenger;
 
@@ -27,126 +25,6 @@ const std::tuple<int, int> GetRenderAreaSize(const Renderer& renderer) noexcept 
     SDL_GetRenderOutputSize(renderer.get(), &w, &h);
     return {w, h};
 }
-
-const CompScanMap::MappingList ReadScancodeMap() noexcept {
-    const auto RegKey = CompReg::OpenRegKey(
-        HKEY_LOCAL_MACHINE,
-        TEXT("SYSTEM\\CurrentControlSet\\Control\\Keyboard Layout"),
-        KEY_READ
-    );
-    if (!RegKey) {
-        return {};
-    }
-    const auto RegValue = ReadKeyValueBin(RegKey, TEXT("Scancode Map"));
-    if (!RegValue) {
-        return {};
-    }
-    const auto MappingList = CompScanMap::DecodeScancodeMap(*RegValue);
-    return MappingList.has_value() ? *MappingList : CompScanMap::MappingList{};
-}
-
-static constexpr auto TextNotApplicable = "N/A";
-
-const std::string GetNameFrom (const CompScanMap::Scancode code) {
-    // TODO: エラーコードとキーの番号を標準エラーに書き込む
-    return CompScanMap::WindowsScancodeName(code).value_or(TextNotApplicable);
-};
-
-const std::string GetNameTo(const CompScanMap::Scancode code) {
-    // TODO: エラーコードとキーの番号を標準エラーに書き込む
-    const std::string KeyName = CompScanMap::KeyboardKeyName(code).value_or(TextNotApplicable);
-    if (!KeyName.empty()) {
-        return KeyName;
-    }
-    return CompScanMap::WindowsScancodeName(code).value_or(TextNotApplicable);
-};
-
-template <class F>
-const std::string GenerateText(const CompScanMap::Scancode code, const F &func) {
-    static_assert(std::is_invocable_r_v<const std::string, F, CompScanMap::Scancode>);
-    return std::format("{:s} ({:#x})", func(code), code); 
-};
-
-struct ConfigWindow {
-    using container_type = CompScanMap::MappingList;
-
-    void show(const SDL_Rect drawArea) noexcept {
-        // ウィンドウの設定
-        const ImGuiWindowFlags WindowFlags = 
-            ImGuiWindowFlags_NoTitleBar |
-            ImGuiWindowFlags_NoMove |
-            ImGuiWindowFlags_NoResize |
-            ImGuiWindowFlags_MenuBar;
-        ImGui::Begin("Hello, world!", NULL, WindowFlags);
-
-        // ウィンドウを描画範囲全体にする
-        ImGui::SetWindowSize(ImVec2(drawArea.w, drawArea.h));
-        ImGui::SetWindowPos(ImVec2(drawArea.x, drawArea.y));
-
-        showMenuBar();
-        showTable();
-
-        ImGui::End();
-    }
-
-    bool importMapping;
-    bool exportMapping;
-    bool loadMapping;
-    bool applyMapping;
-
-    container_type mapping;
-
-    private:
-
-    void showMenuBar() noexcept {
-        if (!ImGui::BeginMenuBar()) {
-            return;
-        }
-
-        // メニューを追加する
-        if (ImGui::BeginMenu("File")) {
-            ImGui::MenuItem("Import Mapping", NULL, &importMapping);
-            ImGui::MenuItem("Export Mapping", NULL, &exportMapping);
-
-            ImGui::EndMenu();
-        }
-
-        if (ImGui::BeginMenu("Registry")) {
-            ImGui::MenuItem("Load current mappping", NULL, &loadMapping);
-            ImGui::MenuItem("Apply mappping", NULL, &applyMapping);
-
-            ImGui::EndMenu();
-        }
-
-        ImGui::EndMenuBar();
-    }
-
-    void showTable() noexcept {
-        if(!ImGui::BeginTable("mapping_table", 2)) {
-            return;
-        }
-
-        // ヘッダを設定
-        ImGui::TableSetupScrollFreeze(0, 1);
-        ImGui::TableSetupColumn("Mapping From");
-        ImGui::TableSetupColumn("Mapping To");
-        ImGui::TableHeadersRow();
-
-        // 表を作成する
-        for (const auto& map: mapping) {
-            // 行を追加
-            ImGui::TableNextRow();
-
-            // 行の中身を埋める
-            ImGui::TableSetColumnIndex(0);
-            ImGui::Text("%s", GenerateText(map.from, GetNameFrom).c_str());
-            ImGui::TableSetColumnIndex(1);
-            ImGui::Text("%s", GenerateText(map.from, GetNameTo).c_str());
-        }
-
-        ImGui::EndTable();
-    }
-};
 
 int main(int argc, char* argv[]) {
     // SDLのサブシステムを立ち上げる
@@ -176,12 +54,12 @@ int main(int argc, char* argv[]) {
     ImGui_ImplSDL3_InitForSDLRenderer(MainWindow.get(), WindowRenderer.get());
     ImGui_ImplSDLRenderer3_Init(WindowRenderer.get());
 
-    ConfigWindow configWindow = {
+    AppSacnConf::ConfigWindow configWindow = {
         .importMapping = false,
         .exportMapping = false,
         .loadMapping = false,
         .applyMapping = false,
-        .mapping = ReadScancodeMap()
+        .mapping = AppSacnConf::ReadScancodeMap()
     };
 
     while (true) {
