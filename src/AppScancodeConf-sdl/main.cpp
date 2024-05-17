@@ -81,6 +81,12 @@ int main(int argc, char* argv[]) {
         {
             const auto [w, h] = GetRenderAreaSize(WindowRenderer);
             configWindow.show(SDL_Rect{.x = 0, .y = 0, .w =w, .h = h});
+
+            // レジストリから値を取り出す．
+            if (configWindow.loadMapping) {
+                configWindow.mapping = AppSacnConf::ReadScancodeMap();
+                configWindow.loadMapping = false;
+            }
         }
 
         // 描画処理
