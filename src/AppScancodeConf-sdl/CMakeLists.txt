@@ -3,6 +3,8 @@ add_exe_directory(
     ${CMAKE_CURRENT_SOURCE_DIR}
     SOURCE
         ${CMAKE_CURRENT_SOURCE_DIR}/main.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/AsconfMappingWindow.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/AsconfRegistry.cpp
     LIBPRIV
         CompRegistry
         CompScancodeMap
