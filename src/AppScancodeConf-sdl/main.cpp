@@ -16,7 +16,10 @@
 #include "imgui_impl_sdlrenderer3.h"
 
 #include "AsconfMappingWindow.hpp"
+#include "AsconfMappingIO.hpp"
 #include "AsconfRegistry.hpp"
+#include "AsconfDialog.hpp"
+
 
 using namespace challenger;
 
@@ -92,6 +95,24 @@ int main(int argc, char* argv[]) {
             if (configWindow.applyMapping) {
                 AppSacnConf::WriteScancodeMap(configWindow.mapping);
                 configWindow.applyMapping = false;
+            }
+
+            if (configWindow.importMapping) {
+                configWindow.importMapping = false;
+                
+                const auto Path = AppSacnConf::ShowOpenDialog(MainWindow);
+                if (Path) {
+                    configWindow.mapping = AppSacnConf::ImportMapping(*Path);
+                }
+            }
+
+            if (configWindow.exportMapping) {
+                configWindow.exportMapping = false;
+                
+                const auto Path = AppSacnConf::ShowSaveDialog(MainWindow);
+                if (Path) {
+                    AppSacnConf::ExportMapping(*Path, configWindow.mapping);
+                }
             }
         }
 
