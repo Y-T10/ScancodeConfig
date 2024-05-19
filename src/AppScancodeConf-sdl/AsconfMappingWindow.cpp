@@ -1,5 +1,3 @@
-#pragma once
-
 #include "AsconfMappingWindow.hpp"
 
 #include <cstddef>
