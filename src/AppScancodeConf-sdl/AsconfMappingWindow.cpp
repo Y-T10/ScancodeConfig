@@ -93,7 +93,7 @@ namespace AppSacnConf {
             ImGui::TableSetColumnIndex(0);
             ImGui::Text("%s", GenerateText(map.from, GetNameFrom).c_str());
             ImGui::TableSetColumnIndex(1);
-            ImGui::Text("%s", GenerateText(map.from, GetNameTo).c_str());
+            ImGui::Text("%s", GenerateText(map.to, GetNameTo).c_str());
         }
 
         ImGui::EndTable();
