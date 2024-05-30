@@ -14,4 +14,5 @@ add_exe_directory(
         ModImGui
         msgpack-cxx
         CompProcess
+        Fcpp::Fcpp
 )

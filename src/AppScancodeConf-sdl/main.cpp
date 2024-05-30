@@ -9,6 +9,9 @@
 #include "challenger/challenger_render.hpp"
 #include <cstddef>
 #include <cstdlib>
+#include <filesystem>
+#include <fontconfig/fontconfig.h>
+#include <string>
 #include <tuple>
 
 #include "imgui.h"
@@ -20,6 +23,7 @@
 #include "AsconfRegistry.hpp"
 #include "AsconfDialog.hpp"
 
+#include "Fcpp.hpp"
 
 using namespace challenger;
 
@@ -36,15 +40,38 @@ int main(int argc, char* argv[]) {
     }
     SDL_SetHint(SDL_HINT_IME_SHOW_UI, "1");
 
+    // Fontconfigの初期化
+    static_assert(!!FcTrue);
+    static_assert(!(!!FcFalse));
+    if (!FcInit()) {
+        return EXIT_FAILURE;
+    }
+
     // ウィンドウとレンダラを作成
     const auto MainWindow = Create<Window, SDL_CreateWindow>("Scancode Configure", 300, 300, SDL_WINDOW_OPENGL);
     const auto WindowRenderer = Create<Renderer, SDL_CreateRenderer>(MainWindow.get(), nullptr, SDL_RENDERER_ACCELERATED);
+
+    // 使用する日本語フォントの検索パターンを作る
+    // TODO: FcChar8ではなくcharを代入できるようにする
+    // TODO: FcPatternAdd(Double/Integer/Bool/...)を呼び出すようにする
+    const auto JPPattern = Fcpp::CreatePattern({
+        {FC_FAMILY, std::basic_string<FcChar8>((const FcChar8*)"Monospace")},
+        {FC_FAMILYLANG, std::basic_string<FcChar8>((const FcChar8*)"ja")},
+        {FC_LANG, std::basic_string<FcChar8>((const FcChar8*)"ja")},
+    });
+    FcPatternAddDouble(JPPattern.get(), FC_SIZE, 18.0f);
+
+    // 検索パターンを満たすフォントをシステムから取得する
+    const auto JPFontPath = Fcpp::SearchFont(Fcpp::CurrentDefaultConfig(), JPPattern);
+    if (!std::filesystem::exists(JPFontPath)) {
+        return EXIT_FAILURE;
+    }
 
     // ImGuiのセットアップ
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
     ImGui::GetIO().ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard | ImGuiConfigFlags_NavEnableGamepad;
-    ImGui::GetIO().Fonts->AddFontFromFileTTF("C:/Windows/Fonts/YUGOTHL.TTC", 18.0f, nullptr, ImGui::GetIO().Fonts->GetGlyphRangesJapanese());
+    ImGui::GetIO().Fonts->AddFontFromFileTTF(JPFontPath.string().c_str(), 18.0f, nullptr, ImGui::GetIO().Fonts->GetGlyphRangesJapanese());
 
     // ImGuiのスタイルをシステムのテーマに合わせる
     if (SDL_GetSystemTheme() == SDL_SystemTheme::SDL_SYSTEM_THEME_DARK) {
@@ -129,6 +156,8 @@ int main(int argc, char* argv[]) {
     ImGui_ImplSDLRenderer3_Shutdown();
     ImGui_ImplSDL3_Shutdown();
     ImGui::DestroyContext();
+
+    FcFini();
 
     // SDLのサブシステムを閉じる
     SDL_Quit();
