@@ -63,6 +63,12 @@ CPMAddPackage(
     GIT_TAG v1.90.6
 )
 
+CPMAddPackage(
+    NAME Fcpp
+    GITHUB_REPOSITORY Y-T10/Fcpp
+    GIT_TAG main
+)
+
 # システム内のパッケージを読み込む
 find_package(Threads REQUIRED)
 #find_package(Boost REQUIRED)
