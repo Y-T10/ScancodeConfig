@@ -55,14 +55,14 @@ int main(int argc, char* argv[]) {
     // TODO: FcChar8ではなくcharを代入できるようにする
     // TODO: FcPatternAdd(Double/Integer/Bool/...)を呼び出すようにする
     const auto JPPattern = Fcpp::CreatePattern({
-        {FC_FAMILY, std::basic_string<FcChar8>((const FcChar8*)"Monospace")},
-        {FC_FAMILYLANG, std::basic_string<FcChar8>((const FcChar8*)"ja")},
-        {FC_LANG, std::basic_string<FcChar8>((const FcChar8*)"ja")},
+        {FC_FAMILY, (const FcChar8*)"Monospace"},
+        {FC_FAMILYLANG, (const FcChar8*)"ja"},
+        {FC_LANG, (const FcChar8*)"ja"},
     });
     FcPatternAddDouble(JPPattern.get(), FC_SIZE, 18.0f);
 
     // 検索パターンを満たすフォントをシステムから取得する
-    const auto JPFontPath = Fcpp::SearchFont(Fcpp::CurrentDefaultConfig(), JPPattern);
+    const auto JPFontPath = Fcpp::SearchFont(JPPattern);
     if (!std::filesystem::exists(JPFontPath)) {
         return EXIT_FAILURE;
     }
