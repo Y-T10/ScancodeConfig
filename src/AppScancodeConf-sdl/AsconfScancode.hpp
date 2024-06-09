@@ -5,7 +5,6 @@
 // 値と画像の対->後々で外部から入れる
 // これらのコードは`Scancode Set 1`と対応する．
 
-#include "SDL_keycode.h"
 #ifndef ENABLE_F24
     #define ENABLE_F24 0
 #endif
@@ -200,5 +199,16 @@ enum WinScancode {
     LGUI            = 0xE05B, 
     RGUI            = 0xE05C,
     App             = 0xE05D,
-    Power           = 0xE05E,
+    SysPower        = 0xE05E,
+    SysSleep        = 0xE05E,
+    SysWake         = 0xE063,
+    WWWSearch       = 0xE065,
+    WWWFavorites    = 0xE066,
+    WWWRefresh      = 0xE067,
+    WWWStop         = 0xE068,
+    WWWForward      = 0xE069,
+    WWWBack         = 0xE06A,
+    MyComputer      = 0xE06B,
+    Mail            = 0xE06C,
+    MediaSelect     = 0xE06D,
 };
