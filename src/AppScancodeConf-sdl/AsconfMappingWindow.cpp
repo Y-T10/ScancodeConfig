@@ -81,7 +81,7 @@ namespace AppSacnConf {
             exportMapping = false;
             
             const auto Path = AppSacnConf::ShowSaveDialog(MainWindow);
-            if (Path) {
+            if (Path && (!Path->empty())) {
                 AppSacnConf::ExportMapping(*Path, mapping);
             }
         }
