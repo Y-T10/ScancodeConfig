@@ -1,9 +1,9 @@
-#include "SDL_events.h"
-#include "SDL_init.h"
-#include "SDL_hints.h"
-#include "SDL_rect.h"
-#include "SDL_render.h"
-#include "SDL_video.h"
+#include "SDL3/SDL_events.h"
+#include "SDL3/SDL_init.h"
+#include "SDL3/SDL_hints.h"
+#include "SDL3/SDL_rect.h"
+#include "SDL3/SDL_render.h"
+#include "SDL3/SDL_video.h"
 #include "challenger/challenger_memory.hpp"
 #include "challenger/challenger_video.hpp"
 #include "challenger/challenger_render.hpp"
@@ -33,23 +33,10 @@ const std::tuple<int, int> GetRenderAreaSize(const Renderer& renderer) noexcept 
     return {w, h};
 }
 
-int main(int argc, char* argv[]) {
-    // SDLのサブシステムを立ち上げる
-    if(!!SDL_Init(SDL_INIT_EVENTS | SDL_INIT_VIDEO)) {
-        return EXIT_FAILURE;
-    }
-    SDL_SetHint(SDL_HINT_IME_SHOW_UI, "1");
-
-    // Fontconfigの初期化
-    static_assert(!!FcTrue);
-    static_assert(!(!!FcFalse));
-    if (!FcInit()) {
-        return EXIT_FAILURE;
-    }
-
+int GUIMain() {
     // ウィンドウとレンダラを作成
     const auto MainWindow = Create<Window, SDL_CreateWindow>("Scancode Configure", 300, 300, SDL_WINDOW_OPENGL);
-    const auto WindowRenderer = Create<Renderer, SDL_CreateRenderer>(MainWindow.get(), nullptr, SDL_RENDERER_ACCELERATED);
+    const auto WindowRenderer = Create<Renderer, SDL_CreateRenderer>(MainWindow.get(), nullptr);
 
     // 使用する日本語フォントの検索パターンを作る
     // TODO: FcChar8ではなくcharを代入できるようにする
@@ -147,7 +134,7 @@ int main(int argc, char* argv[]) {
         ImGui::Render();
         SDL_SetRenderDrawColor(WindowRenderer.get(), 0, 0, 0, 0);
         SDL_RenderClear(WindowRenderer.get());
-        ImGui_ImplSDLRenderer3_RenderDrawData(ImGui::GetDrawData());
+        ImGui_ImplSDLRenderer3_RenderDrawData(ImGui::GetDrawData(), WindowRenderer.get());
         SDL_RenderPresent(WindowRenderer.get());
     }
 
@@ -157,10 +144,29 @@ int main(int argc, char* argv[]) {
     ImGui_ImplSDL3_Shutdown();
     ImGui::DestroyContext();
 
+    return EXIT_SUCCESS;
+}
+
+int main(int argc, char* argv[]) {
+    // SDLのサブシステムを立ち上げる
+    if(!!SDL_Init(SDL_INIT_EVENTS | SDL_INIT_VIDEO)) {
+        return EXIT_FAILURE;
+    }
+    SDL_SetHint(SDL_HINT_IME_SHOW_UI, "1");
+
+    // Fontconfigの初期化
+    static_assert(!!FcTrue);
+    static_assert(!(!!FcFalse));
+    if (!FcInit()) {
+        return EXIT_FAILURE;
+    }
+
+    const auto Resutlt = GUIMain();
+
     FcFini();
 
     // SDLのサブシステムを閉じる
     SDL_Quit();
 
-    return EXIT_SUCCESS;
+    return Resutlt;
 }

@@ -2,7 +2,7 @@
 
 #include "challenger/challenger_video.hpp"
 
-#include "SDL_rect.h"
+#include "SDL3/SDL_rect.h"
 #include "CsmViewer.hpp"
 
 namespace AppSacnConf {

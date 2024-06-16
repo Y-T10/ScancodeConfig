@@ -3,8 +3,7 @@
 #include <cstddef>
 #include <filesystem>
 
-
-#include "SDL_dialog.h"
+#include "SDL3/SDL_dialog.h"
 
 using namespace std::filesystem;
 
@@ -30,9 +29,8 @@ namespace {
     };
 
     static const SDL_DialogFileFilter DialogFilters[] = {
-    { "All files", "*" },
     { "Import file", "map" },
-    { NULL, NULL }
+    { "All files", "*" },
     };
 }
 
@@ -41,6 +39,7 @@ namespace AppSacnConf {
         SDL_ShowOpenFileDialog(
             DialogCallback, nullptr,
             parent.get(), DialogFilters,
+            sizeof(DialogFilters)/sizeof(DialogFilters[0]),
             NULL, 0
         );
 
@@ -51,6 +50,7 @@ namespace AppSacnConf {
         SDL_ShowSaveFileDialog(
             DialogCallback, nullptr,
             parent.get(), DialogFilters,
+            sizeof(DialogFilters)/sizeof(DialogFilters[0]),
             NULL
         );
 
