@@ -1,5 +1,3 @@
-#pragma once
-
 #include "AsconfRegistry.hpp"
 
 #include "CregHandler.hpp"
