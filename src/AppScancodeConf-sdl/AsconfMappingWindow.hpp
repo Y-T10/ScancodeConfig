@@ -1,5 +1,7 @@
 #pragma once
 
+#include "challenger/challenger_video.hpp"
+
 #include "SDL_rect.h"
 #include "CsmViewer.hpp"
 
@@ -11,6 +13,11 @@ namespace AppSacnConf {
 
         // ウィンドウを描画する
         void show(const SDL_Rect drawArea) noexcept;
+
+        /**
+         * @brief ウィンドウへの操作を処理する
+         */
+        void handleOperations(const challenger::Window& MainWindow) noexcept;
         
         bool importMapping;
         bool exportMapping;

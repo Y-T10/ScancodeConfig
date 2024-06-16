@@ -6,6 +6,11 @@
 
 #include "imgui.h"
 
+#include "AsconfMappingWindow.hpp"
+#include "AsconfMappingIO.hpp"
+#include "AsconfRegistry.hpp"
+#include "AsconfDialog.hpp"
+
 namespace {
     static constexpr auto TextNotApplicable = "N/A";
 
@@ -49,6 +54,38 @@ namespace AppSacnConf {
 
         ImGui::End();
     }
+
+    void ConfigWindow::handleOperations(const challenger::Window& MainWindow) noexcept {
+        // レジストリから値を取り出す．
+        if (loadMapping) {
+            mapping = AppSacnConf::ReadScancodeMap();
+            loadMapping = false;
+        }
+
+        // レジストリに値を書き込む．
+        if (applyMapping) {
+            AppSacnConf::WriteScancodeMap(mapping);
+            applyMapping = false;
+        }
+
+        if (importMapping) {
+            importMapping = false;
+            
+            const auto Path = AppSacnConf::ShowOpenDialog(MainWindow);
+            if (Path) {
+                mapping = AppSacnConf::ImportMapping(*Path);
+            }
+        }
+
+        if (exportMapping) {
+            exportMapping = false;
+            
+            const auto Path = AppSacnConf::ShowSaveDialog(MainWindow);
+            if (Path) {
+                AppSacnConf::ExportMapping(*Path, mapping);
+            }
+        }
+    };
 
     void ConfigWindow::showMenuBar() noexcept {
         if (!ImGui::BeginMenuBar()) {
