@@ -88,13 +88,13 @@ namespace AppSacnConf {
     void ConfigWindow::handleOperations(const challenger::Window& MainWindow) noexcept {
         // レジストリから値を取り出す．
         if (loadMapping) {
-            mapping = AppSacnConf::ReadScancodeMap();
+            mapping = ToConfWindowContainer(AppSacnConf::ReadScancodeMap());
             loadMapping = false;
         }
 
         // レジストリに値を書き込む．
         if (applyMapping) {
-            AppSacnConf::WriteScancodeMap(mapping);
+            AppSacnConf::WriteScancodeMap(ToMappingList(mapping));
             applyMapping = false;
         }
 
@@ -103,7 +103,7 @@ namespace AppSacnConf {
             
             const auto Path = AppSacnConf::ShowOpenDialog(MainWindow);
             if (Path) {
-                mapping = AppSacnConf::ImportMapping(*Path);
+                mapping = ToConfWindowContainer(AppSacnConf::ImportMapping(*Path));
             }
         }
 
@@ -112,7 +112,7 @@ namespace AppSacnConf {
             
             const auto Path = AppSacnConf::ShowSaveDialog(MainWindow);
             if (Path && (!Path->empty())) {
-                AppSacnConf::ExportMapping(*Path, mapping);
+                AppSacnConf::ExportMapping(*Path, ToMappingList(mapping));
             }
         }
     };
