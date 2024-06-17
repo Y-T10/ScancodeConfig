@@ -1,5 +1,7 @@
 #include "AsconfMappingWindow.hpp"
 
+#include <algorithm>
+#include <iterator>
 #include <cstddef>
 #include <cstdlib>
 #include <format>
@@ -33,6 +35,34 @@ namespace {
         static_assert(std::is_invocable_r_v<const std::string, F, CompScanMap::Scancode>);
         return std::format("{:s} ({:#x})", func(code), code); 
     };
+
+    const auto ToConfWindowContainer(const CompScanMap::MappingList& list) noexcept {
+        using namespace AppSacnConf;
+
+        ConfigWindow::container_type rows = {};
+        std::transform(
+            list.begin(), list.end(),
+            std::back_inserter(rows),
+            [](const auto& mapping) {
+                return ConfigWindow::ConfTableRow{.map = mapping, .selected = false};
+            }
+        );
+        return rows;
+    }
+
+    const auto ToMappingList(const AppSacnConf::ConfigWindow::container_type& rows) noexcept {
+        using namespace CompScanMap;
+
+        MappingList list = {};
+        std::transform(
+            rows.begin(), rows.end(),
+            std::back_inserter(list),
+            [](const auto& row) {
+                return row.map;
+            }
+        );
+        return list;
+    }
 }
 
 namespace AppSacnConf {
