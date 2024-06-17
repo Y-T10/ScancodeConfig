@@ -4,12 +4,18 @@
 
 #include "SDL3/SDL_rect.h"
 #include "CsmViewer.hpp"
+#include <vector>
 
 namespace AppSacnConf {
     /// コンフィグウィンドウ
     struct ConfigWindow {
+        struct ConfTableRow {
+            CompScanMap::ScanMapping map;
+            bool selected;
+        };
+
         // マッピングデータの型
-        using container_type = CompScanMap::MappingList;
+        using container_type = std::vector<ConfTableRow>;
 
         // ウィンドウを描画する
         void show(const SDL_Rect drawArea) noexcept;
