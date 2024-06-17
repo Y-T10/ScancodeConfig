@@ -22,6 +22,9 @@ namespace AppSacnConf {
         ConfigWindow(ConfigWindow& rval) noexcept;
         ConfigWindow() noexcept;
 
+        ConfigWindow& operator=(const ConfigWindow& rval) noexcept = delete;
+        ConfigWindow& operator=(ConfigWindow&& rval) noexcept;
+
         // ウィンドウを描画する
         void show(const SDL_Rect drawArea) noexcept;
 

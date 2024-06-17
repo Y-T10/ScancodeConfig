@@ -88,6 +88,21 @@ namespace AppSacnConf {
     mapping({}){
     }
 
+    ConfigWindow& ConfigWindow::operator=(ConfigWindow&& rval) noexcept {
+        if (this == &rval) {
+            return *this;
+        }
+
+        importMapping = std::move(rval.importMapping);
+        exportMapping = std::move(rval.exportMapping);
+        loadMapping = std::move(rval.loadMapping);
+        applyMapping = std::move(rval.applyMapping);
+        mapping = std::move(rval.mapping);
+
+        return *this;
+    }
+
+
     void ConfigWindow::show(const SDL_Rect drawArea) noexcept {
         // ウィンドウの設定
         const ImGuiWindowFlags WindowFlags = 
