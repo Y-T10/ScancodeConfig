@@ -69,13 +69,7 @@ int GUIMain() {
     ImGui_ImplSDL3_InitForSDLRenderer(MainWindow.get(), WindowRenderer.get());
     ImGui_ImplSDLRenderer3_Init(WindowRenderer.get());
 
-    AppSacnConf::ConfigWindow configWindow = {
-        .importMapping = false,
-        .exportMapping = false,
-        .loadMapping = false,
-        .applyMapping = false,
-        .mapping = AppSacnConf::ReadScancodeMap()
-    };
+    auto configWindow = AppSacnConf::ConfigWindow(AppSacnConf::ReadScancodeMap());
 
     while (true) {
         // イベント処理
