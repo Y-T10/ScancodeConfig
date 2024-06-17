@@ -189,13 +189,13 @@ namespace AppSacnConf {
         ImGui::TableHeadersRow();
 
         // 表を作成する
-        for (const auto& row: mapping) {
+        for (auto& row: mapping) {
             // 行を追加
             ImGui::TableNextRow();
 
             // 行の中身を埋める
             ImGui::TableSetColumnIndex(0);
-            ImGui::Text("%s", GenerateText(row.map.from, GetNameFrom).c_str());
+            ImGui::Selectable(GenerateText(row.map.from, GetNameFrom).c_str(), &row.selected, ImGuiSelectableFlags_SpanAllColumns);
             ImGui::TableSetColumnIndex(1);
             ImGui::Text("%s", GenerateText(row.map.to, GetNameTo).c_str());
         }
