@@ -66,6 +66,28 @@ namespace {
 }
 
 namespace AppSacnConf {
+    ConfigWindow::ConfigWindow(const CompScanMap::MappingList& list) noexcept:
+    importMapping(false),
+    exportMapping(false),
+    loadMapping(false),
+    applyMapping(false),
+    mapping(ToConfWindowContainer(list)){
+    }
+    ConfigWindow::ConfigWindow(ConfigWindow& rval) noexcept:
+    importMapping(std::move(rval.importMapping)),
+    exportMapping(std::move(rval.exportMapping)),
+    loadMapping(std::move(rval.loadMapping)),
+    applyMapping(std::move(rval.applyMapping)),
+    mapping(std::move(rval.mapping)){
+    }
+    ConfigWindow::ConfigWindow() noexcept:
+    importMapping(false),
+    exportMapping(false),
+    loadMapping(false),
+    applyMapping(false),
+    mapping({}){
+    }
+
     void ConfigWindow::show(const SDL_Rect drawArea) noexcept {
         // ウィンドウの設定
         const ImGuiWindowFlags WindowFlags = 
@@ -152,15 +174,15 @@ namespace AppSacnConf {
         ImGui::TableHeadersRow();
 
         // 表を作成する
-        for (const auto& map: mapping) {
+        for (const auto& row: mapping) {
             // 行を追加
             ImGui::TableNextRow();
 
             // 行の中身を埋める
             ImGui::TableSetColumnIndex(0);
-            ImGui::Text("%s", GenerateText(map.from, GetNameFrom).c_str());
+            ImGui::Text("%s", GenerateText(row.map.from, GetNameFrom).c_str());
             ImGui::TableSetColumnIndex(1);
-            ImGui::Text("%s", GenerateText(map.to, GetNameTo).c_str());
+            ImGui::Text("%s", GenerateText(row.map.to, GetNameTo).c_str());
         }
 
         ImGui::EndTable();

@@ -17,6 +17,11 @@ namespace AppSacnConf {
         // マッピングデータの型
         using container_type = std::vector<ConfTableRow>;
 
+        explicit ConfigWindow(const CompScanMap::MappingList& list) noexcept;
+        ConfigWindow(const ConfigWindow& rval) noexcept = delete;
+        ConfigWindow(ConfigWindow& rval) noexcept;
+        ConfigWindow() noexcept;
+
         // ウィンドウを描画する
         void show(const SDL_Rect drawArea) noexcept;
 
