@@ -178,7 +178,10 @@ namespace AppSacnConf {
     }
 
     void ConfigWindow::showTable() noexcept {
-        if(!ImGui::BeginTable("mapping_table", 2)) {
+        constexpr ImGuiTableFlags Flags =
+            ImGuiTableFlags_NoSavedSettings |
+            ImGuiTableFlags_ScrollY;
+        if(!ImGui::BeginTable("mapping_table", 2, Flags)) {
             return;
         }
 
