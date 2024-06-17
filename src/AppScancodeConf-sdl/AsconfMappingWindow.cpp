@@ -110,7 +110,7 @@ namespace AppSacnConf {
             ImGuiWindowFlags_NoMove |
             ImGuiWindowFlags_NoResize |
             ImGuiWindowFlags_MenuBar;
-        ImGui::Begin("Hello, world!", NULL, WindowFlags);
+        ImGui::Begin("ScancodeMap Config", NULL, WindowFlags);
 
         // ウィンドウを描画範囲全体にする
         ImGui::SetWindowSize(ImVec2(drawArea.w, drawArea.h));
