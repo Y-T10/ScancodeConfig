@@ -31,6 +31,7 @@ namespace {
     static const SDL_DialogFileFilter DialogFilters[] = {
     { "Import file", "map" },
     { "All files", "*" },
+    { nullptr, nullptr }
     };
 }
 
@@ -39,7 +40,6 @@ namespace AppSacnConf {
         SDL_ShowOpenFileDialog(
             DialogCallback, nullptr,
             parent.get(), DialogFilters,
-            sizeof(DialogFilters)/sizeof(DialogFilters[0]),
             NULL, 0
         );
 
@@ -50,7 +50,6 @@ namespace AppSacnConf {
         SDL_ShowSaveFileDialog(
             DialogCallback, nullptr,
             parent.get(), DialogFilters,
-            sizeof(DialogFilters)/sizeof(DialogFilters[0]),
             NULL
         );
 
