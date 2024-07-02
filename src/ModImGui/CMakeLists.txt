@@ -3,7 +3,7 @@ add_library(ModImGui)
 
 # リンクディレクトリに追加
 target_include_directories(ModImGui PUBLIC
-    "${IMGUI_SOURCE_DIR}/backends/"
+    ${CMAKE_CURRENT_SOURCE_DIR}/
     "${IMGUI_SOURCE_DIR}/"
 )
 
@@ -14,8 +14,8 @@ target_sources(ModImGui PRIVATE
     ${IMGUI_SOURCE_DIR}/imgui_draw.cpp
     ${IMGUI_SOURCE_DIR}/imgui_tables.cpp
     ${IMGUI_SOURCE_DIR}/imgui_widgets.cpp
-    ${IMGUI_SOURCE_DIR}/backends/imgui_impl_sdl3.cpp
-    ${IMGUI_SOURCE_DIR}/backends/imgui_impl_sdlrenderer3.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/imgui_impl_sdl3.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/imgui_impl_sdlrenderer3.cpp
 )
 
 target_link_libraries(ModImGui PUBLIC SDL3::SDL3)
