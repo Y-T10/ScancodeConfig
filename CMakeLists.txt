@@ -43,31 +43,36 @@ DownloadFile(
 include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/CPM.cmake)
 include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/AddTargetHelper.cmake)
 
+# FetchContentを有効にする
+include(FetchContent)
+
 # CPMを用いてネット上のパッケージを取り込む
 set(MSGPACK_CXX20 ON)
-CPMAddPackage(
-    NAME msgpack-cxx
-    GITHUB_REPOSITORY msgpack/msgpack-c 
+FetchContent_Declare(
+    msgpack-cxx
+    GIT_REPOSITORY https://github.com/msgpack/msgpack-c.git
     GIT_TAG cpp-6.1.0
 )
 
-CPMAddPackage(
-    NAME challenger
-    GITHUB_REPOSITORY Y-T10/challenger 
+FetchContent_Declare(
+    challenger
+    GIT_REPOSITORY https://github.com/Y-T10/challenger.git
     GIT_TAG v0.0.1
 )
 
-CPMAddPackage(
-    NAME IMGUI
-    GITHUB_REPOSITORY ocornut/imgui
+FetchContent_Declare(
+    IMGUI
+    GIT_REPOSITORY https://github.com/ocornut/imgui.git
     GIT_TAG v1.90.8
 )
 
-CPMAddPackage(
-    NAME Fcpp
-    GITHUB_REPOSITORY Y-T10/Fcpp
+FetchContent_Declare(
+    Fcpp
+    GIT_REPOSITORY https://github.com/Y-T10/Fcpp.git
     GIT_TAG main
 )
+
+FetchContent_MakeAvailable(msgpack-cxx challenger IMGUI Fcpp)
 
 # システム内のパッケージを読み込む
 find_package(Threads REQUIRED)
