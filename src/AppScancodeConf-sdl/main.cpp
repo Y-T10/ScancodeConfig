@@ -72,11 +72,7 @@ int GUIMain() {
     ImGui::GetIO().Fonts->AddFontFromFileTTF(JPFontPath.string().c_str(), 18.0f, nullptr, ImGui::GetIO().Fonts->GetGlyphRangesJapanese());
 
     // ImGuiのスタイルをシステムのテーマに合わせる
-    if (SDL_GetSystemTheme() == SDL_SystemTheme::SDL_SYSTEM_THEME_DARK) {
-        ImGui::StyleColorsDark();
-    } else {
-        ImGui::StyleColorsLight();
-    }
+    SetImGUITheme();
 
     // ImGuiSDL3向けの初期化を行う
     ImGui_ImplSDL3_InitForSDLRenderer(MainWindow.get(), WindowRenderer.get());
