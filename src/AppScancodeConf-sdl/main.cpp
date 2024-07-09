@@ -31,6 +31,19 @@ const std::tuple<int, int> GetRenderAreaSize(const Renderer& renderer) noexcept 
     return {w, h};
 }
 
+void SetImGUITheme() noexcept {
+    const auto Theme = SDL_GetSystemTheme();
+    if (Theme == SDL_SystemTheme::SDL_SYSTEM_THEME_DARK) {
+        ImGui::StyleColorsDark();
+        return;
+    }
+    if (Theme == SDL_SystemTheme::SDL_SYSTEM_THEME_LIGHT) {
+        ImGui::StyleColorsLight();
+        return;
+    }
+    // TODO: ライトやダークではない場合に対応する
+};
+
 int GUIMain() {
     // ウィンドウとレンダラを作成
     const auto MainWindow = Create<Window, SDL_CreateWindow>("Scancode Configure", 400, 300, SDL_WINDOW_OPENGL);
