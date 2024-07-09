@@ -93,6 +93,9 @@ int GUIMain() {
             if (event.type == SDL_EVENT_QUIT) {
                 break;
             }
+            if (event.type == SDL_EVENT_SYSTEM_THEME_CHANGED) {
+                SetImGUITheme();
+            }
         }
 
         // ImGuiのウィンドウ処理
