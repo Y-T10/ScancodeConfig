@@ -1,5 +1,5 @@
 # このライブラリディレクトリを追加する
-add_executable(AppScancodeConf-qt)
+add_executable(AppScancodeConf-qt WIN32)
 set_target_properties(AppScancodeConf-qt
     PROPERTIES RUNTIME_OUTPUT_DIRECTORY
     ${CMAKE_SOURCE_DIR}/bin
