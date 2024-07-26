@@ -31,9 +31,22 @@ const std::tuple<int, int> GetRenderAreaSize(const Renderer& renderer) noexcept 
     return {w, h};
 }
 
+void SetImGUITheme() noexcept {
+    const auto Theme = SDL_GetSystemTheme();
+    if (Theme == SDL_SystemTheme::SDL_SYSTEM_THEME_DARK) {
+        ImGui::StyleColorsDark();
+        return;
+    }
+    if (Theme == SDL_SystemTheme::SDL_SYSTEM_THEME_LIGHT) {
+        ImGui::StyleColorsLight();
+        return;
+    }
+    // TODO: ライトやダークではない場合に対応する
+};
+
 int GUIMain() {
     // ウィンドウとレンダラを作成
-    const auto MainWindow = Create<Window, SDL_CreateWindow>("Scancode Configure", 300, 300, SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE);
+    const auto MainWindow = Create<Window, SDL_CreateWindow>("Scancode Configure", 400, 300, SDL_WINDOW_OPENGL);
     const auto WindowRenderer = Create<Renderer, SDL_CreateRenderer>(MainWindow.get(), nullptr, SDL_RENDERER_ACCELERATED);
 
     // 使用する日本語フォントの検索パターンを作る
@@ -59,11 +72,7 @@ int GUIMain() {
     ImGui::GetIO().Fonts->AddFontFromFileTTF(JPFontPath.string().c_str(), 18.0f, nullptr, ImGui::GetIO().Fonts->GetGlyphRangesJapanese());
 
     // ImGuiのスタイルをシステムのテーマに合わせる
-    if (SDL_GetSystemTheme() == SDL_SystemTheme::SDL_SYSTEM_THEME_DARK) {
-        ImGui::StyleColorsDark();
-    } else {
-        ImGui::StyleColorsLight();
-    }
+    SetImGUITheme();
 
     // ImGuiSDL3向けの初期化を行う
     ImGui_ImplSDL3_InitForSDLRenderer(MainWindow.get(), WindowRenderer.get());
@@ -79,6 +88,9 @@ int GUIMain() {
             ImGui_ImplSDL3_ProcessEvent(&event);
             if (event.type == SDL_EVENT_QUIT) {
                 break;
+            }
+            if (event.type == SDL_EVENT_SYSTEM_THEME_CHANGED) {
+                SetImGUITheme();
             }
         }
 
