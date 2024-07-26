@@ -3,12 +3,25 @@ Windows向けのキーマップツール．
 ※現在開発中のため未完成の部分やバグがあります．
 
 ## 概要
-ScanMapConfはWindows向けのソフトで、キーボードのキー割り当てを設定する．
-キーを別のキーに割り当てるだけではなく、キーの無効化や、任意のキー番号(スキャンコード)に割り当てることができる．
-このツールを用いることで、`Caps Lock`の無効化や`Ctrl`への変換を行うことができる．
+ScancodeConfはWindows内部にキーボードのキー割当を設定します．
+この割当はレジストリのキー`Scancode Map`が持ち、設定後に再起動をすることで有効になります．
+ユーザはこのアプリを使うことで、キー入力の置換や無効化を行うことができます．
 
-キーの割り当て情報はWindowsのレジストリキー`Scancode Map`に保存される．
-`Scancode Map`の説明は[こちら](https://learn.microsoft.com/ja-jp/windows-hardware/drivers/hid/keyboard-and-mouse-class-drivers#scan-code-mapper-for-keyboards)に記述されている．
+[SharpKeys](https://github.com/randyrants/sharpkeys)や[Change Key](https://satoshi3.sakura.ne.jp/f_soft/dw_win.htm)
+などの既存のアプリは、キー割当先のキー名を特定のキーボードレイアウトに沿って表示するようにしています．
+また、レジストリ書き込みに必要となる管理者権限を起動時に必要とするため、
+割当の内容確認や変更などの権限を必要としない場合でも権限を持ってしまいます．
+
+これに対してScancodeConfは、割当先のキー名をユーザがWindowsに指定したキーボードレイアウトに従って表示します．
+また起動時に管理者権限を要求せず、レジストリキーへの値書き込みにて権限を要求します．
+そのため、既存のアプリが抱えていた問題を解消しながらその機能を実現しています．
+
+## `Scancode Map`について
+`Scancode Map`の説明は下記のドキュメントに書かれています．
+- ["Configuration of keyboard and mouse class drivers", Scan code mapper for keyboards](https://learn.microsoft.com/ja-jp/windows-hardware/drivers/hid/keyboard-and-mouse-class-drivers#scan-code-mapper-for-keyboards)
+
+また設定時に使用する値の説明は下記のドキュメントに書かれています．
+- ["Keyboard Input Overview", Scan Codes](https://learn.microsoft.com/en-us/windows/win32/inputdev/about-keyboard-input#scan-codes)
 
 ## ビルド方法
 このアプリは[MSYS2](https://www.msys2.org/)の`MINGW64`環境にて開発されています．
