@@ -55,24 +55,12 @@ FetchContent_Declare(
 )
 
 FetchContent_Declare(
-    challenger
-    GIT_REPOSITORY https://github.com/Y-T10/challenger.git
-    GIT_TAG v0.0.1
-)
-
-FetchContent_Declare(
-    IMGUI
-    GIT_REPOSITORY https://github.com/ocornut/imgui.git
-    GIT_TAG v1.90.8
-)
-
-FetchContent_Declare(
     Fcpp
     GIT_REPOSITORY https://github.com/Y-T10/Fcpp.git
     GIT_TAG main
 )
 
-FetchContent_MakeAvailable(msgpack-cxx challenger IMGUI Fcpp)
+FetchContent_MakeAvailable(msgpack-cxx Fcpp)
 
 # システム内のパッケージを読み込む
 find_package(Threads REQUIRED)
