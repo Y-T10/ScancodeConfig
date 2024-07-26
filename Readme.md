@@ -1,4 +1,4 @@
-# ScanMapConf
+# ScancodeConf
 Windows向けのキーマップツール．
 ※現在開発中のため未完成の部分やバグがあります．
 
