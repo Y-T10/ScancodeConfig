@@ -38,7 +38,7 @@ cmake --build build
 
 ## 使用しているライブラリのライセンス
 
-- doctest
+### doctest
 The MIT License (MIT)
 
 Copyright (c) 2016-2023 Viktor Kirilov
@@ -61,7 +61,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
-- Qt examples
+### Qt examples
 Copyright (C) 2018 The Qt Company Ltd.
 
 Redistribution and use in source and binary forms, with or without
