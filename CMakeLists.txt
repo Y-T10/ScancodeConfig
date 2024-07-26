@@ -39,19 +39,14 @@ include(FetchContent)
 
 # CPMを用いてネット上のパッケージを取り込む
 set(MSGPACK_CXX20 ON)
+set(MSGPACK_USE_STATIC_BOOST ON)
 FetchContent_Declare(
     msgpack-cxx
     GIT_REPOSITORY https://github.com/msgpack/msgpack-c.git
     GIT_TAG cpp-6.1.0
 )
 
-FetchContent_Declare(
-    Fcpp
-    GIT_REPOSITORY https://github.com/Y-T10/Fcpp.git
-    GIT_TAG main
-)
-
-FetchContent_MakeAvailable(msgpack-cxx Fcpp)
+FetchContent_MakeAvailable(msgpack-cxx)
 
 # システム内のパッケージを読み込む
 find_package(Threads REQUIRED)
