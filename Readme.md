@@ -31,7 +31,7 @@ cmake --build build
 ビルド完了後、ディレクトリ下のbinに下記のプログラム生成されていることを確認したください．
 
 - `AppScancodeConf-qt`: GUIプログラム
-- `AppScanMapWriter.exe`: レジストリキー`Scancode Map`への書き込みを行うプログラム．
+- `AppScanMapWriter`: レジストリキー`Scancode Map`への書き込みを行うプログラム．
 
 ## 使用しているライブラリのライセンス
 
