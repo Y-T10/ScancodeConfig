@@ -11,30 +11,27 @@ ScanMapConfはWindows向けのソフトで、キーボードのキー割り当�
 `Scancode Map`の説明は[こちら](https://learn.microsoft.com/ja-jp/windows-hardware/drivers/hid/keyboard-and-mouse-class-drivers#scan-code-mapper-for-keyboards)に記述されている．
 
 ## ビルド方法
-### MSYS2 (MINGW64)
-バージョンが13以上の`gcc`とバージョンが3.20以上の`cmake`を用意する．具体的に追加するパッケージは次のとおり．
+このアプリは[MSYS2](https://www.msys2.org/)の`MINGW64`環境にて開発されています．
+そのため、これらのセットアップを事前に完了させておく必要があります．
 
+ビルドの手順は以下の通りです．
+まず`MINGW64`環境のMSYS2シェルを開き、最新の`gcc`、`cmake`と`Qt6`、`boost`、`fontconfig`を下記のコマンドでインストールしてください．
 ```
-mingw-w64-x86_64-gcc, pacman -S mingw-w64-x86_64-cmake
+pacman -S mingw-w64-x86_64-fontconfig \
+          mingw-w64-x86_64-qt6-base \
+          mingw-w64-x86_64-cmake \
+          mingw-w64-x86_64-boost \
+          mingw-w64-x86_64-gcc
 ```
-
-GUIライブラリとしてQt6を用いているため以下のパッケージを追加する．
-
+インストール後、このファイルがあるディレクトリにて下記のコマンドを実行し、プログラムをビルドしてください．
 ```
-mingw-w64-x86_64-qt6-base
-```
-
-以上のパッケージをインストールした状態でMINGW64環境のシェルを開き、以下のとおりにコマンドを実行する．
-
-```
-cd /tmp
-git clone https://github.com/Y-T10/ScancodeConfig.git
-cd ScancodeConfig
 cmake -S ./ -B build
 cmake --build build
 ```
+ビルド完了後、ディレクトリ下のbinに下記のプログラム生成されていることを確認したください．
 
-ビルドが完了すると、`ScancodeConfig`ディレクトリ内に`bin`ディレクトリが作成されており、その中にプログラムが生成されている．
+- `AppScancodeConf-qt`: GUIプログラム
+- `AppScanMapWriter.exe`: レジストリキー`Scancode Map`への書き込みを行うプログラム．
 
 ## 使用しているライブラリのライセンス
 
