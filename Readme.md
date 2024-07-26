@@ -1,6 +1,5 @@
 # ScanMapConf
 Windows向けのキーマップツール．
-※現在開発中のため未完成の個所があります．
 
 ## 概要
 ScanMapConfはWindows向けのソフトで、キーボードのキー割り当てを設定する．
@@ -10,31 +9,34 @@ ScanMapConfはWindows向けのソフトで、キーボードのキー割り当�
 キーの割り当て情報はWindowsのレジストリキー`Scancode Map`に保存される．
 `Scancode Map`の説明は[こちら](https://learn.microsoft.com/ja-jp/windows-hardware/drivers/hid/keyboard-and-mouse-class-drivers#scan-code-mapper-for-keyboards)に記述されている．
 
+## プログラムについて
+Qt版とSDL版があります．どちらも現在開発中のため、未完成の個所やバグがあります．
+
+Qt版は試作段階のもので、GUIライブラリにQt6を用いています．
+ライブラリのLGPLライセンスによって、実行時にQt6の共有ライブラリを必要とします．
+現在は下記の機能を備えています．
+- キー割当の追加や変更．
+- 割当一覧を持つレジストリの読み書き．
+- 一覧のインポートとエクスポート．
+
+SDL版は本番段階のもので、GUIライブライのSDLを用いて作成されています．
+このライブラリはQt6よりも緩いライセンスが適用されているため、コンパイル時に必要なライブラリをプログラムに組み込むことができます．
+現在は下記の機能を備えています．
+- 割当一覧を持つレジストリの読み書き．
+- 一覧のインポートとエクスポート．
+
+## ブランチについて
+Qt版とSDL版は別々のブランチで管理されています．
+前者は[`qt-version`](https://github.com/Y-T10/ScancodeConfig/tree/qt-version)にて、
+後者は[`main`](https://github.com/Y-T10/ScancodeConfig/tree/main)にて管理されています．
+これら2つの実装ではビルド方法やライブラリのライセンス表記などが異なるため、
+これらを参照する際は各ブランチに移動してください．
+Qt版の`Readme.md`は[こちら](/../qt-version/Readme.md)です．
+以降、このドキュメントはSDL版について扱っていきます．
+
 ## ビルド方法
 ### MSYS2 (MINGW64)
-バージョンが13以上の`gcc`とバージョンが3.20以上の`cmake`を用意する．具体的に追加するパッケージは次のとおり．
-
-```
-mingw-w64-x86_64-gcc, pacman -S mingw-w64-x86_64-cmake
-```
-
-GUIライブラリとしてQt6を用いているため以下のパッケージを追加する．
-
-```
-mingw-w64-x86_64-qt6-base
-```
-
-以上のパッケージをインストールした状態でMINGW64環境のシェルを開き、以下のとおりにコマンドを実行する．
-
-```
-cd /tmp
-git clone https://github.com/Y-T10/ScancodeConfig.git
-cd ScancodeConfig
-cmake -S ./ -B build
-cmake --build build
-```
-
-ビルドが完了すると、`ScancodeConfig`ディレクトリ内に`bin`ディレクトリが作成されており、その中にプログラムが生成されている．
+現在GUIのインターフェイスライブラリを変更しているため、安定したビルド方法が確立されていません．
 
 ## 使用しているライブラリのライセンス
 
