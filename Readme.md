@@ -1,5 +1,5 @@
 # ScancodeConf
-Windows向けのキーマップツール．
+Qt製のWindows向けのキーマップツール．
 ※現在開発中のため未完成の部分やバグがあります．
 
 ## 概要
@@ -22,6 +22,10 @@ ScancodeConfはWindows内部にキーボードのキー割当を設定します�
 
 また設定時に使用する値の説明は下記のドキュメントに書かれています．
 - ["Keyboard Input Overview", Scan Codes](https://learn.microsoft.com/en-us/windows/win32/inputdev/about-keyboard-input#scan-codes)
+
+## プログラムについて
+プログラムはQt6ライブラリを用いて実装されており、実行時にその共有ライブラリを必要とします
+このため、プログラムを実行する前に必要なライブラリファイルをプログラムと同じディレクトリ下に置いてください．
 
 ## ビルド方法
 このアプリは[MSYS2](https://www.msys2.org/)の`MINGW64`環境にて開発されています．
