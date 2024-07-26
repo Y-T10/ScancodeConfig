@@ -31,16 +31,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS ON)
 set(CMAKE_CXX_STANDARD 23)
 
-# CPMをダウンロードする
-include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/DownloadFile.cmake)
-DownloadFile(
-    "https://github.com/cpm-cmake/CPM.cmake/releases/download/v0.38.7/CPM.cmake"
-    ${CMAKE_CURRENT_SOURCE_DIR}/cmake/CPM.cmake
-    83e5eb71b2bbb8b1f2ad38f1950287a057624e385c238f6087f94cdfc44af9c5
-)
-
-# CPMを有効にする
-include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/CPM.cmake)
+# 独自のCMake関数を読み込む
 include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/AddTargetHelper.cmake)
 
 # FetchContentを有効にする
@@ -55,27 +46,17 @@ FetchContent_Declare(
 )
 
 FetchContent_Declare(
-    challenger
-    GIT_REPOSITORY https://github.com/Y-T10/challenger.git
-    GIT_TAG v0.0.1
-)
-
-FetchContent_Declare(
-    IMGUI
-    GIT_REPOSITORY https://github.com/ocornut/imgui.git
-    GIT_TAG v1.90.8
-)
-
-FetchContent_Declare(
     Fcpp
     GIT_REPOSITORY https://github.com/Y-T10/Fcpp.git
     GIT_TAG main
 )
 
-FetchContent_MakeAvailable(msgpack-cxx challenger IMGUI Fcpp)
+FetchContent_MakeAvailable(msgpack-cxx Fcpp)
 
 # システム内のパッケージを読み込む
 find_package(Threads REQUIRED)
+find_package(Qt6 REQUIRED COMPONENTS Widgets)
+qt_standard_project_setup()
 #find_package(Boost REQUIRED)
 
 # Add sub directories

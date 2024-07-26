@@ -1,11 +1,13 @@
 # CTestを読み込む
 include(CTest)
 ## テストフレームワークを追加
-CPMAddPackage(
-    NAME doctest
-    GITHUB_REPOSITORY doctest/doctest
+FetchContent_Declare(
+    doctest
+    GIT_REPOSITORY https://github.com/doctest/doctest.git
     GIT_TAG v2.4.11
 )
+FetchContent_MakeAvailable(doctest)
+
 include(${doctest_SOURCE_DIR}/scripts/cmake/doctest.cmake)
 
 # Ctestヘルパーモジュールを読み込む
