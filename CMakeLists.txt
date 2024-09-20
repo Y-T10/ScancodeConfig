@@ -4,7 +4,7 @@ cmake_minimum_required(VERSION 3.20)
 project(ScancodeConf
     VERSION 0.0.1
     LANGUAGES CXX
-    DESCRIPTION "Personal cpp template repository."
+    DESCRIPTION "`Scancode Map`を設定するためのGUIアプリ"
 )
 
 # ビルド周りの設定
