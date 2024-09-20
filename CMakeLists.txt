@@ -1,10 +1,10 @@
 cmake_minimum_required(VERSION 3.20)
 
 # このプロジェクトの概要を設定する
-project(cpp_template
+project(ScancodeConf
     VERSION 0.0.1
     LANGUAGES CXX
-    DESCRIPTION "Personal cpp template repository."
+    DESCRIPTION "`Scancode Map`を設定するためのGUIアプリ"
 )
 
 # ビルド周りの設定
@@ -16,31 +16,12 @@ if ((NOT (DEFINED $ENV{CMAKE_EXPORT_COMPILE_COMMANDS})) AND (DEFINED CMAKE_EXPOR
   set(CMAKE_EXPORT_COMPILE_COMMANDS 1)
 endif()
 
-# CMakeのポリシーを設定する
-cmake_policy(SET CMP0076 NEW)
-cmake_policy(SET CMP0128 NEW)
-set(CMAKE_POLICY_DEFAULT_CMP0128 NEW)
-cmake_policy(SET CMP0074 NEW)
-set(CMAKE_POLICY_DEFAULT_CMP0074 NEW)
-cmake_policy(SET CMP0077 NEW)
-set(CMAKE_POLICY_DEFAULT_CMP0077 NEW)
-
 # C++コンパイラに渡すオプションを設定する
 add_compile_options(-Wall $<$<CONFIG:Debug>:-g3>)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS ON)
 set(CMAKE_CXX_STANDARD 23)
 
-# CPMをダウンロードする
-include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/DownloadFile.cmake)
-DownloadFile(
-    "https://github.com/cpm-cmake/CPM.cmake/releases/download/v0.38.7/CPM.cmake"
-    ${CMAKE_CURRENT_SOURCE_DIR}/cmake/CPM.cmake
-    83e5eb71b2bbb8b1f2ad38f1950287a057624e385c238f6087f94cdfc44af9c5
-)
-
-# CPMを有効にする
-include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/CPM.cmake)
 include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/AddTargetHelper.cmake)
 
 # FetchContentを有効にする
