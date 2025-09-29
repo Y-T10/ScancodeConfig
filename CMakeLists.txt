@@ -9,6 +9,7 @@ project(ScancodeConf
 
 # C++コンパイラに渡すオプションを設定する
 add_compile_options(-Wall $<$<CONFIG:Debug>:-g3>)
+set(CMAKE_CXX_SCAN_FOR_MODULES OFF)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS ON)
 set(CMAKE_CXX_STANDARD 23)
