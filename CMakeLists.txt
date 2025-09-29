@@ -32,13 +32,13 @@ set(MSGPACK_CXX20 ON)
 FetchContent_Declare(
     msgpack-cxx
     GIT_REPOSITORY https://github.com/msgpack/msgpack-c.git
-    GIT_TAG cpp-6.1.0
+    GIT_TAG cpp-7.0.0
 )
 
 FetchContent_Declare(
     challenger
     GIT_REPOSITORY https://github.com/Y-T10/challenger.git
-    GIT_TAG v0.0.1
+    GIT_TAG v0.0.3
 )
 
 FetchContent_Declare(
