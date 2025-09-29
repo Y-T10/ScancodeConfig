@@ -2,6 +2,7 @@
 *build*/
 *bin*/
 cmake/CPM.cmake
+CMakeUserPresets.json
 
 # clangd関連
 *cache*/

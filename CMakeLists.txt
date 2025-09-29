@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.20)
+cmake_minimum_required(VERSION 4.0)
 
 # このプロジェクトの概要を設定する
 project(ScancodeConf
@@ -7,17 +7,9 @@ project(ScancodeConf
     DESCRIPTION "`Scancode Map`を設定するためのGUIアプリ"
 )
 
-# ビルド周りの設定
-option(BUILD_SHARED_LIBS "Build shared libraries." OFF)
-option(CMAKE_BUILD_TYPE "Build type." Release)
-
-# CMAKE_EXPORT_COMPILE_COMMANDSの既定値を設定する
-if ((NOT (DEFINED $ENV{CMAKE_EXPORT_COMPILE_COMMANDS})) AND (DEFINED CMAKE_EXPORT_COMPILE_COMMANDS))
-  set(CMAKE_EXPORT_COMPILE_COMMANDS 1)
-endif()
-
 # C++コンパイラに渡すオプションを設定する
 add_compile_options(-Wall $<$<CONFIG:Debug>:-g3>)
+set(CMAKE_CXX_SCAN_FOR_MODULES OFF)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS ON)
 set(CMAKE_CXX_STANDARD 23)
@@ -32,13 +24,13 @@ set(MSGPACK_CXX20 ON)
 FetchContent_Declare(
     msgpack-cxx
     GIT_REPOSITORY https://github.com/msgpack/msgpack-c.git
-    GIT_TAG cpp-6.1.0
+    GIT_TAG cpp-7.0.0
 )
 
 FetchContent_Declare(
     challenger
     GIT_REPOSITORY https://github.com/Y-T10/challenger.git
-    GIT_TAG v0.0.1
+    GIT_TAG v0.0.3
 )
 
 FetchContent_Declare(
@@ -62,13 +54,10 @@ find_package(Threads REQUIRED)
 # Add sub directories
 add_subdirectory(src)
 
-## 親プロジェクトが存在するかを調べる
-if(NOT (${CMAKE_PROJECT_NAME} STREQUAL ${PROJECT_NAME}))
-    ## ここで処理を終わらせる
-    return()
+## テストを実施するかを判断する
+if(${TEST_IS_ENABLED})
+    ## テストを有効にする
+    enable_testing()
+    ## テストディレクトリ
+    add_subdirectory(test)
 endif()
-
-## テストを有効にする
-enable_testing()
-## テストディレクトリ
-add_subdirectory(test)
