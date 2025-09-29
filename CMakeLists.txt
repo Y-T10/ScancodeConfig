@@ -7,15 +7,6 @@ project(ScancodeConf
     DESCRIPTION "`Scancode Map`を設定するためのGUIアプリ"
 )
 
-# ビルド周りの設定
-option(BUILD_SHARED_LIBS "Build shared libraries." OFF)
-option(CMAKE_BUILD_TYPE "Build type." Release)
-
-# CMAKE_EXPORT_COMPILE_COMMANDSの既定値を設定する
-if ((NOT (DEFINED $ENV{CMAKE_EXPORT_COMPILE_COMMANDS})) AND (DEFINED CMAKE_EXPORT_COMPILE_COMMANDS))
-  set(CMAKE_EXPORT_COMPILE_COMMANDS 1)
-endif()
-
 # C++コンパイラに渡すオプションを設定する
 add_compile_options(-Wall $<$<CONFIG:Debug>:-g3>)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
