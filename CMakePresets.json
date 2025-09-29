@@ -13,6 +13,14 @@
                 "BUILD_SHARED_LIBS": false,
                 "CMAKE_BUILD_TYPE": "Release"
             }
+        },
+        {
+            "name": "buid_test",
+            "displayName": "Build tests",
+            "inherits": [ "default" ],
+            "cacheVariables": {
+                "TEST_IS_ENABLED": true
+            }
         }
     ],
     "buildPresets": [{
