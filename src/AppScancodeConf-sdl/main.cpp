@@ -1,6 +1,5 @@
 #include "SDL3/SDL_events.h"
 #include "SDL3/SDL_init.h"
-#include "SDL3/SDL_hints.h"
 #include "SDL3/SDL_rect.h"
 #include "SDL3/SDL_render.h"
 #include "SDL3/SDL_video.h"
@@ -11,10 +10,6 @@
 #include <filesystem>
 #include <fontconfig/fontconfig.h>
 #include <tuple>
-
-#include "imgui.h"
-#include "imgui_impl_sdl3.h"
-#include "imgui_impl_sdlrenderer3.h"
 
 #include "AsconfMappingWindow.hpp"
 #include "AsconfRegistry.hpp"
@@ -53,23 +48,6 @@ int GUIMain() {
         return EXIT_FAILURE;
     }
 
-    // ImGuiのセットアップ
-    IMGUI_CHECKVERSION();
-    ImGui::CreateContext();
-    ImGui::GetIO().ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard | ImGuiConfigFlags_NavEnableGamepad;
-    ImGui::GetIO().Fonts->AddFontFromFileTTF(JPFontPath.string().c_str(), 18.0f, nullptr, ImGui::GetIO().Fonts->GetGlyphRangesJapanese());
-
-    // ImGuiのスタイルをシステムのテーマに合わせる
-    if (SDL_GetSystemTheme() == SDL_SystemTheme::SDL_SYSTEM_THEME_DARK) {
-        ImGui::StyleColorsDark();
-    } else {
-        ImGui::StyleColorsLight();
-    }
-
-    // ImGuiSDL3向けの初期化を行う
-    ImGui_ImplSDL3_InitForSDLRenderer(MainWindow.get(), WindowRenderer.get());
-    ImGui_ImplSDLRenderer3_Init(WindowRenderer.get());
-
     auto configWindow = AppSacnConf::ConfigWindow(AppSacnConf::ReadScancodeMap());
 
     while (true) {
@@ -77,16 +55,10 @@ int GUIMain() {
         {
             SDL_Event event;
             SDL_WaitEvent(&event);
-            ImGui_ImplSDL3_ProcessEvent(&event);
             if (event.type == SDL_EVENT_QUIT) {
                 break;
             }
         }
-
-        // ImGuiのウィンドウ処理
-        ImGui_ImplSDLRenderer3_NewFrame();
-        ImGui_ImplSDL3_NewFrame();
-        ImGui::NewFrame();
 
         {
             const auto [w, h] = GetRenderAreaSize(WindowRenderer);
@@ -95,19 +67,10 @@ int GUIMain() {
             configWindow.handleOperations(MainWindow);
         }
 
-        // 描画処理
-        ImGui::Render();
         SDL_SetRenderDrawColor(WindowRenderer.get(), 0, 0, 0, 0);
         SDL_RenderClear(WindowRenderer.get());
-        ImGui_ImplSDLRenderer3_RenderDrawData(ImGui::GetDrawData(), WindowRenderer.get());
         SDL_RenderPresent(WindowRenderer.get());
     }
-
-
-    // ImGuiを閉じる
-    ImGui_ImplSDLRenderer3_Shutdown();
-    ImGui_ImplSDL3_Shutdown();
-    ImGui::DestroyContext();
 
     return EXIT_SUCCESS;
 }
@@ -117,7 +80,6 @@ int main(int argc, char* argv[]) {
     if(!SDL_Init(SDL_INIT_EVENTS | SDL_INIT_VIDEO)) {
         return EXIT_FAILURE;
     }
-    SDL_SetHint(SDL_HINT_IME_SHOW_UI, "1");
 
     // Fontconfigの初期化
     static_assert(!!FcTrue);

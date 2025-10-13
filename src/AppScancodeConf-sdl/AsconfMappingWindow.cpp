@@ -6,8 +6,6 @@
 #include <cstdlib>
 #include <format>
 
-#include "imgui.h"
-
 #include "challenger/challenger_dialog.hpp"
 #include "AsconfMappingWindow.hpp"
 #include "AsconfMappingIO.hpp"
@@ -109,22 +107,8 @@ namespace AppSacnConf {
 
 
     void ConfigWindow::show(const SDL_Rect drawArea) noexcept {
-        // ウィンドウの設定
-        const ImGuiWindowFlags WindowFlags = 
-            ImGuiWindowFlags_NoTitleBar |
-            ImGuiWindowFlags_NoMove |
-            ImGuiWindowFlags_NoResize |
-            ImGuiWindowFlags_MenuBar;
-        ImGui::Begin("ScancodeMap Config", NULL, WindowFlags);
-
-        // ウィンドウを描画範囲全体にする
-        ImGui::SetWindowSize(ImVec2(drawArea.w, drawArea.h));
-        ImGui::SetWindowPos(ImVec2(drawArea.x, drawArea.y));
-
         showMenuBar();
         showTable();
-
-        ImGui::End();
     }
 
     void ConfigWindow::handleOperations(const challenger::Window& MainWindow) noexcept {
@@ -164,54 +148,8 @@ namespace AppSacnConf {
     };
 
     void ConfigWindow::showMenuBar() noexcept {
-        if (!ImGui::BeginMenuBar()) {
-            return;
-        }
-
-        // メニューを追加する
-        if (ImGui::BeginMenu("File")) {
-            ImGui::MenuItem("Import Mapping", NULL, &importMapping);
-            ImGui::MenuItem("Export Mapping", NULL, &exportMapping);
-
-            ImGui::EndMenu();
-        }
-
-        if (ImGui::BeginMenu("Registry")) {
-            ImGui::MenuItem("Load current mappping", NULL, &loadMapping);
-            ImGui::MenuItem("Apply mappping", NULL, &applyMapping);
-
-            ImGui::EndMenu();
-        }
-
-        ImGui::EndMenuBar();
     }
 
     void ConfigWindow::showTable() noexcept {
-        constexpr ImGuiTableFlags Flags =
-            ImGuiTableFlags_NoSavedSettings |
-            ImGuiTableFlags_ScrollY;
-        if(!ImGui::BeginTable("mapping_table", 2, Flags)) {
-            return;
-        }
-
-        // ヘッダを設定
-        ImGui::TableSetupScrollFreeze(0, 1);
-        ImGui::TableSetupColumn("Mapping From");
-        ImGui::TableSetupColumn("Mapping To");
-        ImGui::TableHeadersRow();
-
-        // 表を作成する
-        for (auto& row: mapping) {
-            // 行を追加
-            ImGui::TableNextRow();
-
-            // 行の中身を埋める
-            ImGui::TableSetColumnIndex(0);
-            ImGui::Selectable(GenerateText(row.map.from, GetNameFrom).c_str(), &row.selected, ImGuiSelectableFlags_SpanAllColumns);
-            ImGui::TableSetColumnIndex(1);
-            ImGui::Text("%s", GenerateText(row.map.to, GetNameTo).c_str());
-        }
-
-        ImGui::EndTable();
     }
 }
