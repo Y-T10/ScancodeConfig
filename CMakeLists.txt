@@ -30,7 +30,7 @@ FetchContent_Declare(
 FetchContent_Declare(
     challenger
     GIT_REPOSITORY https://github.com/Y-T10/challenger.git
-    GIT_TAG v0.0.3
+    GIT_TAG v0.0.4p1
 )
 
 FetchContent_Declare(
