@@ -13,4 +13,5 @@ add_exe_directory(
         msgpack-cxx
         CompProcess
         Fcpp::Fcpp
+        TGUI::TGUI
 )
