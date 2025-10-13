@@ -49,6 +49,8 @@ FetchContent_MakeAvailable(msgpack-cxx challenger IMGUI Fcpp)
 
 # システム内のパッケージを読み込む
 find_package(Threads REQUIRED)
+find_package(SDL3 REQUIRED)
+find_package(SDL3_ttf REQUIRED)
 #find_package(Boost REQUIRED)
 
 # Add sub directories
