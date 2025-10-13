@@ -114,7 +114,7 @@ int GUIMain() {
 
 int main(int argc, char* argv[]) {
     // SDLのサブシステムを立ち上げる
-    if(!!SDL_Init(SDL_INIT_EVENTS | SDL_INIT_VIDEO)) {
+    if(!SDL_Init(SDL_INIT_EVENTS | SDL_INIT_VIDEO)) {
         return EXIT_FAILURE;
     }
     SDL_SetHint(SDL_HINT_IME_SHOW_UI, "1");
