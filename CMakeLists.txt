@@ -42,7 +42,7 @@ FetchContent_Declare(
 FetchContent_Declare(
     Fcpp
     GIT_REPOSITORY https://github.com/Y-T10/Fcpp.git
-    GIT_TAG main
+    GIT_TAG v0.0.1
 )
 
 FetchContent_MakeAvailable(msgpack-cxx challenger IMGUI Fcpp)
