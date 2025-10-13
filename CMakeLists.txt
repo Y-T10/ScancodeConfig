@@ -45,7 +45,14 @@ FetchContent_Declare(
     GIT_TAG v0.0.1
 )
 
-FetchContent_MakeAvailable(msgpack-cxx challenger Fcpp)
+set(TGUI_BACKEND SDL_RENDERER)
+FetchContent_Declare(
+    TGUI
+    GIT_REPOSITORY https://github.com/texus/TGUI.git
+    GIT_TAG v1.11.0
+)
+
+FetchContent_MakeAvailable(msgpack-cxx challenger Fcpp TGUI)
 
 # Add sub directories
 add_subdirectory(src)
