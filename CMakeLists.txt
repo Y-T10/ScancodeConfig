@@ -16,6 +16,12 @@ set(CMAKE_CXX_STANDARD 23)
 
 include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/AddTargetHelper.cmake)
 
+# システム内のパッケージを読み込む
+find_package(Threads REQUIRED)
+find_package(SDL3 REQUIRED CONFIG REQUIRED)
+find_package(SDL3_ttf CONFIG REQUIRED)
+#find_package(Boost REQUIRED)
+
 # FetchContentを有効にする
 include(FetchContent)
 
@@ -40,12 +46,6 @@ FetchContent_Declare(
 )
 
 FetchContent_MakeAvailable(msgpack-cxx challenger Fcpp)
-
-# システム内のパッケージを読み込む
-find_package(Threads REQUIRED)
-find_package(SDL3 REQUIRED)
-find_package(SDL3_ttf REQUIRED)
-#find_package(Boost REQUIRED)
 
 # Add sub directories
 add_subdirectory(src)
