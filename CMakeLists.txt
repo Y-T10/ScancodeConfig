@@ -34,18 +34,12 @@ FetchContent_Declare(
 )
 
 FetchContent_Declare(
-    IMGUI
-    GIT_REPOSITORY https://github.com/ocornut/imgui.git
-    GIT_TAG v1.90.8
-)
-
-FetchContent_Declare(
     Fcpp
     GIT_REPOSITORY https://github.com/Y-T10/Fcpp.git
     GIT_TAG v0.0.1
 )
 
-FetchContent_MakeAvailable(msgpack-cxx challenger IMGUI Fcpp)
+FetchContent_MakeAvailable(msgpack-cxx challenger Fcpp)
 
 # システム内のパッケージを読み込む
 find_package(Threads REQUIRED)
