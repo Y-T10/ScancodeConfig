@@ -5,13 +5,11 @@
 #include "SDL3/SDL_render.h"
 #include "SDL3/SDL_video.h"
 #include "challenger/challenger_memory.hpp"
-#include "challenger/challenger_video.hpp"
 #include "challenger/challenger_render.hpp"
 #include <cstddef>
 #include <cstdlib>
 #include <filesystem>
 #include <fontconfig/fontconfig.h>
-#include <string>
 #include <tuple>
 
 #include "imgui.h"
@@ -33,8 +31,10 @@ const std::tuple<int, int> GetRenderAreaSize(const Renderer& renderer) noexcept 
 
 int GUIMain() {
     // ウィンドウとレンダラを作成
-    const auto MainWindow = Create<Window, SDL_CreateWindow>("Scancode Configure", 300, 300, SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE);
-    const auto WindowRenderer = Create<Renderer, SDL_CreateRenderer>(MainWindow.get(), nullptr, SDL_RENDERER_ACCELERATED);
+    const auto MainWindow = Create<SDL_CreateWindow, SDL_DestroyWindow>(
+        "Scancode Configure", 300, 300, SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE
+    );
+    const auto WindowRenderer = Create<SDL_CreateRenderer, SDL_DestroyRenderer>(MainWindow.get(), nullptr);
 
     // 使用する日本語フォントの検索パターンを作る
     // TODO: FcChar8ではなくcharを代入できるようにする
