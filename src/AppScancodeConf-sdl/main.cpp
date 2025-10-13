@@ -20,6 +20,7 @@
 #include "AsconfRegistry.hpp"
 
 #include "Fcpp.hpp"
+#include "SDL3_ttf/SDL_ttf.h"
 
 using namespace challenger;
 
@@ -125,7 +126,13 @@ int main(int argc, char* argv[]) {
         return EXIT_FAILURE;
     }
 
+    if (!TTF_Init()) {
+        return EXIT_FAILURE;
+    };
+
     const auto Resutlt = GUIMain();
+
+    TTF_Quit();
 
     FcFini();
 
