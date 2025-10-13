@@ -10,7 +10,6 @@ add_exe_directory(
         CompRegistry
         CompScancodeMap
         challenger::challenger
-        ModImGui
         msgpack-cxx
         CompProcess
         Fcpp::Fcpp
