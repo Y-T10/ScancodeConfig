@@ -5,7 +5,6 @@
 #include "SDL3/SDL_video.h"
 #include "challenger/challenger_memory.hpp"
 #include "challenger/challenger_render.hpp"
-#include <cstddef>
 #include <cstdlib>
 #include <filesystem>
 #include <fontconfig/fontconfig.h>

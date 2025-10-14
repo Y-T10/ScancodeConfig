@@ -2,8 +2,6 @@
 
 #include <algorithm>
 #include <iterator>
-#include <cstddef>
-#include <cstdlib>
 #include <format>
 
 #include "challenger/challenger_dialog.hpp"
