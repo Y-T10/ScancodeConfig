@@ -48,27 +48,25 @@ int GUIMain() {
         return EXIT_FAILURE;
     }
 
-    auto configWindow = AppSacnConf::ConfigWindow(AppSacnConf::ReadScancodeMap());
+    auto configWindow = AppSacnConf::ConfigWindow(AppSacnConf::ReadScancodeMap(), WindowRenderer);
 
     while (true) {
         // イベント処理
-        {
-            SDL_Event event;
-            SDL_WaitEvent(&event);
+        for (SDL_Event event; SDL_PollEvent(&event);) {
+            configWindow.handle_event(event);
             if (event.type == SDL_EVENT_QUIT) {
-                break;
+                return EXIT_SUCCESS;
             }
         }
 
-        {
-            const auto [w, h] = GetRenderAreaSize(WindowRenderer);
-            configWindow.show(SDL_Rect{.x = 0, .y = 0, .w =w, .h = h});
-
-            configWindow.handleOperations(MainWindow);
-        }
+        configWindow.handleOperations(MainWindow);
 
         SDL_SetRenderDrawColor(WindowRenderer.get(), 0, 0, 0, 0);
         SDL_RenderClear(WindowRenderer.get());
+    
+        const auto [w, h] = GetRenderAreaSize(WindowRenderer);
+        configWindow.show(SDL_Rect{.x = 0, .y = 0, .w =w, .h = h});
+
         SDL_RenderPresent(WindowRenderer.get());
     }
 
