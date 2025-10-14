@@ -8,10 +8,10 @@
 
 #include "imgui.h"
 
+#include "challenger/challenger_dialog.hpp"
 #include "AsconfMappingWindow.hpp"
 #include "AsconfMappingIO.hpp"
 #include "AsconfRegistry.hpp"
-#include "AsconfDialog.hpp"
 
 namespace {
     static constexpr auto TextNotApplicable = "N/A";
@@ -63,6 +63,11 @@ namespace {
         );
         return list;
     }
+
+    const challenger::FilterList DialogFilters = {
+    { "Mapping file", "map" },
+    { "All files", "*" }
+    };
 }
 
 namespace AppSacnConf {
@@ -137,20 +142,24 @@ namespace AppSacnConf {
 
         if (importMapping) {
             importMapping = false;
-            
-            const auto Path = AppSacnConf::ShowOpenDialog(MainWindow);
-            if (Path) {
-                mapping = ToConfWindowContainer(AppSacnConf::ImportMapping(*Path));
-            }
+
+            challenger::ShowOpenFileDialog(MainWindow, [this](const challenger::PathList& list, const int n) mutable {
+                if (list.empty() || list.front().empty()) {
+                    return;
+                }
+                mapping = ToConfWindowContainer(AppSacnConf::ImportMapping(list[0]));
+            }, DialogFilters, "", false);
         }
 
         if (exportMapping) {
             exportMapping = false;
             
-            const auto Path = AppSacnConf::ShowSaveDialog(MainWindow);
-            if (Path && (!Path->empty())) {
-                AppSacnConf::ExportMapping(*Path, ToMappingList(mapping));
-            }
+            challenger::ShowSaveFileDialog(MainWindow, [this](const challenger::PathList& list, const int n) mutable {
+                if (list.empty() || list.front().empty()) {
+                    return;
+                }
+                AppSacnConf::ExportMapping(list[0], ToMappingList(mapping));
+            }, DialogFilters);
         }
     };
 
