@@ -7,6 +7,7 @@
 #include <format>
 
 #include "challenger/challenger_dialog.hpp"
+#include "TGUI/Widgets/MenuBar.hpp"
 #include "AsconfMappingWindow.hpp"
 #include "AsconfMappingIO.hpp"
 #include "AsconfRegistry.hpp"
@@ -76,6 +77,40 @@ namespace AppSacnConf {
     applyMapping(false),
     gui(SDL_GetRenderWindow(renderer.get()), renderer.get()),
     mapping(ToConfWindowContainer(list)){
+        auto menu = tgui::MenuBar::create();
+
+        menu->addMenu("File");
+        menu->addMenuItem("Import");
+        menu->addMenuItem("Export");
+        menu->addMenu("Registry");
+        menu->addMenuItem("Load");
+        menu->addMenuItem("Apply");
+
+        menu->onMenuItemClick([this](const std::vector<tgui::String>& menu_chain){
+            if (menu_chain.size() != 2) {
+                return;
+            }
+
+            importMapping = false;
+            exportMapping = false;
+            loadMapping = false;
+            applyMapping = false;
+
+            if (menu_chain[0] == "File" && menu_chain[1] == "Import") {
+                importMapping = true;
+            }
+            if (menu_chain[0] == "File" && menu_chain[1] == "Export") {
+                exportMapping = true;
+            }
+            if (menu_chain[0] == "Registry" && menu_chain[1] == "Load") {
+                loadMapping = true;
+            }
+            if (menu_chain[0] == "Registry" && menu_chain[1] == "Apply") {
+                applyMapping = true;
+            }
+        });
+        
+        gui.add(menu);
     }
 
     void ConfigWindow::show(const SDL_Rect drawArea) noexcept {
