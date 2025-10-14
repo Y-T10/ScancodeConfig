@@ -4,6 +4,10 @@
 
 #include "SDL3/SDL_rect.h"
 #include "CsmViewer.hpp"
+
+#include "challenger/challenger_render.hpp"
+#include "TGUI/Backend/SDL-Renderer.hpp"
+
 #include <vector>
 
 namespace AppSacnConf {
@@ -17,13 +21,16 @@ namespace AppSacnConf {
         // マッピングデータの型
         using container_type = std::vector<ConfTableRow>;
 
-        explicit ConfigWindow(const CompScanMap::MappingList& list) noexcept;
+        explicit ConfigWindow(const CompScanMap::MappingList& list, const challenger::Renderer& renderer) noexcept;
         ConfigWindow(const ConfigWindow& rval) noexcept = delete;
-        ConfigWindow(ConfigWindow& rval) noexcept;
-        ConfigWindow() noexcept;
+        ConfigWindow(ConfigWindow&& rval) noexcept = delete;
+        ConfigWindow() noexcept = delete;
 
         ConfigWindow& operator=(const ConfigWindow& rval) noexcept = delete;
-        ConfigWindow& operator=(ConfigWindow&& rval) noexcept;
+        ConfigWindow& operator=(ConfigWindow&& rval) noexcept = delete;
+
+        // イベントを処理する
+        void handle_event(const SDL_Event& e) noexcept;
 
         // ウィンドウを描画する
         void show(const SDL_Rect drawArea) noexcept;
@@ -37,6 +44,7 @@ namespace AppSacnConf {
         bool exportMapping;
         bool loadMapping;
         bool applyMapping;
+        tgui::Gui gui;
 
         container_type mapping;
 

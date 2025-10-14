@@ -69,46 +69,21 @@ namespace {
 }
 
 namespace AppSacnConf {
-    ConfigWindow::ConfigWindow(const CompScanMap::MappingList& list) noexcept:
+    ConfigWindow::ConfigWindow(const CompScanMap::MappingList& list, const challenger::Renderer& renderer) noexcept:
     importMapping(false),
     exportMapping(false),
     loadMapping(false),
     applyMapping(false),
+    gui(SDL_GetRenderWindow(renderer.get()), renderer.get()),
     mapping(ToConfWindowContainer(list)){
     }
-    ConfigWindow::ConfigWindow(ConfigWindow& rval) noexcept:
-    importMapping(std::move(rval.importMapping)),
-    exportMapping(std::move(rval.exportMapping)),
-    loadMapping(std::move(rval.loadMapping)),
-    applyMapping(std::move(rval.applyMapping)),
-    mapping(std::move(rval.mapping)){
-    }
-    ConfigWindow::ConfigWindow() noexcept:
-    importMapping(false),
-    exportMapping(false),
-    loadMapping(false),
-    applyMapping(false),
-    mapping({}){
-    }
-
-    ConfigWindow& ConfigWindow::operator=(ConfigWindow&& rval) noexcept {
-        if (this == &rval) {
-            return *this;
-        }
-
-        importMapping = std::move(rval.importMapping);
-        exportMapping = std::move(rval.exportMapping);
-        loadMapping = std::move(rval.loadMapping);
-        applyMapping = std::move(rval.applyMapping);
-        mapping = std::move(rval.mapping);
-
-        return *this;
-    }
-
 
     void ConfigWindow::show(const SDL_Rect drawArea) noexcept {
-        showMenuBar();
-        showTable();
+        gui.draw();
+    }
+
+    void ConfigWindow::handle_event(const SDL_Event& e) noexcept {
+        gui.handleEvent(e);
     }
 
     void ConfigWindow::handleOperations(const challenger::Window& MainWindow) noexcept {
