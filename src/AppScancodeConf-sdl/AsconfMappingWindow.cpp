@@ -6,7 +6,9 @@
 #include <array>
 
 #include "challenger/challenger_dialog.hpp"
+#include "TGUI/Widgets/ListView.hpp"
 #include "TGUI/Widgets/MenuBar.hpp"
+#include "TGUI/Layout.hpp"
 #include "AsconfMappingWindow.hpp"
 #include "AsconfMappingIO.hpp"
 #include "AsconfRegistry.hpp"
@@ -79,6 +81,9 @@ namespace {
         { "Mapping file", "map" },
         { "All files", "*" }
     };
+
+    const char* NameMapTable = "MapTable";
+    const char* NameMenuBar = "MappingMenuBar";
 }
 
 namespace AppSacnConf {
@@ -107,7 +112,19 @@ namespace AppSacnConf {
             applyMapping = true;
         });
         
-        gui.add(menu);
+        gui.add(menu, NameMenuBar);
+
+        const auto MenuSize = menu->getFullSize();
+
+        auto table = tgui::ListView::create();
+        table->addColumn("Mapping From", MenuSize.x / 2);
+        table->addColumn("Mapping To", MenuSize.x - MenuSize.x / 2);
+        table->setPosition({0, MenuSize.y});
+        table->setSize(MenuSize.x, std::format("parent.h - {:s}.h", NameMenuBar).c_str());
+        table->setResizableColumns(false);
+        table->getHorizontalScrollbar()->setPolicy(tgui::Scrollbar::Policy::Never);
+
+        gui.add(table, NameMapTable);
     }
 
     void ConfigWindow::show(const SDL_Rect drawArea) noexcept {
