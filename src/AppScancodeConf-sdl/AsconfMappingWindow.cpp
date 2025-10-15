@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <iterator>
 #include <format>
+#include <array>
 
 #include "challenger/challenger_dialog.hpp"
 #include "TGUI/Widgets/MenuBar.hpp"
@@ -61,6 +62,19 @@ namespace {
         return list;
     }
 
+    template <size_t N>
+    void RegisterMenu(tgui::MenuBar::Ptr& widget, const char* menu, const std::array<const char*, N>& items) noexcept {
+        widget->addMenu(menu);
+        for(const auto s: items) {
+            widget->addMenuItem(s);
+        }
+    }
+
+    const char* MSG_Menu_File = "File";
+    const auto MSG_Menu_Item_File = std::array<const char*, 2>({"Import", "Export"});
+    const char* MSG_Menu_Reg = "Registry";
+    const auto MSG_Menu_Item_Reg = std::array<const char*, 2>({"Load", "Apply"});
+
     const challenger::FilterList DialogFilters = {
         { "Mapping file", "map" },
         { "All files", "*" }
@@ -77,35 +91,20 @@ namespace AppSacnConf {
     mapping(ToConfWindowContainer(list)){
         auto menu = tgui::MenuBar::create();
 
-        menu->addMenu("File");
-        menu->addMenuItem("Import");
-        menu->addMenuItem("Export");
-        menu->addMenu("Registry");
-        menu->addMenuItem("Load");
-        menu->addMenuItem("Apply");
+        RegisterMenu(menu, MSG_Menu_File, MSG_Menu_Item_File);
+        RegisterMenu(menu, MSG_Menu_Reg, MSG_Menu_Item_Reg);
 
-        menu->onMenuItemClick([this](const std::vector<tgui::String>& menu_chain){
-            if (menu_chain.size() != 2) {
-                return;
-            }
-
-            importMapping = false;
-            exportMapping = false;
-            loadMapping = false;
-            applyMapping = false;
-
-            if (menu_chain[0] == "File" && menu_chain[1] == "Import") {
-                importMapping = true;
-            }
-            if (menu_chain[0] == "File" && menu_chain[1] == "Export") {
-                exportMapping = true;
-            }
-            if (menu_chain[0] == "Registry" && menu_chain[1] == "Load") {
-                loadMapping = true;
-            }
-            if (menu_chain[0] == "Registry" && menu_chain[1] == "Apply") {
-                applyMapping = true;
-            }
+        menu->connectMenuItem({MSG_Menu_File, MSG_Menu_Item_File[0]}, [this]{
+            importMapping = true;
+        });
+        menu->connectMenuItem({MSG_Menu_File, MSG_Menu_Item_File[1]}, [this]{
+            exportMapping = true;
+        });
+        menu->connectMenuItem({MSG_Menu_Reg, MSG_Menu_Item_Reg[0]}, [this]{
+            loadMapping = true;
+        });
+        menu->connectMenuItem({MSG_Menu_Reg, MSG_Menu_Item_Reg[1]}, [this]{
+            applyMapping = true;
         });
         
         gui.add(menu);
