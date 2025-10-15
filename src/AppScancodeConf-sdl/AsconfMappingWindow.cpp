@@ -153,10 +153,4 @@ namespace AppSacnConf {
             }, DialogFilters);
         }
     };
-
-    void ConfigWindow::showMenuBar() noexcept {
-    }
-
-    void ConfigWindow::showTable() noexcept {
-    }
 }

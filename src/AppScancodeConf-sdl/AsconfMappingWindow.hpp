@@ -47,10 +47,5 @@ namespace AppSacnConf {
         tgui::Gui gui;
 
         container_type mapping;
-
-    private:
-        // 描画下請関数
-        void showMenuBar() noexcept;
-        void showTable() noexcept;
     };
 }
