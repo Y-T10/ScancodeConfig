@@ -62,8 +62,8 @@ namespace {
     }
 
     const challenger::FilterList DialogFilters = {
-    { "Mapping file", "map" },
-    { "All files", "*" }
+        { "Mapping file", "map" },
+        { "All files", "*" }
     };
 }
 
