@@ -3,6 +3,8 @@
 #include "SDL3/SDL_rect.h"
 #include "SDL3/SDL_render.h"
 #include "SDL3/SDL_video.h"
+
+#include "TGUI/Font.hpp"
 #include "challenger/challenger_memory.hpp"
 #include "challenger/challenger_render.hpp"
 #include <cstdlib>
@@ -47,7 +49,11 @@ int GUIMain() {
         return EXIT_FAILURE;
     }
 
-    auto configWindow = AppSacnConf::ConfigWindow(AppSacnConf::ReadScancodeMap(), WindowRenderer);
+    auto base_gui = AppSacnConf::movable_gui(MainWindow.get(), WindowRenderer.get());
+
+    base_gui.setFont(tgui::Font(JPFontPath.string()));
+
+    auto configWindow = AppSacnConf::ConfigWindow(AppSacnConf::ReadScancodeMap(), std::move(base_gui));
 
     while (true) {
         // イベント処理
