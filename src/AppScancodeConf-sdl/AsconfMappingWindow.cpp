@@ -92,7 +92,7 @@ namespace AppSacnConf {
     exportMapping(false),
     loadMapping(false),
     applyMapping(false),
-    gui(SDL_GetRenderWindow(renderer.get()), renderer.get()),
+    gui(std::forward<movable_gui>(base_gui)),
     mapping(ToConfWindowContainer(list)){
         auto menu = tgui::MenuBar::create();
 
