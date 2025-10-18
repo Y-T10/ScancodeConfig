@@ -84,10 +84,22 @@ namespace {
 
     const char* NameMapTable = "MapTable";
     const char* NameMenuBar = "MappingMenuBar";
+
+    // テーブルを上書きする
+    void OverwriteTable(tgui::ListView::Ptr& table, const AppSacnConf::ConfigWindow::container_type& mapping) noexcept {
+        table->removeAllItems();
+        for (const auto& pair: mapping) {
+            // 行を追加
+            table->addItem({
+                GenerateText(pair.map.from, GetNameFrom),
+                GenerateText(pair.map.to, GetNameTo)
+            });
+        }
+    }
 }
 
 namespace AppSacnConf {
-    ConfigWindow::ConfigWindow(const CompScanMap::MappingList& list, const challenger::Renderer& renderer) noexcept:
+    ConfigWindow::ConfigWindow(const CompScanMap::MappingList& list, movable_gui&& base_gui) noexcept:
     importMapping(false),
     exportMapping(false),
     loadMapping(false),
@@ -125,6 +137,8 @@ namespace AppSacnConf {
         table->getHorizontalScrollbar()->setPolicy(tgui::Scrollbar::Policy::Never);
 
         gui.add(table, NameMapTable);
+
+        OverwriteTable(table, mapping);
     }
 
     void ConfigWindow::show(const SDL_Rect drawArea) noexcept {
@@ -140,6 +154,8 @@ namespace AppSacnConf {
         if (loadMapping) {
             mapping = ToConfWindowContainer(AppSacnConf::ReadScancodeMap());
             loadMapping = false;
+            auto table = gui.get<tgui::ListView>(NameMapTable);
+            OverwriteTable(table, mapping);
         }
 
         // レジストリに値を書き込む．
