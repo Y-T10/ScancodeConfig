@@ -16,6 +16,12 @@ set(CMAKE_CXX_STANDARD 23)
 
 include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/AddTargetHelper.cmake)
 
+# システム内のパッケージを読み込む
+find_package(Threads REQUIRED)
+find_package(SDL3 REQUIRED CONFIG REQUIRED)
+find_package(SDL3_ttf CONFIG REQUIRED)
+#find_package(Boost REQUIRED)
+
 # FetchContentを有効にする
 include(FetchContent)
 
@@ -30,26 +36,23 @@ FetchContent_Declare(
 FetchContent_Declare(
     challenger
     GIT_REPOSITORY https://github.com/Y-T10/challenger.git
-    GIT_TAG v0.0.3
-)
-
-FetchContent_Declare(
-    IMGUI
-    GIT_REPOSITORY https://github.com/ocornut/imgui.git
-    GIT_TAG v1.90.8
+    GIT_TAG v0.0.4p1
 )
 
 FetchContent_Declare(
     Fcpp
     GIT_REPOSITORY https://github.com/Y-T10/Fcpp.git
-    GIT_TAG main
+    GIT_TAG v0.0.1
 )
 
-FetchContent_MakeAvailable(msgpack-cxx challenger IMGUI Fcpp)
+set(TGUI_BACKEND SDL_RENDERER)
+FetchContent_Declare(
+    TGUI
+    GIT_REPOSITORY https://github.com/texus/TGUI.git
+    GIT_TAG v1.11.0
+)
 
-# システム内のパッケージを読み込む
-find_package(Threads REQUIRED)
-#find_package(Boost REQUIRED)
+FetchContent_MakeAvailable(msgpack-cxx challenger Fcpp TGUI)
 
 # Add sub directories
 add_subdirectory(src)

@@ -2,16 +2,16 @@
 
 #include <algorithm>
 #include <iterator>
-#include <cstddef>
-#include <cstdlib>
 #include <format>
+#include <array>
 
-#include "imgui.h"
-
+#include "challenger/challenger_dialog.hpp"
+#include "TGUI/Widgets/ListView.hpp"
+#include "TGUI/Widgets/MenuBar.hpp"
+#include "TGUI/Layout.hpp"
 #include "AsconfMappingWindow.hpp"
 #include "AsconfMappingIO.hpp"
 #include "AsconfRegistry.hpp"
-#include "AsconfDialog.hpp"
 
 namespace {
     static constexpr auto TextNotApplicable = "N/A";
@@ -63,63 +63,90 @@ namespace {
         );
         return list;
     }
+
+    template <size_t N>
+    void RegisterMenu(tgui::MenuBar::Ptr& widget, const char* menu, const std::array<const char*, N>& items) noexcept {
+        widget->addMenu(menu);
+        for(const auto s: items) {
+            widget->addMenuItem(s);
+        }
+    }
+
+    const char* MSG_Menu_File = "File";
+    const auto MSG_Menu_Item_File = std::array<const char*, 2>({"Import", "Export"});
+    const char* MSG_Menu_Reg = "Registry";
+    const auto MSG_Menu_Item_Reg = std::array<const char*, 2>({"Load", "Apply"});
+
+    const challenger::FilterList DialogFilters = {
+        { "Mapping file", "map" },
+        { "All files", "*" }
+    };
+
+    const char* NameMapTable = "MapTable";
+    const char* NameMenuBar = "MappingMenuBar";
+
+    // テーブルを上書きする
+    void OverwriteTable(tgui::ListView::Ptr& table, const AppSacnConf::ConfigWindow::container_type& mapping) noexcept {
+        table->removeAllItems();
+        for (const auto& pair: mapping) {
+            // 行を追加
+            table->addItem({
+                GenerateText(pair.map.from, GetNameFrom),
+                GenerateText(pair.map.to, GetNameTo)
+            });
+        }
+    }
 }
 
 namespace AppSacnConf {
-    ConfigWindow::ConfigWindow(const CompScanMap::MappingList& list) noexcept:
+    ConfigWindow::ConfigWindow(const CompScanMap::MappingList& list, movable_gui&& base_gui) noexcept:
     importMapping(false),
     exportMapping(false),
     loadMapping(false),
     applyMapping(false),
+    gui(std::forward<movable_gui>(base_gui)),
     mapping(ToConfWindowContainer(list)){
-    }
-    ConfigWindow::ConfigWindow(ConfigWindow& rval) noexcept:
-    importMapping(std::move(rval.importMapping)),
-    exportMapping(std::move(rval.exportMapping)),
-    loadMapping(std::move(rval.loadMapping)),
-    applyMapping(std::move(rval.applyMapping)),
-    mapping(std::move(rval.mapping)){
-    }
-    ConfigWindow::ConfigWindow() noexcept:
-    importMapping(false),
-    exportMapping(false),
-    loadMapping(false),
-    applyMapping(false),
-    mapping({}){
-    }
+        auto menu = tgui::MenuBar::create();
 
-    ConfigWindow& ConfigWindow::operator=(ConfigWindow&& rval) noexcept {
-        if (this == &rval) {
-            return *this;
-        }
+        RegisterMenu(menu, MSG_Menu_File, MSG_Menu_Item_File);
+        RegisterMenu(menu, MSG_Menu_Reg, MSG_Menu_Item_Reg);
 
-        importMapping = std::move(rval.importMapping);
-        exportMapping = std::move(rval.exportMapping);
-        loadMapping = std::move(rval.loadMapping);
-        applyMapping = std::move(rval.applyMapping);
-        mapping = std::move(rval.mapping);
+        menu->connectMenuItem({MSG_Menu_File, MSG_Menu_Item_File[0]}, [this]{
+            importMapping = true;
+        });
+        menu->connectMenuItem({MSG_Menu_File, MSG_Menu_Item_File[1]}, [this]{
+            exportMapping = true;
+        });
+        menu->connectMenuItem({MSG_Menu_Reg, MSG_Menu_Item_Reg[0]}, [this]{
+            loadMapping = true;
+        });
+        menu->connectMenuItem({MSG_Menu_Reg, MSG_Menu_Item_Reg[1]}, [this]{
+            applyMapping = true;
+        });
+        
+        gui.add(menu, NameMenuBar);
 
-        return *this;
+        const auto MenuSize = menu->getFullSize();
+
+        auto table = tgui::ListView::create();
+        table->addColumn("Mapping From", MenuSize.x / 2);
+        table->addColumn("Mapping To", MenuSize.x - MenuSize.x / 2);
+        table->setPosition({0, MenuSize.y});
+        table->setSize(MenuSize.x, std::format("parent.h - {:s}.h", NameMenuBar).c_str());
+        table->setResizableColumns(false);
+        table->getHorizontalScrollbar()->setPolicy(tgui::Scrollbar::Policy::Never);
+
+        gui.add(table, NameMapTable);
+
+        OverwriteTable(table, mapping);
     }
-
 
     void ConfigWindow::show(const SDL_Rect drawArea) noexcept {
-        // ウィンドウの設定
-        const ImGuiWindowFlags WindowFlags = 
-            ImGuiWindowFlags_NoTitleBar |
-            ImGuiWindowFlags_NoMove |
-            ImGuiWindowFlags_NoResize |
-            ImGuiWindowFlags_MenuBar;
-        ImGui::Begin("ScancodeMap Config", NULL, WindowFlags);
+        gui.draw();
+    }
 
-        // ウィンドウを描画範囲全体にする
-        ImGui::SetWindowSize(ImVec2(drawArea.w, drawArea.h));
-        ImGui::SetWindowPos(ImVec2(drawArea.x, drawArea.y));
-
-        showMenuBar();
-        showTable();
-
-        ImGui::End();
+    void ConfigWindow::handle_event(const SDL_Event& e) noexcept {
+        gui.handleEvent(e);
     }
 
     void ConfigWindow::handleOperations(const challenger::Window& MainWindow) noexcept {
@@ -127,6 +154,8 @@ namespace AppSacnConf {
         if (loadMapping) {
             mapping = ToConfWindowContainer(AppSacnConf::ReadScancodeMap());
             loadMapping = false;
+            auto table = gui.get<tgui::ListView>(NameMapTable);
+            OverwriteTable(table, mapping);
         }
 
         // レジストリに値を書き込む．
@@ -137,72 +166,24 @@ namespace AppSacnConf {
 
         if (importMapping) {
             importMapping = false;
-            
-            const auto Path = AppSacnConf::ShowOpenDialog(MainWindow);
-            if (Path) {
-                mapping = ToConfWindowContainer(AppSacnConf::ImportMapping(*Path));
-            }
+
+            challenger::ShowOpenFileDialog(MainWindow, [this](const challenger::PathList& list, const int n) mutable {
+                if (list.empty() || list.front().empty()) {
+                    return;
+                }
+                mapping = ToConfWindowContainer(AppSacnConf::ImportMapping(list[0]));
+            }, DialogFilters, "", false);
         }
 
         if (exportMapping) {
             exportMapping = false;
             
-            const auto Path = AppSacnConf::ShowSaveDialog(MainWindow);
-            if (Path && (!Path->empty())) {
-                AppSacnConf::ExportMapping(*Path, ToMappingList(mapping));
-            }
+            challenger::ShowSaveFileDialog(MainWindow, [this](const challenger::PathList& list, const int n) mutable {
+                if (list.empty() || list.front().empty()) {
+                    return;
+                }
+                AppSacnConf::ExportMapping(list[0], ToMappingList(mapping));
+            }, DialogFilters);
         }
     };
-
-    void ConfigWindow::showMenuBar() noexcept {
-        if (!ImGui::BeginMenuBar()) {
-            return;
-        }
-
-        // メニューを追加する
-        if (ImGui::BeginMenu("File")) {
-            ImGui::MenuItem("Import Mapping", NULL, &importMapping);
-            ImGui::MenuItem("Export Mapping", NULL, &exportMapping);
-
-            ImGui::EndMenu();
-        }
-
-        if (ImGui::BeginMenu("Registry")) {
-            ImGui::MenuItem("Load current mappping", NULL, &loadMapping);
-            ImGui::MenuItem("Apply mappping", NULL, &applyMapping);
-
-            ImGui::EndMenu();
-        }
-
-        ImGui::EndMenuBar();
-    }
-
-    void ConfigWindow::showTable() noexcept {
-        constexpr ImGuiTableFlags Flags =
-            ImGuiTableFlags_NoSavedSettings |
-            ImGuiTableFlags_ScrollY;
-        if(!ImGui::BeginTable("mapping_table", 2, Flags)) {
-            return;
-        }
-
-        // ヘッダを設定
-        ImGui::TableSetupScrollFreeze(0, 1);
-        ImGui::TableSetupColumn("Mapping From");
-        ImGui::TableSetupColumn("Mapping To");
-        ImGui::TableHeadersRow();
-
-        // 表を作成する
-        for (auto& row: mapping) {
-            // 行を追加
-            ImGui::TableNextRow();
-
-            // 行の中身を埋める
-            ImGui::TableSetColumnIndex(0);
-            ImGui::Selectable(GenerateText(row.map.from, GetNameFrom).c_str(), &row.selected, ImGuiSelectableFlags_SpanAllColumns);
-            ImGui::TableSetColumnIndex(1);
-            ImGui::Text("%s", GenerateText(row.map.to, GetNameTo).c_str());
-        }
-
-        ImGui::EndTable();
-    }
 }
