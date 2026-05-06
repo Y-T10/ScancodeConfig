@@ -1,3 +1,8 @@
 add_executable(scancodemap)
 target_sources(scancodemap PRIVATE main.cpp)
-target_link_libraries(scancodemap PRIVATE CompRegistry CompScancodeMap CompProcess)
+set_target_properties(scancodemap
+    PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin 
+)
+target_link_libraries(scancodemap
+    PRIVATE CompRegistry CompScancodeMap CompProcess -lstdc++exp
+)
