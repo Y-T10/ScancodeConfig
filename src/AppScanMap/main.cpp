@@ -55,11 +55,11 @@ void print_scancode_map() noexcept {
     std::println("{:<.20s}    {:<.20s}", "keyboard input", "conversion result");
     std::println("{:-<44.44s}", "");
     for (const auto& pair : *CurrentMap) {
-        const auto fromName = key_name(pair.from).transform_error(PrintError);
-        const auto toName = key_name(pair.to).transform_error(PrintError);
+        const auto FromName = key_name(pair.from).transform_error(PrintError);
+        const auto ToName = key_name(pair.to).transform_error(PrintError);
         std::println("{:<#04x} ({:<15.15s}) -> {:<#04x} ({:<15.15s})",
-                     pair.from, fromName ? fromName.value() : fromName.error(),
-                     pair.to, toName ? toName.value() : toName.error());
+                     pair.from, FromName ? FromName.value() : FromName.error(),
+                     pair.to, ToName ? ToName.value() : ToName.error());
     }
 }
 
@@ -67,12 +67,12 @@ std::string utf16_to_utf8(const std::vector<wchar_t>& str) noexcept {
     if (str.empty()) {
         return "";
     }
-    const int size = WideCharToMultiByte(CP_UTF8, 0, str.data(), str.size(),
+    const int Size = WideCharToMultiByte(CP_UTF8, 0, str.data(), str.size(),
                                          nullptr, 0, nullptr, nullptr);
-    if (size == 0) {
+    if (Size == 0) {
         return "";
     }
-    std::vector<char> output(size, '\0');
+    std::vector<char> output(Size, '\0');
     if (0 == WideCharToMultiByte(CP_UTF8, 0, str.data(), str.size(),
                                  output.data(), output.size() * sizeof(wchar_t),
                                  nullptr, nullptr)) {
