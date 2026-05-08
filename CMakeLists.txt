@@ -31,6 +31,7 @@ FetchContent_MakeAvailable(msgpack-cxx)
 
 # システム内のパッケージを読み込む
 find_package(Threads REQUIRED)
+find_package(utf8proc 2.11.3 REQUIRED)
 #find_package(Boost REQUIRED)
 
 # Add sub directories
