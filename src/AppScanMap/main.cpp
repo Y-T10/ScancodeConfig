@@ -93,18 +93,9 @@ std::expected<std::string, DWORD> key_name(
 
     const LONG Value =
         ((code & 0xff00) != 0 ? 0x1000000 : 0) | (0xff0000 & (code << 16));
-    auto buffer = std::vector<wchar_t>(128, L'\0');
+    auto buffer = std::vector<wchar_t>(32, L'\0');
     const int NameLength = GetKeyNameTextW(Value, buffer.data(), buffer.size());
     if (NameLength == 0) {
-        const auto Code = GetLastError();
-        if (Code == ERROR_SUCCESS) {
-            return NoumNamelessKey;
-        }
-        return std::unexpected{Code};
-    }
-    buffer.resize(NameLength);
-    buffer.emplace_back(L'\0');
-    if (0 == GetKeyNameTextW(Value, buffer.data(), buffer.size())) {
         const auto Code = GetLastError();
         if (Code == ERROR_SUCCESS) {
             return NoumNamelessKey;
