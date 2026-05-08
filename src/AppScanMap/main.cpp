@@ -6,11 +6,13 @@
 
 #include "CregHandler.hpp"
 #include "CsmCodec.hpp"
+#include "utf8proc.h"
 
 std::expected<std::string, DWORD> key_name(
     const CompScanMap::Scancode code) noexcept;
 std::string utf16_to_utf8(const std::wstring& str) noexcept;
 void print_scancode_map() noexcept;
+const size_t calc_string_width(const std::string& str) noexcept;
 
 int main(int argc, char* argv[]) {
     if (argc <= 1) {
@@ -111,4 +113,24 @@ std::expected<std::string, DWORD> key_name(
     }
 
     return utf16_to_utf8(buffer);
+}
+
+const size_t calc_string_width(const std::string& str) noexcept {
+    size_t stringWidth = 0;
+    for (utf8proc_int32_t offset = 0; (size_t)(offset) < str.length();) {
+        utf8proc_int32_t codepoint = 0;
+        const auto Advance =
+            utf8proc_iterate((utf8proc_uint8_t*)(str.c_str() + offset),
+                             str.length() + 1 - offset, &codepoint);
+        if (Advance < 0) {
+            return 0;
+        }
+        offset += Advance;
+        const auto CharWith = utf8proc_charwidth(codepoint);
+        if (CharWith < 0) {
+            return 0;
+        }
+        stringWidth += CharWith;
+    }
+    return stringWidth;
 }
