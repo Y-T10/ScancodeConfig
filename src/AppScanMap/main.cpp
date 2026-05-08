@@ -1,6 +1,7 @@
 #include <cstdio>
 #include <expected>
 #include <format>
+#include <map>
 #include <print>
 #include <vector>
 
@@ -50,18 +51,30 @@ void print_scancode_map() noexcept {
         return;
     }
 
-    const auto PrintError = [](const DWORD& v) {
-        return std::format("error:{:#08x}", v);
+    const auto PrintError =
+        [](const DWORD& v) -> std::expected<std::string, DWORD> {
+        std::println(stderr, "failed to get key name: {:#08x}", v);
+        return "no_name";
     };
 
-    std::println("{:<.20s}    {:<.20s}", "keyboard input", "conversion result");
-    std::println("{:-<44.44s}", "");
+    std::map<DWORD, std::string> keyNameMap = {};
+    size_t maxNameStringWidth = 0;
     for (const auto& pair : *CurrentMap) {
-        const auto FromName = key_name(pair.from).transform_error(PrintError);
-        const auto ToName = key_name(pair.to).transform_error(PrintError);
-        std::println("{:<#04x} ({:<15.15s}) -> {:<#04x} ({:<15.15s})",
-                     pair.from, FromName ? FromName.value() : FromName.error(),
-                     pair.to, ToName ? ToName.value() : ToName.error());
+        const auto FromName = key_name(pair.from).or_else(PrintError).value();
+        const auto ToName = key_name(pair.to).or_else(PrintError).value();
+        keyNameMap.emplace(pair.from, FromName);
+        keyNameMap.emplace(pair.to, ToName);
+        maxNameStringWidth =
+            std::max(maxNameStringWidth, calc_string_width(FromName));
+    }
+
+    for (const auto& pair : *CurrentMap) {
+        std::print("{:#06x} ({:<s})", pair.from, keyNameMap[pair.from]);
+        std::print(
+            "{0: <{1}.{1}s}", "",
+            1 + maxNameStringWidth - calc_string_width(keyNameMap[pair.from]));
+        std::print("{:#06x} ({:<s})", pair.to, keyNameMap[pair.to]);
+        std::println("");
     }
 }
 
@@ -91,8 +104,8 @@ std::expected<std::string, DWORD> key_name(
         return "null";
     }
 
-    const LONG Value =
-        ((code & 0xff00) != 0 ? 0x1000000 : 0) | (0xff0000 & (code << 16));
+    const LONG Value = ((code & 0xff00) != 0 ? 0x1000000 : 0) |
+                       (0xff0000 & ((code & 0x00ff) << 16));
     auto buffer = std::vector<wchar_t>(32, L'\0');
     const int NameLength = GetKeyNameTextW(Value, buffer.data(), buffer.size());
     if (NameLength == 0) {
