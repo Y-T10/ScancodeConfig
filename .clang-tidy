@@ -1,0 +1,24 @@
+---
+Checks: '-*,clang-diagnostic-*,readability-identifier-naming'
+WarningsAsErrors: ''
+HeaderFileExtensions: [ h ]
+ImplementationFileExtensions: [c, cpp]
+HeaderFilterRegex: '.*'
+ExcludeHeaderFilterRegex: ''
+FormatStyle: file
+SystemHeaders: false
+CheckOptions:
+  readability-identifier-naming.AggressiveDependentMemberLookup: 'false'
+  readability-identifier-naming.CheckAnonFieldInParent: 'false'
+  readability-identifier-naming.GetConfigPerFile: 'true'
+  readability-identifier-naming.IgnoreMainLikeFunctions: 'false'
+  readability-identifier-naming.LocalConstexprVariableCase: 'CamelCase'
+  readability-identifier-naming.LocalConstexprVariableHungarianPrefix: 'Off'
+  readability-identifier-naming.LocalConstantCase: 'CamelCase'
+  readability-identifier-naming.LocalConstantHungarianPrefix: 'Off'
+  readability-identifier-naming.LocalPointerCase: 'camelBack'
+  readability-identifier-naming.LocalPointerHungarianPrefix: 'Off'
+  readability-identifier-naming.LocalVariableCase: 'camelBack'
+  readability-identifier-naming.LocalVariableHungarianPrefix: 'Off'
+...
+

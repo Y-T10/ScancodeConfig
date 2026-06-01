@@ -1,0 +1,10 @@
+---
+BasedOnStyle: Google
+PackConstructorInitializers: NextLineOnly
+LambdaBodyIndentation: OuterScope
+ObjCBinPackProtocolList: Auto
+NamespaceIndentation: Inner
+AccessModifierOffset: 0
+IndentWidth: 4
+Language: Cpp
+...
